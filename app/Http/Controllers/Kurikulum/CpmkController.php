@@ -213,7 +213,7 @@ class CpmkController extends Controller
 
         $q = MataKuliah::where('program_studi_id', $psId)
             ->where('aktif', true)
-            ->with(['cpmks' => fn($q) => $q->with(['cpmkCpls', 'subCpmks'])->orderBy('urutan')])
+            ->with(['cpmks' => fn($q) => $q->with(['cpmkCpls', 'subCpmks.asesmen'])->orderBy('urutan')])
             ->orderBy('urutan');
         $this->applyDosenScope($q);
         $mataKuliahs = $q->get()->filter(fn($mk) => $mk->cpmks->flatMap->subCpmks->isNotEmpty());

@@ -98,7 +98,13 @@ class DashboardController extends Controller
                 return $d;
             });
 
-        return view('dashboard', compact('summary', 'mkPending', 'bySemester', 'dosens'));
+        // Ringkasan asesmen per MK (hanya yang punya Sub-CPMK)
+        $mkAsesmen = $mataKuliahs
+            ->filter(fn($mk) => $mk->sub_cpmks_count > 0)
+            ->sortBy(['semester', 'urutan'])
+            ->values();
+
+        return view('dashboard', compact('summary', 'mkPending', 'bySemester', 'dosens', 'mkAsesmen'));
     }
 
     /* ----------------------------------------------------------------

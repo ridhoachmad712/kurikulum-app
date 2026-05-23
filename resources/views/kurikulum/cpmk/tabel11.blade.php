@@ -10,15 +10,27 @@
 
 @forelse($mataKuliahs as $mk)
 @php
-    $allSubs = $mk->cpmks->flatMap->subCpmks->sortBy('urutan')->values();
-    $mkTotal = $mk->cpmks->sum('total_bobot');
+    $allSubs         = $mk->cpmks->flatMap->subCpmks->sortBy('urutan')->values();
+    $mkTotal         = $mk->cpmks->sum('total_bobot');
+    $subsWithAsesmen = $mk->cpmks->flatMap->subCpmks->filter(fn($s) => $s->asesmen)->sortBy('urutan')->values();
+    $bobotPerSubMap  = [];
+    foreach ($mk->cpmks as $cpmk) {
+        foreach ($cpmk->subCpmks as $s) {
+            $bobotPerSubMap[$s->id] = (float) $cpmk->bobot_per_sub;
+        }
+    }
 @endphp
+
 <div class="mb-6 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+
+    {{-- Header MK --}}
     <div class="bg-indigo-900 text-white px-4 py-2.5 flex items-center gap-3">
         <span class="font-mono text-xs text-indigo-300">{{ $mk->kode_rps }}</span>
         <span class="font-semibold text-sm">{{ $mk->nama }}</span>
         <span class="ml-auto text-xs text-indigo-400">Smt {{ $mk->semester }}</span>
     </div>
+
+    {{-- Tabel Bobot per Sub-CPMK --}}
     <div class="overflow-x-auto">
         <table class="text-xs w-full border-collapse">
             <thead class="bg-gray-50">
@@ -49,12 +61,10 @@
                         @endif
                     </td>
                     @endforeach
-                    {{-- Total --}}
                     <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-amber-50
                                {{ $cpmk->total_bobot > 0 ? 'text-amber-700' : 'text-gray-300' }}">
                         {{ $cpmk->total_bobot > 0 ? number_format($cpmk->total_bobot, 2).'%' : '—' }}
                     </td>
-                    {{-- Tabel 7 (same value, verification column) --}}
                     <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-indigo-50
                                {{ $cpmk->total_bobot > 0 ? 'text-indigo-700' : 'text-gray-300' }}">
                         {{ $cpmk->total_bobot > 0 ? number_format($cpmk->total_bobot, 2).'%' : '—' }}
@@ -84,7 +94,71 @@
             </tbody>
         </table>
     </div>
-</div>
+
+    {{-- Seksi Bobot Asesmen --}}
+    @if($subsWithAsesmen->isNotEmpty())
+    <div class="border-t-2 border-indigo-100">
+        <div class="px-4 py-2 bg-indigo-50 border-b border-indigo-100 flex items-center gap-2">
+            <span class="w-1.5 h-4 rounded-full bg-indigo-500 inline-block shrink-0"></span>
+            <p class="text-xs font-semibold text-indigo-700">Bobot Asesmen per Sub-CPMK</p>
+            <span class="ml-auto text-[10px] text-indigo-400">Jumlah Asesmen = Bobot Teoritis</span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="text-xs w-full border-collapse">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="border border-gray-200 px-3 py-2 text-left min-w-[160px] text-gray-600">Sub-CPMK</th>
+                        <th class="border border-gray-200 px-2 py-2 text-center w-16 text-gray-600">Tugas</th>
+                        <th class="border border-gray-200 px-2 py-2 text-center w-16 text-gray-600">Quis</th>
+                        <th class="border border-gray-200 px-2 py-2 text-center w-20 text-gray-600">Kasus/Proyek</th>
+                        <th class="border border-gray-200 px-2 py-2 text-center w-16 text-gray-600">UTS</th>
+                        <th class="border border-gray-200 px-2 py-2 text-center w-16 text-gray-600">UAS</th>
+                        <th class="border border-gray-200 px-2 py-2 text-center w-20 bg-emerald-50 text-gray-600">Jumlah</th>
+                        <th class="border border-gray-200 px-2 py-2 text-center w-24 bg-indigo-50 text-gray-600">Bobot Teoritis</th>
+                        <th class="border border-gray-200 px-2 py-2 text-center w-20 text-gray-600">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($subsWithAsesmen as $sub)
+                    @php
+                        $a        = $sub->asesmen;
+                        $total    = $a->tugas + $a->quis + $a->kasus_proyek + $a->uts + $a->uas;
+                        $teoritis = $bobotPerSubMap[$sub->id] ?? 0;
+                        $selaras  = $teoritis > 0 && abs($total - $teoritis) <= 0.5;
+                    @endphp
+                    <tr class="hover:bg-gray-50">
+                        <td class="border border-gray-200 px-3 py-2 font-semibold text-indigo-600">{{ $sub->kode }}</td>
+                        <td class="border border-gray-200 px-2 py-2 text-center text-gray-700">{{ $a->tugas > 0 ? $a->tugas : '—' }}</td>
+                        <td class="border border-gray-200 px-2 py-2 text-center text-gray-700">{{ $a->quis > 0 ? $a->quis : '—' }}</td>
+                        <td class="border border-gray-200 px-2 py-2 text-center text-gray-700">{{ $a->kasus_proyek > 0 ? $a->kasus_proyek : '—' }}</td>
+                        <td class="border border-gray-200 px-2 py-2 text-center text-gray-700">{{ $a->uts > 0 ? $a->uts : '—' }}</td>
+                        <td class="border border-gray-200 px-2 py-2 text-center text-gray-700">{{ $a->uas > 0 ? $a->uas : '—' }}</td>
+                        <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-emerald-50 text-emerald-700">{{ $total }}</td>
+                        <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-indigo-50 text-indigo-700">{{ number_format($teoritis, 2) }}%</td>
+                        <td class="border border-gray-200 px-2 py-2 text-center">
+                            @if($selaras)
+                                <span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold bg-green-100 text-green-700">✓ Selaras</span>
+                            @else
+                                <span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-100 text-red-700">
+                                    {{ $total > $teoritis ? '+' : '' }}{{ number_format($total - $teoritis, 1) }}
+                                </span>
+                            @endif
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @else
+    <div class="border-t border-gray-100 px-4 py-3 bg-gray-50">
+        <p class="text-xs text-gray-400 italic">Bobot asesmen belum diisi —
+            <a href="{{ route('kurikulum.asesmen.index') }}" class="text-indigo-500 hover:underline">Input sekarang</a>
+        </p>
+    </div>
+    @endif
+
+</div>{{-- end card --}}
 @empty
 <div class="text-center py-16 text-gray-400">
     <p class="text-lg font-medium">Belum ada data CPMK dengan Sub-CPMK</p>

@@ -85,6 +85,60 @@
     </div>
 </div>
 
+{{-- ── RINGKASAN ASESMEN ── --}}
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-7">
+    <div class="px-5 py-3 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+        <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Ringkasan Asesmen per Mata Kuliah</h2>
+        <a href="{{ route('kurikulum.asesmen.index') }}" class="text-xs text-indigo-600 hover:underline">Input Asesmen →</a>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="min-w-full text-xs">
+            <thead class="bg-gray-50 text-gray-500 uppercase tracking-wider">
+                <tr>
+                    <th class="px-4 py-2.5 text-left">Mata Kuliah</th>
+                    <th class="px-3 py-2.5 text-center w-12">Smt</th>
+                    <th class="px-3 py-2.5 text-center w-32">Progress Asesmen</th>
+                    <th class="px-3 py-2.5 text-center w-20">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+                @forelse($mkAsesmen as $mk)
+                @php
+                    $pct = $mk->sub_cpmks_count > 0 ? round($mk->sub_asesmen_count / $mk->sub_cpmks_count * 100) : 0;
+                @endphp
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-2">
+                        <span class="font-mono text-indigo-600 mr-1.5">{{ $mk->kode_rps }}</span>
+                        <span class="text-gray-700">{{ $mk->nama }}</span>
+                    </td>
+                    <td class="px-3 py-2 text-center text-gray-500">{{ $mk->semester }}</td>
+                    <td class="px-3 py-2">
+                        <div class="flex items-center gap-2">
+                            <div class="flex-1 bg-gray-100 rounded-full h-1.5">
+                                <div class="h-1.5 rounded-full {{ $pct == 100 ? 'bg-green-500' : ($pct > 0 ? 'bg-amber-400' : 'bg-gray-200') }}"
+                                     style="width: {{ $pct }}%"></div>
+                            </div>
+                            <span class="text-gray-400 w-14 text-right shrink-0">{{ $mk->sub_asesmen_count }}/{{ $mk->sub_cpmks_count }}</span>
+                        </div>
+                    </td>
+                    <td class="px-3 py-2 text-center">
+                        @if($pct == 100)
+                            <span class="inline-block px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-semibold">Lengkap</span>
+                        @elseif($pct > 0)
+                            <span class="inline-block px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-semibold">{{ $pct }}%</span>
+                        @else
+                            <span class="inline-block px-2 py-0.5 rounded-full bg-gray-100 text-gray-400">Kosong</span>
+                        @endif
+                    </td>
+                </tr>
+                @empty
+                <tr><td colspan="4" class="px-4 py-6 text-center text-gray-400 italic">Belum ada Sub-CPMK yang terdaftar</td></tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
 
     {{-- ── TABEL MK BELUM SELESAI ── --}}
