@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProgramStudi extends Model
 {
-    protected $fillable = ['kode','nama','jenjang','fakultas','universitas','aktif'];
+    protected $fillable = ['kode','nama','jenjang','fakultas','universitas','aktif','visi','misi','tujuan'];
 
     protected $casts = ['aktif' => 'boolean'];
 
@@ -23,5 +23,10 @@ class ProgramStudi extends Model
     public function users(): HasMany
     {
         return $this->hasMany(\App\Models\User::class);
+    }
+
+    public function profilLulusans(): HasMany
+    {
+        return $this->hasMany(ProfilLulusan::class)->orderBy('urutan');
     }
 }

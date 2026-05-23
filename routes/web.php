@@ -12,6 +12,7 @@ use App\Http\Controllers\Kurikulum\SubCpmkController;
 use App\Http\Controllers\Master\CloTaxonomiController;
 use App\Http\Controllers\Master\CplController;
 use App\Http\Controllers\Master\MataKuliahController;
+use App\Http\Controllers\Master\ProfilLulusanController;
 use App\Http\Controllers\Master\ProgramStudiController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
@@ -35,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
     // Master Data
     Route::prefix('master')->name('master.')->group(function () {
         Route::resource('program-studi', ProgramStudiController::class)->except(['show'])->middleware('role:admin|kaprodi');
+        Route::resource('profil-lulusan', ProfilLulusanController::class)->except(['show'])->middleware('role:admin|kaprodi');
         Route::resource('cpl', CplController::class)->except(['show']);
         Route::resource('mata-kuliah', MataKuliahController::class)->except(['show']);
         Route::get('mata-kuliah/{mataKuliah}', [MataKuliahController::class, 'show'])

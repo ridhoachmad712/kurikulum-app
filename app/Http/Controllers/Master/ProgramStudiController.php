@@ -27,6 +27,9 @@ class ProgramStudiController extends Controller
             'fakultas'    => 'nullable|string|max:255',
             'universitas' => 'nullable|string|max:255',
             'aktif'       => 'boolean',
+            'visi'        => 'nullable|string',
+            'misi'        => 'nullable|string',
+            'tujuan'      => 'nullable|string',
         ]);
         ProgramStudi::create($data);
         return redirect()->route('master.program-studi.index')->with('success', 'Program Studi berhasil ditambahkan.');
@@ -46,6 +49,9 @@ class ProgramStudiController extends Controller
             'fakultas'    => 'nullable|string|max:255',
             'universitas' => 'nullable|string|max:255',
             'aktif'       => 'boolean',
+            'visi'        => 'nullable|string',
+            'misi'        => 'nullable|string',
+            'tujuan'      => 'nullable|string',
         ]);
         $programStudi->update($data);
         return redirect()->route('master.program-studi.index')->with('success', 'Program Studi berhasil diperbarui.');

@@ -18,6 +18,21 @@ class ProgramStudiSeeder extends Seeder
                 'fakultas'    => 'Fakultas Ekonomi dan Bisnis',
                 'universitas' => 'Universitas Negeri Makassar',
                 'aktif'       => true,
+                'visi'        => 'Program studi unggul dalam penerapan Ilmu Manajemen berbasis literasi sains teknologi dan seni berwawasan kewirausahaan di Asia Tenggara',
+                'misi'        => implode("\n", [
+                    'Menyelenggarakan pendidikan ilmu manajemen berbasis literasi sains teknologi dan seni berwawasan kewirausahaan',
+                    'Menyelenggarakan penelitian bidang manajemen berbasis literasi sains teknologi dan seni berwawasan kewirausahaan',
+                    'Menyelenggarakan pengabdian kepada masyarakat bidang manajemen berbasis literasi sain teknologi dan seni berwawasan kewirausahaan',
+                    'Menyelenggarakan tata kelola program studi berdasarkan prinsip good university governance',
+                    'Menjalin kerjasama dengan stakeholders/mitra di dalam maupun luar negeri secara berkelanjutan',
+                ]),
+                'tujuan'      => implode("\n", [
+                    'Menghasilkan lulusan yang memiliki kompetensi di bidang ilmu manajemen berbasis literasi sains teknologi dan seni berwawasan kewirausahaan',
+                    'Menghasilkan karya penelitian di bidang manajemen berbasis literasi sains teknologi dan seni berwawasan kewirausahaan',
+                    'Menghasilkan karya pengabdian kepada masyarakat di bidang manajemen berbasis literasi sains teknologi dan seni berwawasan kewirausahaan',
+                    'Mewujudkan tata kelola program studi yang baik berdasarkan prinsip good university governance',
+                    'Menghasilkan kerjasama yang produktif dengan stakeholders/mitra di dalam maupun luar negeri',
+                ]),
             ]
         );
 

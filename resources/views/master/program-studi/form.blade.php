@@ -2,12 +2,14 @@
 @section('title', $item->exists ? 'Edit Program Studi' : 'Tambah Program Studi')
 @section('content')
 
-<div class="max-w-2xl">
+<div class="max-w-3xl">
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <form method="POST" action="{{ $item->exists ? route('master.program-studi.update', $item) : route('master.program-studi.store') }}">
             @csrf
             @if($item->exists) @method('PATCH') @endif
 
+            {{-- Identitas --}}
+            <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Identitas Program Studi</h2>
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Kode <span class="text-red-500">*</span></label>
@@ -48,6 +50,31 @@
                            {{ old('aktif', $item->aktif ?? true) ? 'checked' : '' }}
                            class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
                     <label for="aktif" class="text-sm text-gray-700">Aktif</label>
+                </div>
+            </div>
+
+            {{-- Visi Misi Tujuan --}}
+            <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mt-7 mb-3">Visi, Misi & Tujuan</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Visi</label>
+                    <textarea name="visi" rows="3"
+                              class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500"
+                              placeholder="Visi program studi...">{{ old('visi', $item->visi) }}</textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Misi</label>
+                    <p class="text-xs text-gray-400 mb-1">Tulis setiap poin misi pada baris baru (Enter untuk baris baru).</p>
+                    <textarea name="misi" rows="7"
+                              class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500"
+                              placeholder="Misi 1&#10;Misi 2&#10;Misi 3">{{ old('misi', $item->misi) }}</textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tujuan</label>
+                    <p class="text-xs text-gray-400 mb-1">Tulis setiap poin tujuan pada baris baru (Enter untuk baris baru).</p>
+                    <textarea name="tujuan" rows="7"
+                              class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500"
+                              placeholder="Tujuan 1&#10;Tujuan 2&#10;Tujuan 3">{{ old('tujuan', $item->tujuan) }}</textarea>
                 </div>
             </div>
 
