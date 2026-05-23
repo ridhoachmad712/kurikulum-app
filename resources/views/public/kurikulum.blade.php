@@ -17,58 +17,71 @@
 
     {{-- ─── TAB BAR ─────────────────────────────────────────────── --}}
     @php
-    $tabs = [
-        1  => ['title'=>'Input Level',        'short'=>'Tabel 1'],
-        2  => ['title'=>'Keterkaitan (0/1)',   'short'=>'Tabel 2'],
-        3  => ['title'=>'Nilai Level',         'short'=>'Tabel 3'],
-        4  => ['title'=>'% Bobot Global',      'short'=>'Tabel 4'],
-        5  => ['title'=>'% Bobot per MK',      'short'=>'Tabel 5'],
-        6  => ['title'=>'Keterkaitan CPMK–CPL','short'=>'Tabel 6'],
-        7  => ['title'=>'Bobot CPMK–CPL',      'short'=>'Tabel 7'],
-        8  => ['title'=>'Rekap Sub-CPMK',      'short'=>'Tabel 8'],
-        9  => ['title'=>'CPMK & Sub-CPMK',    'short'=>'Tabel 9'],
-        10 => ['title'=>'Sub-CPMK & CPL',     'short'=>'Tabel 10'],
-        11 => ['title'=>'Bobot Sub-CPMK',     'short'=>'Tabel 11'],
-        12 => ['title'=>'Rekap Bobot',         'short'=>'Tabel 12'],
+    $tabGroups = [
+        'Matriks MK–CPL' => [
+            1  => ['label' => 'Input Level',  'title' => 'Input Level MK–CPL',         'desc' => 'Level keterkaitan setiap Mata Kuliah terhadap CPL (Tinggi / Sedang / Rendah)'],
+            2  => ['label' => 'Keterkaitan',  'title' => 'Keterkaitan Biner (0 / 1)',   'desc' => 'Nilai 1 = ada keterkaitan, nilai 0 = tidak terkait'],
+            3  => ['label' => 'Nilai Level',  'title' => 'Nilai Level MK–CPL',          'desc' => 'Konversi level ke nilai numerik — Tinggi = 5, Sedang = 3, Rendah = 1'],
+            4  => ['label' => '% Global',     'title' => '% Bobot Global MK–CPL',       'desc' => 'Persentase bobot setiap sel terhadap grand total nilai keseluruhan'],
+            5  => ['label' => '% per MK',     'title' => '% Bobot per Mata Kuliah',     'desc' => 'Persentase bobot CPL dalam satu mata kuliah (nilai ÷ total nilai MK × 100)'],
+        ],
+        'CPMK & Sub-CPMK' => [
+            6  => ['label' => 'CPMK–CPL',    'title' => 'Keterkaitan CPMK–CPL',         'desc' => 'Tanda V = CPMK mendukung CPL tersebut'],
+            7  => ['label' => 'Bobot CPMK',  'title' => 'Bobot CPMK–CPL',              'desc' => 'Bobot persentase CPMK terhadap setiap CPL yang dibebankan'],
+            8  => ['label' => 'Rekap Sub',   'title' => 'Rekapitulasi Sub-CPMK',        'desc' => 'Sub-CPMK beserta CLO Tertinggi, Domain, dan Level Taksonomi'],
+            9  => ['label' => 'CPMK × Sub',  'title' => 'Keterkaitan CPMK × Sub-CPMK', 'desc' => 'Keterkaitan antara CPMK dengan Sub-CPMK dalam setiap Mata Kuliah'],
+            10 => ['label' => 'Sub × CPL',   'title' => 'Keterkaitan Sub-CPMK × CPL',  'desc' => 'Sub-CPMK mewarisi keterkaitan CPL dari CPMK induknya'],
+            11 => ['label' => 'Bobot Sub',   'title' => 'Bobot Sub-CPMK dari CPMK',    'desc' => 'Bobot Sub-CPMK = Total Bobot CPMK ÷ Jumlah Sub-CPMK dalam CPMK tersebut'],
+            12 => ['label' => 'Rekap Bobot', 'title' => 'Rekap Bobot CPMK × CPL',      'desc' => 'Matriks bobot persentase CPMK × CPL seluruh Mata Kuliah'],
+        ],
     ];
-    $row1 = array_slice($tabs, 0, 5,  true);
-    $row2 = array_slice($tabs, 5, 7,  true);
     @endphp
 
-    <div class="bg-gray-100 rounded-2xl p-1.5 mb-6 space-y-1">
-        {{-- Baris 1 --}}
-        <div class="grid grid-cols-5 gap-1">
-            @foreach($row1 as $n => $t)
-            <button @click="tab = {{ $n }}"
-                    :class="tab === {{ $n }}
-                        ? 'bg-white shadow text-indigo-700 font-semibold'
-                        : 'text-gray-500 hover:text-gray-700 hover:bg-white/60'"
-                    class="flex items-center justify-center gap-1.5 px-2 py-2 rounded-xl text-xs transition-all">
-                <span :class="tab === {{ $n }} ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-500'"
-                      class="w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center shrink-0 transition-colors">{{ $n }}</span>
-                <span class="truncate">{{ $t['title'] }}</span>
-            </button>
-            @endforeach
+    {{-- Tab navigation --}}
+    <div class="space-y-2 mb-6">
+        @foreach($tabGroups as $groupName => $groupTabs)
+        @php $cols = count($groupTabs); @endphp
+        <div>
+            <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-1.5 pl-1">{{ $groupName }}</p>
+            <div class="bg-gray-100 rounded-2xl p-1 grid gap-1"
+                 style="grid-template-columns: repeat({{ $cols }}, minmax(0, 1fr))">
+                @foreach($groupTabs as $n => $t)
+                <button @click="tab = {{ $n }}"
+                        :class="tab === {{ $n }}
+                            ? 'bg-white shadow-sm text-indigo-700'
+                            : 'text-gray-400 hover:text-gray-600 hover:bg-white/60'"
+                        class="flex flex-col items-center justify-center py-3 px-1 rounded-xl transition-all text-center">
+                    <span class="text-base font-extrabold leading-none">{{ $n }}</span>
+                    <span class="text-[10px] mt-1 leading-tight font-medium">{{ $t['label'] }}</span>
+                </button>
+                @endforeach
+            </div>
         </div>
-        {{-- Baris 2 --}}
-        <div class="grid grid-cols-7 gap-1">
-            @foreach($row2 as $n => $t)
-            <button @click="tab = {{ $n }}"
-                    :class="tab === {{ $n }}
-                        ? 'bg-white shadow text-indigo-700 font-semibold'
-                        : 'text-gray-500 hover:text-gray-700 hover:bg-white/60'"
-                    class="flex items-center justify-center gap-1.5 px-2 py-2 rounded-xl text-xs transition-all">
-                <span :class="tab === {{ $n }} ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-500'"
-                      class="w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center shrink-0 transition-colors">{{ $n }}</span>
-                <span class="truncate hidden sm:inline">{{ $t['title'] }}</span>
-            </button>
-            @endforeach
+        @endforeach
+    </div>
+
+    {{-- Active tab header --}}
+    @foreach($tabGroups as $_gn => $groupTabs)
+    @foreach($groupTabs as $n => $t)
+    <div x-show="tab === {{ $n }}" x-cloak
+         class="flex items-center gap-3 bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3 mb-5">
+        <span class="w-9 h-9 rounded-xl bg-indigo-600 text-white text-sm font-extrabold flex items-center justify-center shrink-0">{{ $n }}</span>
+        <div class="min-w-0">
+            <p class="text-sm font-bold text-gray-800">Tabel {{ $n }} <span class="text-gray-400 font-normal mx-1">—</span> {{ $t['title'] }}</p>
+            <p class="text-xs text-gray-500 mt-0.5">{{ $t['desc'] }}</p>
         </div>
     </div>
+    @endforeach
+    @endforeach
 
     {{-- ─── TABEL 1: Input Level ───────────────────────────────── --}}
     <div x-show="tab === 1" x-cloak>
-        <p class="text-xs text-gray-500 mb-3">Level keterkaitan setiap Mata Kuliah terhadap CPL: <span class="px-1.5 py-0.5 bg-red-100 text-red-700 rounded font-medium">Tinggi</span> <span class="px-1.5 py-0.5 bg-yellow-100 text-yellow-700 rounded font-medium">Sedang</span> <span class="px-1.5 py-0.5 bg-green-100 text-green-700 rounded font-medium">Rendah</span></p>
+        <p class="text-xs text-gray-500 mb-3">
+            Keterangan level: &nbsp;
+            <span class="px-1.5 py-0.5 bg-red-100 text-red-700 rounded font-medium">T = Tinggi</span>&nbsp;
+            <span class="px-1.5 py-0.5 bg-yellow-100 text-yellow-700 rounded font-medium">S = Sedang</span>&nbsp;
+            <span class="px-1.5 py-0.5 bg-green-100 text-green-700 rounded font-medium">R = Rendah</span>
+        </p>
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="text-xs border-collapse w-full">
@@ -112,7 +125,6 @@
 
     {{-- ─── TABEL 2: Keterkaitan 0/1 ──────────────────────────── --}}
     <div x-show="tab === 2" x-cloak>
-        <p class="text-xs text-gray-500 mb-3">Nilai <strong>1</strong> = ada keterkaitan, <strong>0</strong> = tidak terkait.</p>
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="text-xs border-collapse w-full">
@@ -152,7 +164,6 @@
 
     {{-- ─── TABEL 3: Nilai Level ───────────────────────────────── --}}
     <div x-show="tab === 3" x-cloak>
-        <p class="text-xs text-gray-500 mb-3">Tinggi=5, Sedang=3, Rendah=1, Tidak terkait=0.</p>
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="text-xs border-collapse w-full">
@@ -191,7 +202,6 @@
 
     {{-- ─── TABEL 4: % Bobot Global ────────────────────────────── --}}
     <div x-show="tab === 4" x-cloak>
-        <p class="text-xs text-gray-500 mb-3">% bobot setiap sel terhadap grand total nilai.</p>
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="text-xs border-collapse w-full">
@@ -227,7 +237,6 @@
 
     {{-- ─── TABEL 5: % Bobot per MK ───────────────────────────── --}}
     <div x-show="tab === 5" x-cloak>
-        <p class="text-xs text-gray-500 mb-3">% bobot CPL dalam satu MK (nilai / total nilai MK × 100).</p>
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="text-xs border-collapse w-full">
@@ -263,7 +272,6 @@
 
     {{-- ─── TABEL 6: Keterkaitan CPMK–CPL ────────────────────── --}}
     <div x-show="tab === 6" x-cloak>
-        <p class="text-xs text-gray-500 mb-3">Tanda <strong>V</strong> = CPMK mendukung CPL tersebut.</p>
         @forelse($mataKuliahsWithCpmk as $mk)
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <div class="bg-indigo-900 text-white px-4 py-2.5 flex items-center gap-3">
@@ -307,7 +315,6 @@
 
     {{-- ─── TABEL 7: Bobot CPMK–CPL ──────────────────────────── --}}
     <div x-show="tab === 7" x-cloak>
-        <p class="text-xs text-gray-500 mb-3">Bobot persentase CPMK terhadap CPL yang dibebankan.</p>
         @forelse($mataKuliahsWithCpmk as $mk)
         @php $mkCplTotals = []; foreach($cpls as $cpl){ $mkCplTotals[$cpl->id] = 0; } @endphp
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
@@ -354,7 +361,6 @@
 
     {{-- ─── TABEL 8: Rekap Sub-CPMK ───────────────────────────── --}}
     <div x-show="tab === 8" x-cloak>
-        <p class="text-xs text-gray-500 mb-3">Rekapitulasi Sub-CPMK beserta CLO tertinggi.</p>
         @forelse($mataKuliahsWithSub as $mk)
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <div class="px-5 py-3 border-b border-gray-100 bg-gray-50">
@@ -403,7 +409,6 @@
 
     {{-- ─── TABEL 9: Keterkaitan CPMK × Sub-CPMK ─────────────── --}}
     <div x-show="tab === 9" x-cloak>
-        <p class="text-xs text-gray-500 mb-3">Keterkaitan CPMK dengan Sub-CPMK dalam setiap Mata Kuliah.</p>
         @forelse($mataKuliahsWithSub as $mk)
         @php $allSubs = $mk->cpmks->flatMap->subCpmks->sortBy('urutan')->values(); @endphp
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
@@ -449,7 +454,6 @@
 
     {{-- ─── TABEL 10: Sub-CPMK × CPL ─────────────────────────── --}}
     <div x-show="tab === 10" x-cloak>
-        <p class="text-xs text-gray-500 mb-3">Keterkaitan Sub-CPMK dengan CPL (diwarisi dari CPMK induk).</p>
         @forelse($mataKuliahsWithSub as $mk)
         @php
             $cpmkCplMap2 = [];
@@ -504,7 +508,6 @@
 
     {{-- ─── TABEL 11: % Bobot CPMK & Sub-CPMK ────────────────── --}}
     <div x-show="tab === 11" x-cloak>
-        <p class="text-xs text-gray-500 mb-3">Bobot Sub-CPMK = Total Bobot CPMK ÷ Jumlah Sub-CPMK dalam CPMK tersebut.</p>
         @forelse($mataKuliahsWithSub as $mk)
         @php $allSubs = $mk->cpmks->flatMap->subCpmks->sortBy('urutan')->values(); $mkTotal = $mk->cpmks->sum('total_bobot'); @endphp
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
@@ -556,7 +559,6 @@
 
     {{-- ─── TABEL 12: Rekap Bobot CPMK–CPL ───────────────────── --}}
     <div x-show="tab === 12" x-cloak>
-        <p class="text-xs text-gray-500 mb-3">Matriks bobot % CPMK × CPL seluruh mata kuliah.</p>
         @forelse($mataKuliahsWithCpmk->filter(fn($mk)=>$mk->cpmks->some(fn($c)=>$c->cpmkCpls->isNotEmpty())) as $mk)
         @php $cplTotals12 = array_fill_keys($cpls->pluck('id')->toArray(), 0); @endphp
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
