@@ -1,0 +1,123 @@
+@extends('layouts.public')
+@section('title', 'Mata Kuliah')
+
+@section('content')
+
+{{-- Page header --}}
+<div class="bg-white border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <nav class="flex items-center gap-1 text-xs text-gray-400 mb-3">
+            <a href="{{ route('public.home') }}" class="hover:text-indigo-600 transition">Beranda</a>
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
+            </svg>
+            <span class="text-gray-600 font-medium">Mata Kuliah</span>
+        </nav>
+        <h1 class="text-2xl font-bold text-gray-900">Daftar Mata Kuliah</h1>
+        <p class="text-sm text-gray-500 mt-1">
+            {{ $mataKuliahs->flatten()->count() }} mata kuliah aktif ·
+            {{ $mataKuliahs->flatten()->sum('sks') }} SKS total ·
+            {{ $mataKuliahs->keys()->count() }} semester
+        </p>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" x-data="{ tab: {{ $mataKuliahs->keys()->first() ?? 1 }} }">
+
+    {{-- Semester tabs --}}
+    <div class="flex flex-wrap gap-2 mb-8 border-b border-gray-100 pb-4">
+        @foreach($mataKuliahs as $smt => $mks)
+        <button @click="tab = {{ $smt }}"
+                :class="tab === {{ $smt }}
+                    ? 'bg-indigo-600 text-white shadow-sm border-transparent'
+                    : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-600'"
+                class="px-4 py-2 text-sm font-medium rounded-xl border transition-all duration-150">
+            Semester {{ $smt }}
+            <span class="ml-1 opacity-60 text-xs">({{ $mks->count() }} MK)</span>
+        </button>
+        @endforeach
+    </div>
+
+    {{-- Panels per semester --}}
+    @foreach($mataKuliahs as $smt => $mks)
+    <div x-show="tab === {{ $smt }}" x-cloak>
+
+        {{-- Summary bar --}}
+        <div class="flex items-center gap-6 mb-5 text-xs text-gray-500">
+            <span>{{ $mks->count() }} mata kuliah</span>
+            <span>{{ $mks->sum('sks') }} SKS</span>
+            <span>{{ $mks->filter(fn($m) => $m->cpmks_count > 0)->count() }}/{{ $mks->count() }} ber-CPMK</span>
+        </div>
+
+        {{-- Table --}}
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <table class="min-w-full text-sm">
+                <thead class="bg-gray-50 border-b border-gray-100">
+                    <tr>
+                        <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Kode</th>
+                        <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nama Mata Kuliah</th>
+                        <th class="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider w-16">SKS</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">CPL Terkait</th>
+                        <th class="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider w-20">CPMK</th>
+                        <th class="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider w-24">Sub-CPMK</th>
+                        <th class="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider w-20">Detail</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    @foreach($mks as $mk)
+                    @php $relatedCpls = $mk->mkCpls->pluck('cpl_id')->toArray(); @endphp
+                    <tr class="hover:bg-indigo-50/30 transition-colors duration-100">
+                        <td class="px-5 py-3">
+                            <span class="font-mono text-xs text-indigo-600 font-semibold">{{ $mk->kode_rps }}</span>
+                        </td>
+                        <td class="px-5 py-3">
+                            <a href="{{ route('public.mata-kuliah.show', $mk) }}"
+                               class="font-medium text-gray-800 hover:text-indigo-700 transition">
+                                {{ $mk->nama }}
+                            </a>
+                            @if($mk->konsentrasi)
+                            <p class="text-xs text-gray-400 mt-0.5">{{ $mk->konsentrasi }}</p>
+                            @endif
+                        </td>
+                        <td class="px-4 py-3 text-center text-gray-600">{{ $mk->sks }}</td>
+                        <td class="px-4 py-3">
+                            <div class="flex flex-wrap gap-1">
+                                @foreach($cpls->whereIn('id', $relatedCpls) as $cpl)
+                                <span class="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 text-xs rounded font-medium">{{ $cpl->kode }}</span>
+                                @endforeach
+                                @if(empty($relatedCpls))
+                                <span class="text-xs text-gray-300 italic">—</span>
+                                @endif
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <span class="inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold
+                                {{ $mk->cpmks_count > 0 ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400' }}">
+                                {{ $mk->cpmks_count }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <span class="inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold
+                                {{ $mk->sub_cpmks_count > 0 ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-400' }}">
+                                {{ $mk->sub_cpmks_count }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <a href="{{ route('public.mata-kuliah.show', $mk) }}"
+                               class="inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-600 text-white text-xs font-medium rounded-lg hover:bg-indigo-700 transition">
+                                Detail
+                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+                                </svg>
+                            </a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endforeach
+
+</div>
+@endsection
