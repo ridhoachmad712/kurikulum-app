@@ -1,58 +1,101 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Aplikasi Kurikulum S1 Manajemen FEB UNM
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem Informasi Kurikulum berbasis OBE (Outcome-Based Education) untuk Program Studi S1 Manajemen, Fakultas Ekonomi dan Bisnis, Universitas Negeri Makassar.
 
-## About Laravel
+## Fitur Utama
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Portal Publik** — Beranda, Mata Kuliah, CPL, dan Matriks MK–CPL yang dapat diakses tanpa login
+- **Panel Admin** — Manajemen data kurikulum lengkap dengan autentikasi & role-based access
+- **12 Tabel Kurikulum** — Matriks MK-CPL (1–5), CPMK (6–7), Sub-CPMK (8–10), Bobot (11–12)
+- **Input CPMK & Sub-CPMK** — Per mata kuliah dengan keterkaitan CPL dan CLO Taxonomy
+- **Bobot Asesmen** — Konfigurasi bobot penilaian per Sub-CPMK
+- **RPS** — Rencana Pembelajaran Semester dengan alur review & persetujuan
+- **Dashboard Kelengkapan** — Monitoring progress pengisian kurikulum per dosen & semester
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Stack Teknologi
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Backend**: Laravel 11 (PHP 8.2+)
+- **Database**: MySQL / MariaDB
+- **Frontend**: Tailwind CSS, Alpine.js, Vite
+- **Auth & Role**: Laravel Breeze + Spatie Laravel Permission
 
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Instalasi Lokal
 
 ```bash
-composer require laravel/boost --dev
+# 1. Clone repository
+git clone https://github.com/ridhoachmad712/kurikulum-app.git
+cd kurikulum-app
 
-php artisan boost:install
+# 2. Install PHP dependencies
+composer install
+
+# 3. Install & build frontend assets
+npm install && npm run build
+
+# 4. Salin & konfigurasi environment
+cp .env.example .env
+php artisan key:generate
+
+# 5. Atur koneksi database di .env, lalu jalankan migrasi
+php artisan migrate --seed
+
+# 6. Buat symlink storage
+php artisan storage:link
+
+# 7. Jalankan server
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Buka `http://localhost:8000`
 
-## Contributing
+## Instalasi di Hosting (Shared Hosting / cPanel)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+# 1. Upload semua file ke folder public_html (atau subdomain)
+# 2. Arahkan document root ke folder public/
 
-## Code of Conduct
+# 3. Di terminal hosting / SSH:
+composer install --no-dev --optimize-autoloader
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# 4. Salin & isi .env
+cp .env.example .env
+# Edit .env: isi APP_URL, APP_KEY, DB_*, APP_ENV=production, APP_DEBUG=false
 
-## Security Vulnerabilities
+# 5. Generate key
+php artisan key:generate
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# 6. Migrasi & seed
+php artisan migrate --seed
 
-## License
+# 7. Symlink storage
+php artisan storage:link
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# 8. Cache untuk performa
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+> **Catatan**: Asset CSS/JS (`public/build`) sudah disertakan dalam repo sehingga tidak perlu menjalankan Node.js di server.
+
+## Akun Demo (setelah seeding)
+
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@kurikulum.id | password |
+| Kaprodi | kaprodi@kurikulum.id | password |
+| Dosen | dosen@kurikulum.id | password |
+
+> ⚠️ **Segera ganti password** setelah login pertama kali di menu Profil.
+
+## Struktur Role
+
+| Role | Akses |
+|------|-------|
+| **Admin** | Full akses semua fitur + kelola user & penugasan |
+| **Kaprodi** | Kelola master data, review & approve RPS |
+| **Dosen** | Input CPMK, Sub-CPMK, Asesmen, dan RPS mata kuliah yang ditugaskan |
+
+## Lisensi
+
+Dikembangkan untuk keperluan internal Program Studi S1 Manajemen FEB UNM.
