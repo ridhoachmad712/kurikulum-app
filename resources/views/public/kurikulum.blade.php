@@ -13,7 +13,7 @@
 </div>
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
-     x-data="{ tab: 1 }">
+     x-data="{ tab: 1, search: '' }">
 
     {{-- ─── TAB BAR ─────────────────────────────────────────────── --}}
     @php
@@ -38,21 +38,25 @@
     @endphp
 
     {{-- Tab navigation --}}
-    <div class="space-y-2 mb-6">
+    <div class="mb-5 space-y-3">
         @foreach($tabGroups as $groupName => $groupTabs)
-        @php $cols = count($groupTabs); @endphp
         <div>
-            <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-1.5 pl-1">{{ $groupName }}</p>
-            <div class="bg-gray-100 rounded-2xl p-1 grid gap-1"
-                 style="grid-template-columns: repeat({{ $cols }}, minmax(0, 1fr))">
+            {{-- Group label + divider --}}
+            <div class="flex items-center gap-3 mb-2">
+                <span class="text-[8px] font-semibold uppercase tracking-wider text-gray-400 whitespace-nowrap">{{ $groupName }}</span>
+                <div class="flex-1 h-px bg-gray-200"></div>
+            </div>
+            {{-- Pill chips --}}
+            <div class="flex flex-wrap gap-1.5">
                 @foreach($groupTabs as $n => $t)
-                <button @click="tab = {{ $n }}"
+                <button @click="tab = {{ $n }}; if ({{ $n }} < 6) search = ''"
                         :class="tab === {{ $n }}
-                            ? 'bg-white shadow-sm text-indigo-700'
-                            : 'text-gray-400 hover:text-gray-600 hover:bg-white/60'"
-                        class="flex flex-col items-center justify-center py-3 px-1 rounded-xl transition-all text-center">
-                    <span class="text-base font-extrabold leading-none">{{ $n }}</span>
-                    <span class="text-[10px] mt-1 leading-tight font-medium">{{ $t['label'] }}</span>
+                            ? 'bg-indigo-600 text-white shadow-sm border-indigo-600'
+                            : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50'"
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-all whitespace-nowrap">
+                    <span :class="tab === {{ $n }} ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-400'"
+                          class="w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center shrink-0 transition-colors">{{ $n }}</span>
+                    {{ $t['label'] }}
                 </button>
                 @endforeach
             </div>
@@ -60,19 +64,40 @@
         @endforeach
     </div>
 
-    {{-- Active tab header --}}
+    {{-- Active tab title --}}
     @foreach($tabGroups as $_gn => $groupTabs)
     @foreach($groupTabs as $n => $t)
-    <div x-show="tab === {{ $n }}" x-cloak
-         class="flex items-center gap-3 bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3 mb-5">
-        <span class="w-9 h-9 rounded-xl bg-indigo-600 text-white text-sm font-extrabold flex items-center justify-center shrink-0">{{ $n }}</span>
-        <div class="min-w-0">
-            <p class="text-sm font-bold text-gray-800">Tabel {{ $n }} <span class="text-gray-400 font-normal mx-1">—</span> {{ $t['title'] }}</p>
-            <p class="text-xs text-gray-500 mt-0.5">{{ $t['desc'] }}</p>
+    <div x-show="tab === {{ $n }}" x-cloak class="flex items-start gap-2 mb-4">
+        <div class="w-0.5 self-stretch bg-indigo-500 rounded-full mt-0.5 shrink-0"></div>
+        <div>
+            <p class="text-sm font-semibold text-gray-800">Tabel {{ $n }} — {{ $t['title'] }}</p>
+            <p class="text-xs text-gray-400 mt-0.5">{{ $t['desc'] }}</p>
         </div>
     </div>
     @endforeach
     @endforeach
+
+    {{-- Search (hanya Tabel 6–12) --}}
+    <div x-show="tab >= 6" x-cloak class="mb-5">
+        <div class="relative max-w-sm">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
+                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="m21 21-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0Z"/>
+            </svg>
+            <input type="search" x-model.debounce.200ms="search"
+                   placeholder="Cari kode atau nama mata kuliah…"
+                   class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-xl
+                          focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100
+                          bg-white transition placeholder-gray-400">
+            <button x-show="search" @click="search = ''"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+    </div>
 
     {{-- ─── TABEL 1: Input Level ───────────────────────────────── --}}
     <div x-show="tab === 1" x-cloak>
@@ -273,7 +298,9 @@
     {{-- ─── TABEL 6: Keterkaitan CPMK–CPL ────────────────────── --}}
     <div x-show="tab === 6" x-cloak>
         @forelse($mataKuliahsWithCpmk as $mk)
-        <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+             data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
+             x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
             <div class="bg-indigo-900 text-white px-4 py-2.5 flex items-center gap-3">
                 <span class="font-mono text-xs text-indigo-300">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-sm">{{ $mk->nama }}</span>
@@ -317,7 +344,9 @@
     <div x-show="tab === 7" x-cloak>
         @forelse($mataKuliahsWithCpmk as $mk)
         @php $mkCplTotals = []; foreach($cpls as $cpl){ $mkCplTotals[$cpl->id] = 0; } @endphp
-        <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+             data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
+             x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
             <div class="bg-indigo-900 text-white px-4 py-2.5 flex items-center gap-3">
                 <span class="font-mono text-xs text-indigo-300">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-sm">{{ $mk->nama }}</span>
@@ -362,7 +391,9 @@
     {{-- ─── TABEL 8: Rekap Sub-CPMK ───────────────────────────── --}}
     <div x-show="tab === 8" x-cloak>
         @forelse($mataKuliahsWithSub as $mk)
-        <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+             data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
+             x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
             <div class="px-5 py-3 border-b border-gray-100 bg-gray-50">
                 <span class="font-mono text-xs text-indigo-600 mr-2">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-gray-800">{{ $mk->nama }}</span>
@@ -411,7 +442,9 @@
     <div x-show="tab === 9" x-cloak>
         @forelse($mataKuliahsWithSub as $mk)
         @php $allSubs = $mk->cpmks->flatMap->subCpmks->sortBy('urutan')->values(); @endphp
-        <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+             data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
+             x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
             <div class="bg-indigo-900 text-white px-4 py-2.5 flex items-center gap-3">
                 <span class="font-mono text-xs text-indigo-300">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-sm">{{ $mk->nama }}</span>
@@ -460,7 +493,9 @@
             foreach($mk->cpmks as $cpmk){ $cpmkCplMap2[$cpmk->id] = $cpmk->cpmkCpls->where('has_relation',true)->pluck('cpl_id')->toArray(); }
             $cplTotal = array_fill_keys($cpls->pluck('id')->toArray(), 0);
         @endphp
-        <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+             data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
+             x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
             <div class="bg-indigo-900 text-white px-4 py-2.5 flex items-center gap-3">
                 <span class="font-mono text-xs text-indigo-300">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-sm">{{ $mk->nama }}</span>
@@ -510,7 +545,9 @@
     <div x-show="tab === 11" x-cloak>
         @forelse($mataKuliahsWithSub as $mk)
         @php $allSubs = $mk->cpmks->flatMap->subCpmks->sortBy('urutan')->values(); $mkTotal = $mk->cpmks->sum('total_bobot'); @endphp
-        <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+             data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
+             x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
             <div class="bg-indigo-900 text-white px-4 py-2.5 flex items-center gap-3">
                 <span class="font-mono text-xs text-indigo-300">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-sm">{{ $mk->nama }}</span>
@@ -551,6 +588,81 @@
                     </tbody>
                 </table>
             </div>
+
+            {{-- Bobot Asesmen per Sub-CPMK + Validasi --}}
+            @php
+                $subsWithAsesmen = $allSubs->filter(fn($s) => $s->asesmen);
+                // Buat lookup: sub_cpmk_id => bobot_per_sub dari CPMK induknya
+                $bobotPerSub = [];
+                foreach ($mk->cpmks as $cpmk) {
+                    foreach ($cpmk->subCpmks as $s) {
+                        $bobotPerSub[$s->id] = (float) $cpmk->bobot_per_sub;
+                    }
+                }
+            @endphp
+            @if($subsWithAsesmen->isNotEmpty())
+            <div class="border-t border-gray-200">
+                <div class="px-4 py-2 bg-gray-50 border-b border-gray-100 flex items-center gap-2">
+                    <span class="w-1 h-4 rounded-full bg-emerald-500 inline-block"></span>
+                    <p class="text-xs font-semibold text-gray-600">Bobot Asesmen per Sub-CPMK</p>
+                    <span class="ml-auto text-[10px] text-gray-400">Jumlah Asesmen harus = Bobot Teoritis</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="text-xs w-full border-collapse">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="border border-gray-200 px-3 py-2 text-left w-28 text-gray-600">Sub-CPMK</th>
+                                <th class="border border-gray-200 px-2 py-2 text-center w-16 text-gray-600">Tugas</th>
+                                <th class="border border-gray-200 px-2 py-2 text-center w-16 text-gray-600">Quis</th>
+                                <th class="border border-gray-200 px-2 py-2 text-center w-24 text-gray-600">Kasus/Proyek</th>
+                                <th class="border border-gray-200 px-2 py-2 text-center w-16 text-gray-600">UTS</th>
+                                <th class="border border-gray-200 px-2 py-2 text-center w-16 text-gray-600">UAS</th>
+                                <th class="border border-gray-200 px-2 py-2 text-center w-20 bg-emerald-50 text-gray-600 font-semibold">Jumlah</th>
+                                <th class="border border-gray-200 px-2 py-2 text-center w-24 bg-indigo-50 text-gray-600">Bobot Teoritis</th>
+                                <th class="border border-gray-200 px-2 py-2 text-center w-24 text-gray-600">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            @foreach($subsWithAsesmen as $sub)
+                            @php
+                                $a       = $sub->asesmen;
+                                $total   = $a->tugas + $a->quis + $a->kasus_proyek + $a->uts + $a->uas;
+                                $teoritis = $bobotPerSub[$sub->id] ?? 0;
+                                $selisih  = abs($total - $teoritis);
+                                $selaras  = $teoritis > 0 && $selisih <= 0.5;
+                            @endphp
+                            <tr class="hover:bg-gray-50">
+                                <td class="border border-gray-200 px-3 py-1.5 font-medium text-teal-700">{{ $sub->kode }}</td>
+                                <td class="border border-gray-200 px-2 py-1.5 text-center">@if($a->tugas > 0)<span class="text-gray-700">{{ $a->tugas }}</span>@else<span class="text-gray-300">—</span>@endif</td>
+                                <td class="border border-gray-200 px-2 py-1.5 text-center">@if($a->quis > 0)<span class="text-gray-700">{{ $a->quis }}</span>@else<span class="text-gray-300">—</span>@endif</td>
+                                <td class="border border-gray-200 px-2 py-1.5 text-center">@if($a->kasus_proyek > 0)<span class="text-gray-700">{{ $a->kasus_proyek }}</span>@else<span class="text-gray-300">—</span>@endif</td>
+                                <td class="border border-gray-200 px-2 py-1.5 text-center">@if($a->uts > 0)<span class="text-gray-700">{{ $a->uts }}</span>@else<span class="text-gray-300">—</span>@endif</td>
+                                <td class="border border-gray-200 px-2 py-1.5 text-center">@if($a->uas > 0)<span class="text-gray-700">{{ $a->uas }}</span>@else<span class="text-gray-300">—</span>@endif</td>
+                                <td class="border border-gray-200 px-2 py-1.5 text-center font-bold bg-emerald-50 {{ $total > 0 ? 'text-emerald-700' : 'text-gray-300' }}">{{ $total > 0 ? $total : '—' }}</td>
+                                <td class="border border-gray-200 px-2 py-1.5 text-center bg-indigo-50 text-indigo-700 font-medium">{{ $teoritis > 0 ? number_format($teoritis, 2).'%' : '—' }}</td>
+                                <td class="border border-gray-200 px-2 py-1.5 text-center">
+                                    @if($teoritis <= 0)
+                                        <span class="text-gray-300">—</span>
+                                    @elseif($selaras)
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-semibold text-[10px]">
+                                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                                            Selaras
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-semibold text-[10px]" title="Selisih: {{ number_format($selisih, 2) }}">
+                                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+                                            {{ $total > $teoritis ? '+' : '' }}{{ number_format($total - $teoritis, 1) }}
+                                        </span>
+                                    @endif
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @endif
+
         </div>
         @empty
         <div class="text-center py-16 text-gray-400">Belum ada data Sub-CPMK dengan bobot.</div>
@@ -561,7 +673,9 @@
     <div x-show="tab === 12" x-cloak>
         @forelse($mataKuliahsWithCpmk->filter(fn($mk)=>$mk->cpmks->some(fn($c)=>$c->cpmkCpls->isNotEmpty())) as $mk)
         @php $cplTotals12 = array_fill_keys($cpls->pluck('id')->toArray(), 0); @endphp
-        <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+             data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
+             x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
             <div class="bg-indigo-900 text-white px-4 py-2.5 flex items-center gap-3">
                 <span class="font-mono text-xs text-indigo-300">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-sm">{{ $mk->nama }}</span>

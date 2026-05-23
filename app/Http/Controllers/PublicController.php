@@ -142,7 +142,7 @@ class PublicController extends Controller
                 'cpmks' => fn($q) => $q->with([
                     'cpmkCpls',
                     'subCpmks' => fn($q2) => $q2
-                        ->with(['subCpmkClos.cloTaxonomi'])
+                        ->with(['subCpmkClos.cloTaxonomi', 'asesmen'])
                         ->orderBy('urutan'),
                 ])->orderBy('urutan'),
             ])
