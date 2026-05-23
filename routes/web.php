@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 // ── PUBLIC (tanpa login) ─────────────────────────────────────────
 Route::get('/',                       [PublicController::class, 'home'])            ->name('public.home');
+Route::get('/profil',                 [PublicController::class, 'profil'])           ->name('public.profil');
 Route::get('/mata-kuliah',            [PublicController::class, 'mataKuliah'])      ->name('public.mata-kuliah');
 Route::get('/mata-kuliah/{mataKuliah}',[PublicController::class, 'mataKuliahShow'])->name('public.mata-kuliah.show');
 Route::get('/cpl',                    [PublicController::class, 'cpl'])             ->name('public.cpl');

@@ -28,6 +28,50 @@
     </div>
 </div>
 
+{{-- ─── VISI + PROFIL LULUSAN STRIP ──────────────────────────── --}}
+@if($prodi->visi || $profilLulusans->isNotEmpty())
+<div class="bg-white border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        {{-- Visi --}}
+        @if($prodi->visi)
+        <div class="flex items-start gap-3 mb-5">
+            <div class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0 mt-0.5">
+                <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                </svg>
+            </div>
+            <div>
+                <p class="text-xs font-semibold text-indigo-600 uppercase tracking-wide mb-0.5">Visi</p>
+                <p class="text-sm text-gray-700 leading-relaxed italic max-w-3xl">&ldquo;{{ $prodi->visi }}&rdquo;</p>
+            </div>
+        </div>
+        @endif
+
+        {{-- Profil Lulusan preview --}}
+        @if($profilLulusans->isNotEmpty())
+        <div class="flex items-center justify-between mb-3">
+            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Profil Lulusan</p>
+            <a href="{{ route('public.profil') }}" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium transition">
+                Lihat profil lengkap →
+            </a>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+            @foreach($profilLulusans as $pl)
+            <a href="{{ route('public.profil') }}"
+               class="bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 rounded-xl px-3 py-2.5 transition group">
+                <p class="text-xs font-extrabold text-indigo-700">{{ $pl->kode }}</p>
+                <p class="text-xs text-gray-600 leading-snug mt-0.5 line-clamp-2 group-hover:text-gray-800 transition">{{ $pl->nama }}</p>
+            </a>
+            @endforeach
+        </div>
+        @endif
+
+    </div>
+</div>
+@endif
+
 {{-- ─── MAIN CONTENT ─────────────────────────────────────────── --}}
 @php
     $semesterList = $mataKuliahs->pluck('semester')->unique()->sort()->values();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cpl;
 use App\Models\MataKuliah;
+use App\Models\ProfilLulusan;
 use App\Models\ProgramStudi;
 use App\Services\MatriksService;
 
@@ -44,7 +45,17 @@ class PublicController extends Controller
             'total_cpmk' => $mataKuliahs->sum('cpmks_count'),
         ];
 
-        return view('public.home', compact('prodi', 'cpls', 'mataKuliahs', 'stats'));
+        $profilLulusans = ProfilLulusan::where('program_studi_id', $prodi->id)->orderBy('urutan')->get();
+
+        return view('public.home', compact('prodi', 'cpls', 'mataKuliahs', 'stats', 'profilLulusans'));
+    }
+
+    /** Halaman Profil Program Studi */
+    public function profil()
+    {
+        $prodi = $this->getProdi();
+        $profilLulusans = ProfilLulusan::where('program_studi_id', $prodi->id)->orderBy('urutan')->get();
+        return view('public.profil', compact('prodi', 'profilLulusans'));
     }
 
     /** Daftar semua mata kuliah */
