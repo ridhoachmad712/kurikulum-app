@@ -21,8 +21,8 @@ class BahanKajianController extends Controller
         $psId  = $this->psId();
         $items = BahanKajian::where('program_studi_id', $psId)
             ->withCount([
-                'cpls as cpl_count' => fn($q) => $q->wherePivot('has_relation', true),
-                'mataKuliahs as mk_count' => fn($q) => $q->wherePivot('has_relation', true),
+                'cpls as cpl_count' => fn($q) => $q->where('cpl_bahan_kajian.has_relation', true),
+                'mataKuliahs as mk_count' => fn($q) => $q->where('mk_bahan_kajian.has_relation', true),
             ])
             ->orderBy('urutan')
             ->get();
