@@ -33,11 +33,12 @@
             {{-- Desktop Nav --}}
             @php
             $navLinks = [
-                ['route' => 'public.home',        'pattern' => 'public.home',         'label' => 'Beranda'],
-                ['route' => 'public.profil',      'pattern' => 'public.profil',       'label' => 'Profil Prodi'],
-                ['route' => 'public.cpl',         'pattern' => 'public.cpl',          'label' => 'CPL'],
-                ['route' => 'public.mata-kuliah', 'pattern' => 'public.mata-kuliah*', 'label' => 'Mata Kuliah'],
-                ['route' => 'public.kurikulum',   'pattern' => 'public.kurikulum',    'label' => 'Kurikulum'],
+                ['route' => 'public.home',         'pattern' => 'public.home',          'label' => 'Beranda'],
+                ['route' => 'public.profil',       'pattern' => 'public.profil',        'label' => 'Profil Prodi'],
+                ['route' => 'public.cpl',          'pattern' => 'public.cpl',           'label' => 'CPL'],
+                ['route' => 'public.bahan-kajian', 'pattern' => 'public.bahan-kajian',  'label' => 'Bahan Kajian'],
+                ['route' => 'public.mata-kuliah',  'pattern' => 'public.mata-kuliah*',  'label' => 'Mata Kuliah'],
+                ['route' => 'public.kurikulum',    'pattern' => 'public.kurikulum',     'label' => 'Kurikulum'],
             ];
             @endphp
             <nav class="hidden md:flex items-center gap-1">
@@ -132,8 +133,9 @@
                 <ul class="space-y-2 text-sm">
                     <li><a href="{{ route('public.home') }}"       class="text-indigo-400 hover:text-white transition">Beranda</a></li>
                     <li><a href="{{ route('public.profil') }}"     class="text-indigo-400 hover:text-white transition">Profil Prodi</a></li>
-                    <li><a href="{{ route('public.cpl') }}"        class="text-indigo-400 hover:text-white transition">CPL Program Studi</a></li>
-                    <li><a href="{{ route('public.mata-kuliah') }}" class="text-indigo-400 hover:text-white transition">Mata Kuliah</a></li>
+                    <li><a href="{{ route('public.cpl') }}"          class="text-indigo-400 hover:text-white transition">CPL Program Studi</a></li>
+                    <li><a href="{{ route('public.bahan-kajian') }}" class="text-indigo-400 hover:text-white transition">Bahan Kajian</a></li>
+                    <li><a href="{{ route('public.mata-kuliah') }}"  class="text-indigo-400 hover:text-white transition">Mata Kuliah</a></li>
                     <li><a href="{{ route('public.kurikulum') }}"  class="text-indigo-400 hover:text-white transition">Kurikulum</a></li>
                 </ul>
             </div>

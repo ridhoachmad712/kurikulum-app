@@ -31,4 +31,11 @@ class Cpl extends Model
     {
         return $this->hasMany(CpmkCpl::class);
     }
+
+    public function bahanKajians(): BelongsToMany
+    {
+        return $this->belongsToMany(BahanKajian::class, 'cpl_bahan_kajian')
+            ->withPivot('has_relation')
+            ->withTimestamps();
+    }
 }

@@ -25,6 +25,7 @@ Route::get('/kurikulum',              [PublicController::class, 'kurikulum'])   
 Route::get('/mata-kuliah',            [PublicController::class, 'mataKuliah'])      ->name('public.mata-kuliah');
 Route::get('/mata-kuliah/{mataKuliah}',[PublicController::class, 'mataKuliahShow'])->name('public.mata-kuliah.show');
 Route::get('/cpl',                    [PublicController::class, 'cpl'])             ->name('public.cpl');
+Route::get('/bahan-kajian',            [PublicController::class, 'bahanKajian'])    ->name('public.bahan-kajian');
 Route::get('/matriks-mk-cpl',         [PublicController::class, 'matriks'])         ->name('public.matriks');
 
 // /admin → redirect ke dashboard (panel)

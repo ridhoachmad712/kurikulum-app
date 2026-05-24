@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BahanKajian;
 use App\Models\Cpl;
 use App\Models\MataKuliah;
 use App\Models\ProfilLulusan;
@@ -202,6 +203,58 @@ class PublicController extends Controller
             'binary', 'binaryColTotals',
             'pctGlobal', 'pctGlobalColTotals', 'pctPerMk',
             'mataKuliahsWithCpmk', 'mataKuliahsWithSub'
+        ));
+    }
+
+    /** Halaman Bahan Kajian — Tabel 6.2, 6.3, 6.4 */
+    public function bahanKajian()
+    {
+        $prodi = $this->getProdi();
+        $psId  = $prodi->id;
+
+        // Bahan Kajian terurut
+        $bahanKajians = BahanKajian::where('program_studi_id', $psId)
+            ->orderBy('urutan')
+            ->get();
+
+        // CPL terurut
+        $cpls = Cpl::where('program_studi_id', $psId)
+            ->orderBy('urutan')
+            ->get();
+
+        // MK aktif terurut
+        $mataKuliahs = MataKuliah::where('program_studi_id', $psId)
+            ->where('aktif', true)
+            ->orderBy('semester')
+            ->orderBy('urutan')
+            ->get();
+
+        // Build map: cpl_id → [bahan_kajian_id → has_relation]
+        $cplBkMap = [];
+        if ($bahanKajians->isNotEmpty() && $cpls->isNotEmpty()) {
+            $cplBkRows = \DB::table('cpl_bahan_kajian')
+                ->whereIn('cpl_id', $cpls->pluck('id'))
+                ->whereIn('bahan_kajian_id', $bahanKajians->pluck('id'))
+                ->get();
+            foreach ($cplBkRows as $row) {
+                $cplBkMap[$row->cpl_id][$row->bahan_kajian_id] = (bool) $row->has_relation;
+            }
+        }
+
+        // Build map: mata_kuliah_id → [bahan_kajian_id → has_relation]
+        $mkBkMap = [];
+        if ($bahanKajians->isNotEmpty() && $mataKuliahs->isNotEmpty()) {
+            $mkBkRows = \DB::table('mk_bahan_kajian')
+                ->whereIn('mata_kuliah_id', $mataKuliahs->pluck('id'))
+                ->whereIn('bahan_kajian_id', $bahanKajians->pluck('id'))
+                ->get();
+            foreach ($mkBkRows as $row) {
+                $mkBkMap[$row->mata_kuliah_id][$row->bahan_kajian_id] = (bool) $row->has_relation;
+            }
+        }
+
+        return view('public.bahan-kajian', compact(
+            'prodi', 'bahanKajians', 'cpls', 'mataKuliahs', 'cplBkMap', 'mkBkMap'
         ));
     }
 

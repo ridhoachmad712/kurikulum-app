@@ -53,6 +53,13 @@ class MataKuliah extends Model
         return $this->hasMany(Rps::class);
     }
 
+    public function bahanKajians(): BelongsToMany
+    {
+        return $this->belongsToMany(BahanKajian::class, 'mk_bahan_kajian')
+            ->withPivot('has_relation')
+            ->withTimestamps();
+    }
+
     // --- computed helpers ---
     public function levelToNilai(?string $level): int
     {
