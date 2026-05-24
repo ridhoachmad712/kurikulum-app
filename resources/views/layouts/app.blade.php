@@ -50,7 +50,7 @@
         </div>
 
         {{-- Navigation --}}
-        <nav class="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto overflow-x-hidden">
+        <nav class="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto overflow-x-hidden scrollbar-hide">
 
             {{-- Dashboard --}}
             <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" :collapsed="$collapsed ?? false">

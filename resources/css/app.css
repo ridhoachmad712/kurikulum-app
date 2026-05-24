@@ -90,6 +90,15 @@
     .badge-purple  { @apply badge bg-purple-100 text-purple-700; }
     .badge-blue    { @apply badge bg-blue-100 text-blue-700; }
 
+    /* ── SCROLLBAR HIDE ── */
+    .scrollbar-hide {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
     /* ── SIDEBAR LINK ── */
     .nav-item {
         @apply flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium
