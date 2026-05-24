@@ -4,14 +4,14 @@
 @section('content')
 
 {{-- ─── HERO ──────────────────────────────────────────────────── --}}
-<div class="bg-indigo-700 text-white">
+<div class="bg-blue-800 text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <p class="text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-2">Sistem Informasi Kurikulum</p>
+        <p class="text-blue-200 text-xs font-semibold uppercase tracking-widest mb-2">Sistem Informasi Kurikulum</p>
         <h1 class="text-2xl sm:text-3xl font-extrabold leading-tight">{{ $prodi->jenjang }} {{ $prodi->nama }}</h1>
-        <p class="text-indigo-200 text-sm mt-1.5">{{ $prodi->fakultas }} &middot; {{ $prodi->universitas }}</p>
+        <p class="text-blue-100 text-sm mt-1.5">{{ $prodi->fakultas }} &middot; {{ $prodi->universitas }}</p>
 
         {{-- Stat badges --}}
-        <div class="flex flex-wrap gap-6 mt-6 pt-6 border-t border-indigo-600/50">
+        <div class="flex flex-wrap gap-6 mt-6 pt-6 border-t border-blue-600/50">
             @foreach([
                 ['val' => $stats['total_mk'],   'label' => 'Mata Kuliah'],
                 ['val' => $stats['total_cpl'],  'label' => 'CPL'],
@@ -20,7 +20,7 @@
             ] as $s)
             <div>
                 <p class="text-3xl font-extrabold">{{ $s['val'] }}</p>
-                <p class="text-indigo-300 text-xs mt-0.5">{{ $s['label'] }}</p>
+                <p class="text-blue-200 text-xs mt-0.5">{{ $s['label'] }}</p>
             </div>
             @endforeach
         </div>
@@ -37,13 +37,13 @@
             {{-- Distribusi per Semester --}}
             <section>
                 <div class="flex items-center gap-2 mb-4">
-                    <span class="w-1 h-6 rounded-full bg-indigo-600 inline-block"></span>
+                    <span class="w-1 h-6 rounded-full bg-blue-700 inline-block"></span>
                     <h2 class="text-base font-bold text-gray-900 uppercase tracking-wide">Distribusi Mata Kuliah per Semester</h2>
                 </div>
                 <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
                     <table class="w-full text-sm">
                         <thead>
-                            <tr class="bg-indigo-900 text-white text-xs">
+                            <tr class="bg-blue-900 text-white text-xs">
                                 <th class="px-5 py-3 text-left font-semibold">Semester</th>
                                 <th class="px-5 py-3 text-center font-semibold">Jumlah MK</th>
                                 <th class="px-5 py-3 text-center font-semibold">Total SKS</th>
@@ -56,17 +56,17 @@
                             <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                                 <td class="px-5 py-3">
                                     <div class="flex items-center gap-2">
-                                        <span class="w-7 h-7 rounded-full bg-indigo-600 text-white text-xs font-extrabold flex items-center justify-center">{{ $smt }}</span>
+                                        <span class="w-7 h-7 rounded-full bg-blue-700 text-white text-xs font-extrabold flex items-center justify-center">{{ $smt }}</span>
                                         <span class="text-gray-700 font-medium text-xs">Semester {{ $smt }}</span>
                                     </div>
                                 </td>
                                 <td class="px-5 py-3 text-center font-bold text-gray-800">{{ $data['count'] }}</td>
-                                <td class="px-5 py-3 text-center font-bold text-indigo-700">{{ $data['sks'] }}</td>
+                                <td class="px-5 py-3 text-center font-bold text-blue-800">{{ $data['sks'] }}</td>
                                 <td class="px-5 py-3">
                                     @php $pct = $maxSks > 0 ? round($data['sks'] / $maxSks * 100) : 0; @endphp
                                     <div class="flex items-center gap-2">
                                         <div class="flex-1 bg-gray-100 rounded-full h-2">
-                                            <div class="bg-indigo-500 h-2 rounded-full transition-all" style="width: {{ $pct }}%"></div>
+                                            <div class="bg-blue-500 h-2 rounded-full transition-all" style="width: {{ $pct }}%"></div>
                                         </div>
                                         <span class="text-xs text-gray-400 w-8 text-right">{{ $data['sks'] }}</span>
                                     </div>
@@ -76,7 +76,7 @@
                             <tr class="bg-gray-50 font-bold text-sm">
                                 <td class="px-5 py-3 text-gray-600">Total</td>
                                 <td class="px-5 py-3 text-center text-gray-800">{{ $stats['total_mk'] }}</td>
-                                <td class="px-5 py-3 text-center text-indigo-700">{{ $stats['total_sks'] }}</td>
+                                <td class="px-5 py-3 text-center text-blue-800">{{ $stats['total_sks'] }}</td>
                                 <td class="px-5 py-3"></td>
                             </tr>
                         </tbody>
@@ -91,14 +91,14 @@
                         <span class="w-1 h-6 rounded-full bg-emerald-500 inline-block"></span>
                         <h2 class="text-base font-bold text-gray-900 uppercase tracking-wide">Capaian Pembelajaran Lulusan (CPL)</h2>
                     </div>
-                    <a href="{{ route('public.cpl') }}" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium transition">
+                    <a href="{{ route('public.cpl') }}" class="text-xs text-blue-700 hover:text-blue-900 font-medium transition">
                         Lihat detail →
                     </a>
                 </div>
                 <div class="space-y-2">
                     @foreach($cpls as $cpl)
-                    <div class="bg-white border border-gray-200 rounded-xl px-4 py-3 flex items-start gap-3 hover:border-indigo-200 hover:bg-indigo-50/30 transition-all">
-                        <span class="w-10 h-10 rounded-xl bg-indigo-600 text-white text-xs font-extrabold flex items-center justify-center shrink-0">
+                    <div class="bg-white border border-gray-200 rounded-xl px-4 py-3 flex items-start gap-3 hover:border-blue-200 hover:bg-blue-50/30 transition-all">
+                        <span class="w-10 h-10 rounded-xl bg-blue-700 text-white text-xs font-extrabold flex items-center justify-center shrink-0">
                             {{ $cpl->kode }}
                         </span>
                         <div class="flex-1 min-w-0">
@@ -126,7 +126,7 @@
                     'icon'  => 'M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 0 1 .67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 1 1-.671-1.34l.041-.022ZM12 9a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z',
                     'title' => 'Profil Prodi',
                     'sub'   => 'Visi, Misi, Tujuan & Profil Lulusan',
-                    'color' => 'bg-indigo-50 text-indigo-600 border-indigo-100',
+                    'color' => 'bg-blue-50 text-blue-700 border-blue-100',
                 ],
                 [
                     'route' => 'public.cpl',
@@ -158,19 +158,19 @@
                     </svg>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="font-semibold text-gray-800 text-sm group-hover:text-indigo-700 transition-colors">{{ $nav['title'] }}</p>
+                    <p class="font-semibold text-gray-800 text-sm group-hover:text-blue-800 transition-colors">{{ $nav['title'] }}</p>
                     <p class="text-xs text-gray-400 mt-0.5">{{ $nav['sub'] }}</p>
                 </div>
-                <svg class="w-4 h-4 text-gray-300 group-hover:text-indigo-400 transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <svg class="w-4 h-4 text-gray-300 group-hover:text-blue-300 transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
                 </svg>
             </a>
             @endforeach
 
             {{-- Info Kurikulum OBE --}}
-            <div class="bg-indigo-50 border border-indigo-100 rounded-2xl p-5 mt-6">
-                <p class="text-xs font-bold text-indigo-700 uppercase tracking-wide mb-2">Tentang Kurikulum OBE</p>
-                <p class="text-xs text-indigo-600 leading-relaxed">
+            <div class="bg-blue-50 border border-blue-100 rounded-2xl p-5 mt-6">
+                <p class="text-xs font-bold text-blue-800 uppercase tracking-wide mb-2">Tentang Kurikulum OBE</p>
+                <p class="text-xs text-blue-700 leading-relaxed">
                     Kurikulum berbasis <strong>Outcome-Based Education (OBE)</strong> dan <strong>KKNI</strong> dirancang untuk memastikan setiap mata kuliah berkontribusi nyata terhadap Capaian Pembelajaran Lulusan (CPL).
                 </p>
             </div>

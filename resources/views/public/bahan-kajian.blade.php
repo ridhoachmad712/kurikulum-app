@@ -4,17 +4,17 @@
 @section('content')
 
 {{-- ─── PAGE HEADER ─────────────────────────────────────────────── --}}
-<div class="bg-indigo-700 text-white">
+<div class="bg-blue-800 text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-        <nav class="flex items-center gap-1 text-xs text-indigo-300 mb-2">
+        <nav class="flex items-center gap-1 text-xs text-blue-200 mb-2">
             <a href="{{ route('public.home') }}" class="hover:text-white transition">Beranda</a>
             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
             </svg>
-            <span class="text-indigo-200">Bahan Kajian</span>
+            <span class="text-blue-100">Bahan Kajian</span>
         </nav>
         <h1 class="text-xl font-bold">Bahan Kajian (BK)</h1>
-        <p class="text-indigo-200 text-sm mt-0.5">
+        <p class="text-blue-100 text-sm mt-0.5">
             {{ $prodi->nama }} &middot; {{ $bahanKajians->count() }} Bahan Kajian
         </p>
     </div>
@@ -28,7 +28,7 @@
     <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100">
             <div class="flex items-start gap-2">
-                <div class="w-0.5 self-stretch bg-indigo-500 rounded-full shrink-0 mt-0.5"></div>
+                <div class="w-0.5 self-stretch bg-blue-500 rounded-full shrink-0 mt-0.5"></div>
                 <div>
                     <h2 class="font-bold text-gray-900 text-sm">Tabel 6.2 — Deskripsi Bahan Kajian</h2>
                     <p class="text-xs text-gray-400 mt-0.5">Daftar bahan kajian beserta nama dan deskripsi masing-masing</p>
@@ -54,7 +54,7 @@
                     @foreach($bahanKajians as $bk)
                     <tr class="hover:bg-gray-50 transition-colors align-top">
                         <td class="px-5 py-4 whitespace-nowrap">
-                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 font-bold text-xs">
+                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-blue-100 text-blue-800 font-bold text-xs">
                                 {{ $bk->kode }}
                             </span>
                         </td>
@@ -104,7 +104,7 @@
                             {{ $bk->kode }}
                         </th>
                         @endforeach
-                        <th class="px-3 py-3 text-center font-semibold text-gray-500 text-xs uppercase tracking-wider whitespace-nowrap bg-indigo-50/60 min-w-[48px]">Total</th>
+                        <th class="px-3 py-3 text-center font-semibold text-gray-500 text-xs uppercase tracking-wider whitespace-nowrap bg-blue-50/60 min-w-[48px]">Total</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -114,7 +114,7 @@
                     @endphp
                     <tr class="hover:bg-gray-50 transition-colors">
                         <td class="px-5 py-3 whitespace-nowrap sticky left-0 bg-white hover:bg-gray-50 z-10">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-indigo-50 text-indigo-700 font-bold text-xs">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-blue-50 text-blue-800 font-bold text-xs">
                                 {{ $cpl->kode }}
                             </span>
                         </td>
@@ -131,9 +131,9 @@
                             @endif
                         </td>
                         @endforeach
-                        <td class="px-3 py-3 text-center bg-indigo-50/60">
+                        <td class="px-3 py-3 text-center bg-blue-50/60">
                             <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg
-                                {{ $rowTotal > 0 ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-50 text-gray-300' }}
+                                {{ $rowTotal > 0 ? 'bg-blue-100 text-blue-800' : 'bg-gray-50 text-gray-300' }}
                                 font-bold text-xs">
                                 {{ $rowTotal }}
                             </span>
@@ -142,8 +142,8 @@
                     @endforeach
 
                     {{-- Column totals row --}}
-                    <tr class="bg-indigo-50/60 border-t-2 border-indigo-100">
-                        <td class="px-5 py-3 whitespace-nowrap sticky left-0 bg-indigo-50/80 z-10">
+                    <tr class="bg-blue-50/60 border-t-2 border-blue-100">
+                        <td class="px-5 py-3 whitespace-nowrap sticky left-0 bg-blue-50/80 z-10">
                             <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total</span>
                         </td>
                         @foreach($bahanKajians as $bk)
@@ -152,7 +152,7 @@
                         @endphp
                         <td class="px-3 py-3 text-center">
                             <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg
-                                {{ $colTotal > 0 ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-50 text-gray-300' }}
+                                {{ $colTotal > 0 ? 'bg-blue-100 text-blue-800' : 'bg-gray-50 text-gray-300' }}
                                 font-bold text-xs">
                                 {{ $colTotal }}
                             </span>
@@ -168,7 +168,7 @@
                                     }
                                 }
                             @endphp
-                            <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-indigo-200 text-indigo-800 font-bold text-xs">
+                            <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-indigo-200 text-blue-900 font-bold text-xs">
                                 {{ $grandTotal }}
                             </span>
                         </td>

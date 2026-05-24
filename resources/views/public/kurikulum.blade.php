@@ -4,11 +4,11 @@
 @section('content')
 
 {{-- ─── HERO ──────────────────────────────────────────────────── --}}
-<div class="bg-indigo-700 text-white">
+<div class="bg-blue-800 text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <p class="text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-1">Dokumen Kurikulum OBE</p>
+        <p class="text-blue-200 text-xs font-semibold uppercase tracking-widest mb-1">Dokumen Kurikulum OBE</p>
         <h1 class="text-2xl font-extrabold">12 Tabel Kurikulum</h1>
-        <p class="text-indigo-200 text-sm mt-1">{{ $prodi->jenjang }} {{ $prodi->nama }} &mdash; {{ $prodi->universitas }}</p>
+        <p class="text-blue-100 text-sm mt-1">{{ $prodi->jenjang }} {{ $prodi->nama }} &mdash; {{ $prodi->universitas }}</p>
     </div>
 </div>
 
@@ -51,8 +51,8 @@
                 @foreach($groupTabs as $n => $t)
                 <button @click="tab = {{ $n }}; if ({{ $n }} < 6) search = ''"
                         :class="tab === {{ $n }}
-                            ? 'bg-indigo-600 text-white shadow-sm border-indigo-600'
-                            : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50'"
+                            ? 'bg-blue-700 text-white shadow-sm border-blue-600'
+                            : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-blue-700 hover:bg-blue-50'"
                         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-all whitespace-nowrap">
                     <span :class="tab === {{ $n }} ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-400'"
                           class="w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center shrink-0 transition-colors">{{ $n }}</span>
@@ -68,7 +68,7 @@
     @foreach($tabGroups as $_gn => $groupTabs)
     @foreach($groupTabs as $n => $t)
     <div x-show="tab === {{ $n }}" x-cloak class="flex items-start gap-2 mb-4">
-        <div class="w-0.5 self-stretch bg-indigo-500 rounded-full mt-0.5 shrink-0"></div>
+        <div class="w-0.5 self-stretch bg-blue-500 rounded-full mt-0.5 shrink-0"></div>
         <div>
             <p class="text-sm font-semibold text-gray-800">Tabel {{ $n }} — {{ $t['title'] }}</p>
             <p class="text-xs text-gray-400 mt-0.5">{{ $t['desc'] }}</p>
@@ -88,7 +88,7 @@
             <input type="search" x-model.debounce.200ms="search"
                    placeholder="Cari kode atau nama mata kuliah…"
                    class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-xl
-                          focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100
+                          focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-indigo-100
                           bg-white transition placeholder-gray-400">
             <button x-show="search" @click="search = ''"
                     class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
@@ -111,7 +111,7 @@
             <div class="overflow-x-auto">
                 <table class="text-xs border-collapse w-full">
                     <thead>
-                        <tr class="bg-indigo-900 text-white">
+                        <tr class="bg-blue-900 text-white">
                             <th class="px-3 py-2 text-left w-8">#</th>
                             <th class="px-3 py-2 text-left min-w-[220px]">Mata Kuliah</th>
                             @foreach($cpls as $cpl)
@@ -124,7 +124,7 @@
                         <tr class="border-b border-gray-100 hover:bg-gray-50">
                             <td class="px-3 py-1.5 text-gray-400 text-right">{{ $loop->iteration }}</td>
                             <td class="px-3 py-1.5 border-r border-gray-100">
-                                <span class="font-mono text-indigo-600 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}
+                                <span class="font-mono text-blue-700 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}
                             </td>
                             @foreach($cpls as $cpl)
                             @php $level = $matriksInput[$mk->id][$cpl->id] ?? null; @endphp
@@ -154,11 +154,11 @@
             <div class="overflow-x-auto">
                 <table class="text-xs border-collapse w-full">
                     <thead>
-                        <tr class="bg-indigo-900 text-white">
+                        <tr class="bg-blue-900 text-white">
                             <th class="px-3 py-2 text-left w-8">#</th>
                             <th class="px-3 py-2 text-left min-w-[220px]">Mata Kuliah</th>
                             @foreach($cpls as $cpl)<th class="px-2 py-2 text-center w-16">{{ $cpl->kode }}</th>@endforeach
-                            <th class="px-2 py-2 text-center w-16 bg-indigo-800">Total</th>
+                            <th class="px-2 py-2 text-center w-16 bg-blue-800">Total</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -166,17 +166,17 @@
                         @php $rowTotal = 0; @endphp
                         <tr class="border-b border-gray-100 hover:bg-gray-50">
                             <td class="px-3 py-1.5 text-gray-400 text-right">{{ $loop->iteration }}</td>
-                            <td class="px-3 py-1.5 border-r border-gray-100"><span class="font-mono text-indigo-600 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}</td>
+                            <td class="px-3 py-1.5 border-r border-gray-100"><span class="font-mono text-blue-700 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}</td>
                             @foreach($cpls as $cpl)
                             @php $val = $binary[$mk->id][$cpl->id] ?? 0; $rowTotal += $val; @endphp
                             <td class="px-2 py-1.5 text-center">
-                                @if($val)<span class="font-bold text-indigo-700">1</span>@else<span class="text-gray-300">0</span>@endif
+                                @if($val)<span class="font-bold text-blue-800">1</span>@else<span class="text-gray-300">0</span>@endif
                             </td>
                             @endforeach
-                            <td class="px-2 py-1.5 text-center font-bold bg-indigo-50 text-indigo-700">{{ $rowTotal }}</td>
+                            <td class="px-2 py-1.5 text-center font-bold bg-blue-50 text-blue-800">{{ $rowTotal }}</td>
                         </tr>
                         @endforeach
-                        <tr class="bg-indigo-900 text-white font-bold">
+                        <tr class="bg-blue-900 text-white font-bold">
                             <td colspan="2" class="px-3 py-2 text-center">Jumlah MK</td>
                             @foreach($cpls as $cpl)<td class="px-2 py-2 text-center">{{ $binaryColTotals[$cpl->id] ?? 0 }}</td>@endforeach
                             <td class="px-2 py-2 text-center">{{ array_sum($binaryColTotals) }}</td>
@@ -193,28 +193,28 @@
             <div class="overflow-x-auto">
                 <table class="text-xs border-collapse w-full">
                     <thead>
-                        <tr class="bg-indigo-900 text-white">
+                        <tr class="bg-blue-900 text-white">
                             <th class="px-3 py-2 text-left w-8">#</th>
                             <th class="px-3 py-2 text-left min-w-[220px]">Mata Kuliah</th>
                             @foreach($cpls as $cpl)<th class="px-2 py-2 text-center w-16">{{ $cpl->kode }}</th>@endforeach
-                            <th class="px-2 py-2 text-center w-16 bg-indigo-800">Total</th>
+                            <th class="px-2 py-2 text-center w-16 bg-blue-800">Total</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($mataKuliahs as $mk)
                         <tr class="border-b border-gray-100 hover:bg-gray-50">
                             <td class="px-3 py-1.5 text-gray-400 text-right">{{ $loop->iteration }}</td>
-                            <td class="px-3 py-1.5 border-r border-gray-100"><span class="font-mono text-indigo-600 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}</td>
+                            <td class="px-3 py-1.5 border-r border-gray-100"><span class="font-mono text-blue-700 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}</td>
                             @foreach($cpls as $cpl)
                             @php $val = $nilaiMatrix[$mk->id][$cpl->id] ?? 0; @endphp
                             <td class="px-2 py-1.5 text-center">
-                                @if($val > 0)<span class="font-bold text-indigo-700">{{ $val }}</span>@else<span class="text-gray-300">0</span>@endif
+                                @if($val > 0)<span class="font-bold text-blue-800">{{ $val }}</span>@else<span class="text-gray-300">0</span>@endif
                             </td>
                             @endforeach
-                            <td class="px-2 py-1.5 text-center font-bold bg-indigo-50 text-indigo-700">{{ $rowTotals[$mk->id] ?? 0 }}</td>
+                            <td class="px-2 py-1.5 text-center font-bold bg-blue-50 text-blue-800">{{ $rowTotals[$mk->id] ?? 0 }}</td>
                         </tr>
                         @endforeach
-                        <tr class="bg-indigo-900 text-white font-bold">
+                        <tr class="bg-blue-900 text-white font-bold">
                             <td colspan="2" class="px-3 py-2 text-center">Total per CPL</td>
                             @foreach($cpls as $cpl)<td class="px-2 py-2 text-center">{{ $colTotals[$cpl->id] ?? 0 }}</td>@endforeach
                             <td class="px-2 py-2 text-center">{{ $grandTotal }}</td>
@@ -231,7 +231,7 @@
             <div class="overflow-x-auto">
                 <table class="text-xs border-collapse w-full">
                     <thead>
-                        <tr class="bg-indigo-900 text-white">
+                        <tr class="bg-blue-900 text-white">
                             <th class="px-3 py-2 text-left w-8">#</th>
                             <th class="px-3 py-2 text-left min-w-[220px]">Mata Kuliah</th>
                             @foreach($cpls as $cpl)<th class="px-2 py-2 text-center w-20">{{ $cpl->kode }}</th>@endforeach
@@ -241,7 +241,7 @@
                         @foreach($mataKuliahs as $mk)
                         <tr class="border-b border-gray-100 hover:bg-gray-50">
                             <td class="px-3 py-1.5 text-gray-400 text-right">{{ $loop->iteration }}</td>
-                            <td class="px-3 py-1.5 border-r border-gray-100"><span class="font-mono text-indigo-600 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}</td>
+                            <td class="px-3 py-1.5 border-r border-gray-100"><span class="font-mono text-blue-700 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}</td>
                             @foreach($cpls as $cpl)
                             @php $val = $pctGlobal[$mk->id][$cpl->id] ?? 0; @endphp
                             <td class="px-2 py-1.5 text-center">
@@ -250,7 +250,7 @@
                             @endforeach
                         </tr>
                         @endforeach
-                        <tr class="bg-indigo-900 text-white font-bold">
+                        <tr class="bg-blue-900 text-white font-bold">
                             <td colspan="2" class="px-3 py-2 text-center">Total per CPL</td>
                             @foreach($cpls as $cpl)<td class="px-2 py-2 text-center">{{ number_format($pctGlobalColTotals[$cpl->id] ?? 0, 2) }}%</td>@endforeach
                         </tr>
@@ -266,25 +266,25 @@
             <div class="overflow-x-auto">
                 <table class="text-xs border-collapse w-full">
                     <thead>
-                        <tr class="bg-indigo-900 text-white">
+                        <tr class="bg-blue-900 text-white">
                             <th class="px-3 py-2 text-left w-8">#</th>
                             <th class="px-3 py-2 text-left min-w-[220px]">Mata Kuliah</th>
                             @foreach($cpls as $cpl)<th class="px-2 py-2 text-center w-20">{{ $cpl->kode }}</th>@endforeach
-                            <th class="px-2 py-2 text-center w-16 bg-indigo-800">Total</th>
+                            <th class="px-2 py-2 text-center w-16 bg-blue-800">Total</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($mataKuliahs as $mk)
                         <tr class="border-b border-gray-100 hover:bg-gray-50">
                             <td class="px-3 py-1.5 text-gray-400 text-right">{{ $loop->iteration }}</td>
-                            <td class="px-3 py-1.5 border-r border-gray-100"><span class="font-mono text-indigo-600 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}</td>
+                            <td class="px-3 py-1.5 border-r border-gray-100"><span class="font-mono text-blue-700 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}</td>
                             @foreach($cpls as $cpl)
                             @php $val = $pctPerMk[$mk->id][$cpl->id] ?? 0; @endphp
                             <td class="px-2 py-1.5 text-center">
                                 @if($val > 0)<span class="text-blue-700 font-medium">{{ number_format($val,1) }}%</span>@else<span class="text-gray-300">—</span>@endif
                             </td>
                             @endforeach
-                            <td class="px-2 py-1.5 text-center font-bold bg-indigo-50 text-indigo-700">
+                            <td class="px-2 py-1.5 text-center font-bold bg-blue-50 text-blue-800">
                                 {{ ($rowTotals[$mk->id] ?? 0) > 0 ? '100%' : '—' }}
                             </td>
                         </tr>
@@ -301,10 +301,10 @@
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
              data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
              x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
-            <div class="bg-indigo-900 text-white px-4 py-2.5 flex items-center gap-3">
-                <span class="font-mono text-xs text-indigo-300">{{ $mk->kode_rps }}</span>
+            <div class="bg-blue-900 text-white px-4 py-2.5 flex items-center gap-3">
+                <span class="font-mono text-xs text-blue-200">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-sm">{{ $mk->nama }}</span>
-                <span class="text-xs text-indigo-400 ml-auto">{{ $mk->cpmks->count() }} CPMK</span>
+                <span class="text-xs text-blue-300 ml-auto">{{ $mk->cpmks->count() }} CPMK</span>
             </div>
             <div class="overflow-x-auto">
                 <table class="text-xs w-full border-collapse">
@@ -315,16 +315,16 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
-                        <tr class="bg-indigo-50">
-                            <td class="px-4 py-2 font-semibold text-indigo-700 italic text-xs">{{ $mk->nama }} (semua CPMK)</td>
+                        <tr class="bg-blue-50">
+                            <td class="px-4 py-2 font-semibold text-blue-800 italic text-xs">{{ $mk->nama }} (semua CPMK)</td>
                             @foreach($cpls as $cpl)
                             @php $mkHas = $mk->cpmks->contains(fn($c) => $c->cpmkCpls->where('cpl_id',$cpl->id)->where('has_relation',true)->isNotEmpty()); @endphp
-                            <td class="px-2 py-2 text-center">@if($mkHas)<span class="text-indigo-600 font-bold">V</span>@else<span class="text-gray-200">—</span>@endif</td>
+                            <td class="px-2 py-2 text-center">@if($mkHas)<span class="text-blue-700 font-bold">V</span>@else<span class="text-gray-200">—</span>@endif</td>
                             @endforeach
                         </tr>
                         @foreach($mk->cpmks as $cpmk)
                         <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-2 text-gray-700"><span class="font-semibold text-indigo-600 mr-1">{{ $cpmk->kode }}</span>{{ Str::limit($cpmk->deskripsi, 80) }}</td>
+                            <td class="px-4 py-2 text-gray-700"><span class="font-semibold text-blue-700 mr-1">{{ $cpmk->kode }}</span>{{ Str::limit($cpmk->deskripsi, 80) }}</td>
                             @foreach($cpls as $cpl)
                             @php $has = $cpmk->cpmkCpls->where('cpl_id',$cpl->id)->where('has_relation',true)->isNotEmpty(); @endphp
                             <td class="px-2 py-2 text-center">@if($has)<span class="text-green-600 font-bold">V</span>@else<span class="text-gray-200">—</span>@endif</td>
@@ -347,8 +347,8 @@
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
              data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
              x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
-            <div class="bg-indigo-900 text-white px-4 py-2.5 flex items-center gap-3">
-                <span class="font-mono text-xs text-indigo-300">{{ $mk->kode_rps }}</span>
+            <div class="bg-blue-900 text-white px-4 py-2.5 flex items-center gap-3">
+                <span class="font-mono text-xs text-blue-200">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-sm">{{ $mk->nama }}</span>
             </div>
             <div class="overflow-x-auto">
@@ -357,24 +357,24 @@
                         <tr>
                             <th class="px-4 py-2 text-left min-w-[260px] text-gray-600">CPMK</th>
                             @foreach($cpls as $cpl)<th class="px-2 py-2 text-center w-20 text-gray-600">{{ $cpl->kode }}</th>@endforeach
-                            <th class="px-2 py-2 text-center w-20 bg-indigo-50 text-gray-600">Total</th>
+                            <th class="px-2 py-2 text-center w-20 bg-blue-50 text-gray-600">Total</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
                         @foreach($mk->cpmks as $cpmk)
                         @php $rowTotal = 0; @endphp
                         <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-2 text-gray-700"><span class="font-semibold text-indigo-600 mr-1">{{ $cpmk->kode }}</span>{{ Str::limit($cpmk->deskripsi, 80) }}</td>
+                            <td class="px-4 py-2 text-gray-700"><span class="font-semibold text-blue-700 mr-1">{{ $cpmk->kode }}</span>{{ Str::limit($cpmk->deskripsi, 80) }}</td>
                             @foreach($cpls as $cpl)
                             @php $cc = $cpmk->cpmkCpls->firstWhere('cpl_id',$cpl->id); $bobot = $cc ? (float)$cc->bobot_persen : 0; $rowTotal += $bobot; $mkCplTotals[$cpl->id] += $bobot; @endphp
                             <td class="px-2 py-2 text-center">@if($bobot>0)<span class="text-blue-700 font-medium">{{ number_format($bobot,2) }}%</span>@else<span class="text-gray-200">—</span>@endif</td>
                             @endforeach
-                            <td class="px-2 py-2 text-center font-bold bg-indigo-50 {{ abs($rowTotal-100)<0.1&&$rowTotal>0?'text-green-600':($rowTotal>0?'text-amber-600':'text-gray-300') }}">
+                            <td class="px-2 py-2 text-center font-bold bg-blue-50 {{ abs($rowTotal-100)<0.1&&$rowTotal>0?'text-green-600':($rowTotal>0?'text-amber-600':'text-gray-300') }}">
                                 {{ $rowTotal>0?number_format($rowTotal,1).'%':'—' }}
                             </td>
                         </tr>
                         @endforeach
-                        <tr class="bg-indigo-900 text-white font-bold">
+                        <tr class="bg-blue-900 text-white font-bold">
                             <td class="px-4 py-2">Total per CPL</td>
                             @foreach($cpls as $cpl)<td class="px-2 py-2 text-center">{{ $mkCplTotals[$cpl->id]>0?number_format($mkCplTotals[$cpl->id],1).'%':'—' }}</td>@endforeach
                             <td class="px-2 py-2 text-center">{{ number_format(array_sum($mkCplTotals),1) }}%</td>
@@ -395,7 +395,7 @@
              data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
              x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
             <div class="px-5 py-3 border-b border-gray-100 bg-gray-50">
-                <span class="font-mono text-xs text-indigo-600 mr-2">{{ $mk->kode_rps }}</span>
+                <span class="font-mono text-xs text-blue-700 mr-2">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-gray-800">{{ $mk->nama }}</span>
                 <span class="ml-2 text-xs text-gray-400">Smt {{ $mk->semester }}</span>
             </div>
@@ -417,7 +417,7 @@
                             @php $clo = $sc->subCpmkClos->where('is_tertinggi',true)->first()?->cloTaxonomi; @endphp
                             <tr class="hover:bg-gray-50">
                                 @if($loop->first)
-                                <td class="border border-gray-200 px-3 py-2 font-semibold text-indigo-600 align-top" rowspan="{{ $cpmk->subCpmks->count() }}">{{ $cpmk->kode }}</td>
+                                <td class="border border-gray-200 px-3 py-2 font-semibold text-blue-700 align-top" rowspan="{{ $cpmk->subCpmks->count() }}">{{ $cpmk->kode }}</td>
                                 @endif
                                 <td class="border border-gray-200 px-3 py-2 font-medium text-teal-700">{{ $sc->kode }}</td>
                                 <td class="border border-gray-200 px-3 py-2 text-gray-700">{{ $sc->deskripsi }}</td>
@@ -445,10 +445,10 @@
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
              data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
              x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
-            <div class="bg-indigo-900 text-white px-4 py-2.5 flex items-center gap-3">
-                <span class="font-mono text-xs text-indigo-300">{{ $mk->kode_rps }}</span>
+            <div class="bg-blue-900 text-white px-4 py-2.5 flex items-center gap-3">
+                <span class="font-mono text-xs text-blue-200">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-sm">{{ $mk->nama }}</span>
-                <span class="ml-auto text-xs text-indigo-400">Smt {{ $mk->semester }}</span>
+                <span class="ml-auto text-xs text-blue-300">Smt {{ $mk->semester }}</span>
             </div>
             <div class="overflow-x-auto">
                 <table class="text-xs w-full border-collapse">
@@ -456,25 +456,25 @@
                         <tr>
                             <th class="border border-gray-200 px-3 py-2 text-left min-w-[220px] text-gray-600">CPMK</th>
                             @foreach($allSubs as $sub)<th class="border border-gray-200 px-2 py-2 text-center w-20 text-gray-600">{{ $sub->kode }}</th>@endforeach
-                            <th class="border border-gray-200 px-2 py-2 text-center w-16 bg-indigo-50 text-gray-600">Jml</th>
+                            <th class="border border-gray-200 px-2 py-2 text-center w-16 bg-blue-50 text-gray-600">Jml</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         @foreach($mk->cpmks as $cpmk)
                         <tr class="hover:bg-gray-50">
-                            <td class="border border-gray-200 px-3 py-2 text-gray-700"><span class="font-semibold text-indigo-600 mr-1">{{ $cpmk->kode }}</span>{{ Str::limit($cpmk->deskripsi, 70) }}</td>
+                            <td class="border border-gray-200 px-3 py-2 text-gray-700"><span class="font-semibold text-blue-700 mr-1">{{ $cpmk->kode }}</span>{{ Str::limit($cpmk->deskripsi, 70) }}</td>
                             @foreach($allSubs as $sub)
                             <td class="border border-gray-200 px-2 py-2 text-center">
                                 @if($sub->cpmk_id===$cpmk->id)<span class="text-green-600 font-bold text-sm">V</span>@else<span class="text-gray-200">—</span>@endif
                             </td>
                             @endforeach
-                            <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-indigo-50 text-indigo-700">{{ $cpmk->subCpmks->count() }}</td>
+                            <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-blue-50 text-blue-800">{{ $cpmk->subCpmks->count() }}</td>
                         </tr>
                         @endforeach
-                        <tr class="bg-indigo-900 text-white font-bold text-xs">
-                            <td class="border border-indigo-800 px-3 py-2">Total Sub-CPMK</td>
-                            @foreach($allSubs as $sub)<td class="border border-indigo-800 px-2 py-2 text-center">1</td>@endforeach
-                            <td class="border border-indigo-800 px-2 py-2 text-center">{{ $allSubs->count() }}</td>
+                        <tr class="bg-blue-900 text-white font-bold text-xs">
+                            <td class="border border-blue-800 px-3 py-2">Total Sub-CPMK</td>
+                            @foreach($allSubs as $sub)<td class="border border-blue-800 px-2 py-2 text-center">1</td>@endforeach
+                            <td class="border border-blue-800 px-2 py-2 text-center">{{ $allSubs->count() }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -496,10 +496,10 @@
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
              data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
              x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
-            <div class="bg-indigo-900 text-white px-4 py-2.5 flex items-center gap-3">
-                <span class="font-mono text-xs text-indigo-300">{{ $mk->kode_rps }}</span>
+            <div class="bg-blue-900 text-white px-4 py-2.5 flex items-center gap-3">
+                <span class="font-mono text-xs text-blue-200">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-sm">{{ $mk->nama }}</span>
-                <span class="ml-auto text-xs text-indigo-400">Smt {{ $mk->semester }}</span>
+                <span class="ml-auto text-xs text-blue-300">Smt {{ $mk->semester }}</span>
             </div>
             <div class="overflow-x-auto">
                 <table class="text-xs w-full border-collapse">
@@ -508,7 +508,7 @@
                             <th class="border border-gray-200 px-3 py-2 text-left w-28 text-gray-600">Sub-CPMK</th>
                             <th class="border border-gray-200 px-3 py-2 text-left min-w-[200px] text-gray-600">Deskripsi</th>
                             @foreach($cpls as $cpl)<th class="border border-gray-200 px-2 py-2 text-center w-16 text-gray-600" title="{{ $cpl->deskripsi }}">{{ $cpl->kode }}</th>@endforeach
-                            <th class="border border-gray-200 px-2 py-2 text-center w-16 bg-indigo-50 text-gray-600">Jml</th>
+                            <th class="border border-gray-200 px-2 py-2 text-center w-16 bg-blue-50 text-gray-600">Jml</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -517,20 +517,20 @@
                             @php $relIds = $cpmkCplMap2[$cpmk->id] ?? []; $subTotal = 0; foreach($relIds as $cid){ $cplTotal[$cid] = ($cplTotal[$cid]??0)+1; $subTotal++; } @endphp
                             <tr class="hover:bg-gray-50">
                                 @if($loop->first)
-                                <td class="border border-gray-200 px-3 py-2 font-semibold text-indigo-600 align-middle text-center" rowspan="{{ $cpmk->subCpmks->count() }}">{{ $cpmk->kode }}</td>
+                                <td class="border border-gray-200 px-3 py-2 font-semibold text-blue-700 align-middle text-center" rowspan="{{ $cpmk->subCpmks->count() }}">{{ $cpmk->kode }}</td>
                                 @endif
                                 <td class="border border-gray-200 px-3 py-2 text-teal-700 font-medium">{{ $sub->kode }}</td>
                                 @foreach($cpls as $cpl)
                                 <td class="border border-gray-200 px-2 py-2 text-center">@if(in_array($cpl->id,$relIds))<span class="text-green-600 font-bold text-sm">V</span>@else<span class="text-gray-200">—</span>@endif</td>
                                 @endforeach
-                                <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-indigo-50 text-indigo-700">{{ $subTotal }}</td>
+                                <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-blue-50 text-blue-800">{{ $subTotal }}</td>
                             </tr>
                             @endforeach
                         @endforeach
-                        <tr class="bg-indigo-900 text-white font-bold">
-                            <td colspan="2" class="border border-indigo-800 px-3 py-2">Total per CPL</td>
-                            @foreach($cpls as $cpl)<td class="border border-indigo-800 px-2 py-2 text-center">{{ $cplTotal[$cpl->id]>0?$cplTotal[$cpl->id]:'—' }}</td>@endforeach
-                            <td class="border border-indigo-800 px-2 py-2 text-center">{{ array_sum($cplTotal) }}</td>
+                        <tr class="bg-blue-900 text-white font-bold">
+                            <td colspan="2" class="border border-blue-800 px-3 py-2">Total per CPL</td>
+                            @foreach($cpls as $cpl)<td class="border border-blue-800 px-2 py-2 text-center">{{ $cplTotal[$cpl->id]>0?$cplTotal[$cpl->id]:'—' }}</td>@endforeach
+                            <td class="border border-blue-800 px-2 py-2 text-center">{{ array_sum($cplTotal) }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -548,10 +548,10 @@
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
              data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
              x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
-            <div class="bg-indigo-900 text-white px-4 py-2.5 flex items-center gap-3">
-                <span class="font-mono text-xs text-indigo-300">{{ $mk->kode_rps }}</span>
+            <div class="bg-blue-900 text-white px-4 py-2.5 flex items-center gap-3">
+                <span class="font-mono text-xs text-blue-200">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-sm">{{ $mk->nama }}</span>
-                <span class="ml-auto text-xs text-indigo-400">Smt {{ $mk->semester }}</span>
+                <span class="ml-auto text-xs text-blue-300">Smt {{ $mk->semester }}</span>
             </div>
             <div class="overflow-x-auto">
                 <table class="text-xs w-full border-collapse">
@@ -560,30 +560,30 @@
                             <th class="border border-gray-200 px-3 py-2 text-left min-w-[220px] text-gray-600">CPMK</th>
                             @foreach($allSubs as $sub)<th class="border border-gray-200 px-2 py-2 text-center w-20 text-gray-600">{{ $sub->kode }}</th>@endforeach
                             <th class="border border-gray-200 px-2 py-2 text-center w-20 bg-amber-50 text-gray-600">Total</th>
-                            <th class="border border-gray-200 px-2 py-2 text-center w-20 bg-indigo-50 text-gray-600">Tabel 7</th>
+                            <th class="border border-gray-200 px-2 py-2 text-center w-20 bg-blue-50 text-gray-600">Tabel 7</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($mk->cpmks as $cpmk)
                         <tr class="hover:bg-gray-50">
-                            <td class="border border-gray-200 px-3 py-2 text-gray-700"><span class="font-semibold text-indigo-600 mr-1">{{ $cpmk->kode }}</span>{{ Str::limit($cpmk->deskripsi,70) }}</td>
+                            <td class="border border-gray-200 px-3 py-2 text-gray-700"><span class="font-semibold text-blue-700 mr-1">{{ $cpmk->kode }}</span>{{ Str::limit($cpmk->deskripsi,70) }}</td>
                             @foreach($allSubs as $sub)
                             <td class="border border-gray-200 px-2 py-2 text-center">
                                 @if($sub->cpmk_id===$cpmk->id && $cpmk->bobot_per_sub>0)<span class="text-blue-700 font-medium">{{ number_format($cpmk->bobot_per_sub,2) }}%</span>@else<span class="text-gray-200">—</span>@endif
                             </td>
                             @endforeach
                             <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-amber-50 {{ $cpmk->total_bobot>0?'text-amber-700':'text-gray-300' }}">{{ $cpmk->total_bobot>0?number_format($cpmk->total_bobot,2).'%':'—' }}</td>
-                            <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-indigo-50 {{ $cpmk->total_bobot>0?'text-indigo-700':'text-gray-300' }}">{{ $cpmk->total_bobot>0?number_format($cpmk->total_bobot,2).'%':'—' }}</td>
+                            <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-blue-50 {{ $cpmk->total_bobot>0?'text-blue-800':'text-gray-300' }}">{{ $cpmk->total_bobot>0?number_format($cpmk->total_bobot,2).'%':'—' }}</td>
                         </tr>
                         @endforeach
-                        <tr class="bg-indigo-900 text-white font-bold">
-                            <td class="border border-indigo-800 px-3 py-2">Total</td>
+                        <tr class="bg-blue-900 text-white font-bold">
+                            <td class="border border-blue-800 px-3 py-2">Total</td>
                             @foreach($allSubs as $sub)
                             @php $pc = $mk->cpmks->firstWhere('id',$sub->cpmk_id); $v = $pc?->bobot_per_sub ?? 0; @endphp
-                            <td class="border border-indigo-800 px-2 py-2 text-center text-xs">{{ $v>0?number_format($v,1).'%':'—' }}</td>
+                            <td class="border border-blue-800 px-2 py-2 text-center text-xs">{{ $v>0?number_format($v,1).'%':'—' }}</td>
                             @endforeach
-                            <td class="border border-indigo-800 px-2 py-2 text-center bg-amber-900">{{ number_format($mkTotal,1) }}%</td>
-                            <td class="border border-indigo-800 px-2 py-2 text-center">{{ number_format($mkTotal,1) }}%</td>
+                            <td class="border border-blue-800 px-2 py-2 text-center bg-amber-900">{{ number_format($mkTotal,1) }}%</td>
+                            <td class="border border-blue-800 px-2 py-2 text-center">{{ number_format($mkTotal,1) }}%</td>
                         </tr>
                     </tbody>
                 </table>
@@ -618,7 +618,7 @@
                                 <th class="border border-gray-200 px-2 py-2 text-center w-16 text-gray-600">UTS</th>
                                 <th class="border border-gray-200 px-2 py-2 text-center w-16 text-gray-600">UAS</th>
                                 <th class="border border-gray-200 px-2 py-2 text-center w-20 bg-emerald-50 text-gray-600 font-semibold">Jumlah</th>
-                                <th class="border border-gray-200 px-2 py-2 text-center w-24 bg-indigo-50 text-gray-600">Bobot Teoritis</th>
+                                <th class="border border-gray-200 px-2 py-2 text-center w-24 bg-blue-50 text-gray-600">Bobot Teoritis</th>
                                 <th class="border border-gray-200 px-2 py-2 text-center w-24 text-gray-600">Status</th>
                             </tr>
                         </thead>
@@ -639,7 +639,7 @@
                                 <td class="border border-gray-200 px-2 py-1.5 text-center">@if($a->uts > 0)<span class="text-gray-700">{{ $a->uts }}</span>@else<span class="text-gray-300">—</span>@endif</td>
                                 <td class="border border-gray-200 px-2 py-1.5 text-center">@if($a->uas > 0)<span class="text-gray-700">{{ $a->uas }}</span>@else<span class="text-gray-300">—</span>@endif</td>
                                 <td class="border border-gray-200 px-2 py-1.5 text-center font-bold bg-emerald-50 {{ $total > 0 ? 'text-emerald-700' : 'text-gray-300' }}">{{ $total > 0 ? $total : '—' }}</td>
-                                <td class="border border-gray-200 px-2 py-1.5 text-center bg-indigo-50 text-indigo-700 font-medium">{{ $teoritis > 0 ? number_format($teoritis, 2).'%' : '—' }}</td>
+                                <td class="border border-gray-200 px-2 py-1.5 text-center bg-blue-50 text-blue-800 font-medium">{{ $teoritis > 0 ? number_format($teoritis, 2).'%' : '—' }}</td>
                                 <td class="border border-gray-200 px-2 py-1.5 text-center">
                                     @if($teoritis <= 0)
                                         <span class="text-gray-300">—</span>
@@ -676,8 +676,8 @@
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
              data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
              x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
-            <div class="bg-indigo-900 text-white px-4 py-2.5 flex items-center gap-3">
-                <span class="font-mono text-xs text-indigo-300">{{ $mk->kode_rps }}</span>
+            <div class="bg-blue-900 text-white px-4 py-2.5 flex items-center gap-3">
+                <span class="font-mono text-xs text-blue-200">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-sm">{{ $mk->nama }}</span>
             </div>
             <div class="overflow-x-auto">
@@ -686,22 +686,22 @@
                         <tr>
                             <th class="px-4 py-2 text-left min-w-[260px] text-gray-600">CPMK</th>
                             @foreach($cpls as $cpl)<th class="px-2 py-2 text-center w-20 text-gray-600">{{ $cpl->kode }}</th>@endforeach
-                            <th class="px-2 py-2 text-center w-20 bg-indigo-50 text-gray-600">Total</th>
+                            <th class="px-2 py-2 text-center w-20 bg-blue-50 text-gray-600">Total</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
                         @foreach($mk->cpmks as $cpmk)
                         @php $rowTotal12 = 0; @endphp
                         <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-2 text-gray-700"><span class="font-semibold text-indigo-600 mr-1">{{ $cpmk->kode }}</span>{{ Str::limit($cpmk->deskripsi,80) }}</td>
+                            <td class="px-4 py-2 text-gray-700"><span class="font-semibold text-blue-700 mr-1">{{ $cpmk->kode }}</span>{{ Str::limit($cpmk->deskripsi,80) }}</td>
                             @foreach($cpls as $cpl)
                             @php $cc = $cpmk->cpmkCpls->firstWhere('cpl_id',$cpl->id); $b = $cc?(float)$cc->bobot_persen:0; $rowTotal12+=$b; $cplTotals12[$cpl->id]+=$b; @endphp
                             <td class="px-2 py-2 text-center">@if($b>0)<span class="text-blue-700 font-medium">{{ number_format($b,2) }}%</span>@else<span class="text-gray-200">—</span>@endif</td>
                             @endforeach
-                            <td class="px-2 py-2 text-center font-bold bg-indigo-50 {{ abs($rowTotal12-100)<0.1&&$rowTotal12>0?'text-green-600':($rowTotal12>0?'text-amber-600':'text-gray-300') }}">{{ $rowTotal12>0?number_format($rowTotal12,1).'%':'—' }}</td>
+                            <td class="px-2 py-2 text-center font-bold bg-blue-50 {{ abs($rowTotal12-100)<0.1&&$rowTotal12>0?'text-green-600':($rowTotal12>0?'text-amber-600':'text-gray-300') }}">{{ $rowTotal12>0?number_format($rowTotal12,1).'%':'—' }}</td>
                         </tr>
                         @endforeach
-                        <tr class="bg-indigo-900 text-white font-bold">
+                        <tr class="bg-blue-900 text-white font-bold">
                             <td class="px-4 py-2">Total per CPL</td>
                             @foreach($cpls as $cpl)<td class="px-2 py-2 text-center">{{ $cplTotals12[$cpl->id]>0?number_format($cplTotals12[$cpl->id],1).'%':'—' }}</td>@endforeach
                             <td class="px-2 py-2 text-center">{{ number_format(array_sum($cplTotals12),1) }}%</td>

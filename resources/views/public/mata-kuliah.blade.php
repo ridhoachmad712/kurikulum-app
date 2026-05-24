@@ -7,7 +7,7 @@
 <div class="bg-white border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <nav class="flex items-center gap-1 text-xs text-gray-400 mb-3">
-            <a href="{{ route('public.home') }}" class="hover:text-indigo-600 transition">Beranda</a>
+            <a href="{{ route('public.home') }}" class="hover:text-blue-700 transition">Beranda</a>
             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
             </svg>
@@ -29,8 +29,8 @@
         @foreach($mataKuliahs as $smt => $mks)
         <button @click="tab = {{ $smt }}"
                 :class="tab === {{ $smt }}
-                    ? 'bg-indigo-600 text-white shadow-sm border-transparent'
-                    : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-600'"
+                    ? 'bg-blue-700 text-white shadow-sm border-transparent'
+                    : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-blue-700'"
                 class="px-4 py-2 text-sm font-medium rounded-xl border transition-all duration-150">
             Semester {{ $smt }}
             <span class="ml-1 opacity-60 text-xs">({{ $mks->count() }} MK)</span>
@@ -66,13 +66,13 @@
                 <tbody class="divide-y divide-gray-50">
                     @foreach($mks as $mk)
                     @php $relatedCpls = $mk->mkCpls->pluck('cpl_id')->toArray(); @endphp
-                    <tr class="hover:bg-indigo-50/30 transition-colors duration-100">
+                    <tr class="hover:bg-blue-50/30 transition-colors duration-100">
                         <td class="px-5 py-3">
-                            <span class="font-mono text-xs text-indigo-600 font-semibold">{{ $mk->kode_rps }}</span>
+                            <span class="font-mono text-xs text-blue-700 font-semibold">{{ $mk->kode_rps }}</span>
                         </td>
                         <td class="px-5 py-3">
                             <a href="{{ route('public.mata-kuliah.show', $mk) }}"
-                               class="font-medium text-gray-800 hover:text-indigo-700 transition">
+                               class="font-medium text-gray-800 hover:text-blue-800 transition">
                                 {{ $mk->nama }}
                             </a>
                             @if($mk->konsentrasi)
@@ -83,7 +83,7 @@
                         <td class="px-4 py-3">
                             <div class="flex flex-wrap gap-1">
                                 @foreach($cpls->whereIn('id', $relatedCpls) as $cpl)
-                                <span class="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 text-xs rounded font-medium">{{ $cpl->kode }}</span>
+                                <span class="px-1.5 py-0.5 bg-blue-50 text-blue-700 text-xs rounded font-medium">{{ $cpl->kode }}</span>
                                 @endforeach
                                 @if(empty($relatedCpls))
                                 <span class="text-xs text-gray-300 italic">—</span>
@@ -104,7 +104,7 @@
                         </td>
                         <td class="px-4 py-3 text-center">
                             <a href="{{ route('public.mata-kuliah.show', $mk) }}"
-                               class="inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-600 text-white text-xs font-medium rounded-lg hover:bg-indigo-700 transition">
+                               class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-700 text-white text-xs font-medium rounded-lg hover:bg-blue-800 transition">
                                 Detail
                                 <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>

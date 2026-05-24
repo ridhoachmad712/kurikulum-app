@@ -4,15 +4,15 @@
 @section('content')
 
 {{-- Page header --}}
-<div class="bg-indigo-700 text-white">
+<div class="bg-blue-800 text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-        <nav class="flex items-center gap-1 text-xs text-indigo-300 mb-2">
+        <nav class="flex items-center gap-1 text-xs text-blue-200 mb-2">
             <a href="{{ route('public.home') }}" class="hover:text-white transition">Beranda</a>
             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
-            <span class="text-indigo-200">CPL</span>
+            <span class="text-blue-100">CPL</span>
         </nav>
         <h1 class="text-xl font-bold">Capaian Pembelajaran Lulusan (CPL)</h1>
-        <p class="text-indigo-200 text-sm mt-0.5">
+        <p class="text-blue-100 text-sm mt-0.5">
             {{ $prodi->nama }} · {{ $cpls->count() }} CPL
         </p>
     </div>
@@ -30,7 +30,7 @@
             {{-- Toggle dataset --}}
             <div class="flex items-center gap-1 bg-gray-100 rounded-xl p-1" id="chart-toggle">
                 <button data-mode="both" onclick="setChartMode('both')"
-                        class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-white text-indigo-700 shadow-sm transition">
+                        class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-white text-blue-800 shadow-sm transition">
                     Keduanya
                 </button>
                 <button data-mode="mk" onclick="setChartMode('mk')"
@@ -75,8 +75,8 @@
                     <div class="space-y-1 max-h-64 overflow-y-auto pr-1">
                         @foreach($cpls as $cpl)
                         <a href="#cpl-{{ $cpl->id }}"
-                           class="flex items-center gap-2 group px-2 py-1.5 rounded-lg hover:bg-indigo-50 transition">
-                            <span class="shrink-0 w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 text-xs font-extrabold flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition">
+                           class="flex items-center gap-2 group px-2 py-1.5 rounded-lg hover:bg-blue-50 transition">
+                            <span class="shrink-0 w-8 h-8 rounded-lg bg-blue-100 text-blue-800 text-xs font-extrabold flex items-center justify-center group-hover:bg-blue-700 group-hover:text-white transition">
                                 {{ $cpl->kode }}
                             </span>
                             <div class="flex items-center gap-1.5 flex-wrap">
@@ -91,9 +91,9 @@
 
                 {{-- Max values --}}
                 <div class="mt-4 pt-4 border-t border-gray-100 grid grid-cols-2 gap-3">
-                    <div class="bg-indigo-50 rounded-xl p-3 text-center">
-                        <p class="text-xl font-extrabold text-indigo-700">{{ $chartMkData->max() }}</p>
-                        <p class="text-xs text-indigo-400 mt-0.5">Max MK / CPL</p>
+                    <div class="bg-blue-50 rounded-xl p-3 text-center">
+                        <p class="text-xl font-extrabold text-blue-800">{{ $chartMkData->max() }}</p>
+                        <p class="text-xs text-blue-300 mt-0.5">Max MK / CPL</p>
                     </div>
                     <div class="bg-emerald-50 rounded-xl p-3 text-center">
                         <p class="text-xl font-extrabold text-emerald-700">{{ $chartCpmkData->max() }}</p>
@@ -111,7 +111,7 @@
 
             {{-- Header --}}
             <div class="px-6 py-5 flex items-start gap-4">
-                <span class="shrink-0 w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-extrabold text-sm shadow-sm">
+                <span class="shrink-0 w-12 h-12 rounded-2xl bg-blue-700 text-white flex items-center justify-center font-extrabold text-sm shadow-sm">
                     {{ $cpl->kode }}
                 </span>
                 <div class="flex-1 min-w-0">
@@ -120,7 +120,7 @@
                     <p class="text-sm text-gray-500 mt-1">{{ $cpl->keterangan }}</p>
                     @endif
                     <div class="flex items-center gap-4 mt-2">
-                        <span class="text-xs text-indigo-600 font-semibold bg-indigo-50 px-2 py-0.5 rounded-full">
+                        <span class="text-xs text-blue-700 font-semibold bg-blue-50 px-2 py-0.5 rounded-full">
                             {{ $cpl->mk_count }} Mata Kuliah
                         </span>
                         <span class="text-xs text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full">
@@ -134,10 +134,10 @@
                     <div>
                         <div class="flex justify-between text-xs mb-0.5">
                             <span class="text-gray-400">MK</span>
-                            <span class="font-semibold text-indigo-600">{{ $cpl->mk_count }}</span>
+                            <span class="font-semibold text-blue-700">{{ $cpl->mk_count }}</span>
                         </div>
                         <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-indigo-500 rounded-full" style="width: {{ $chartMkData->max() > 0 ? round($cpl->mk_count / $chartMkData->max() * 100) : 0 }}%"></div>
+                            <div class="h-full bg-blue-500 rounded-full" style="width: {{ $chartMkData->max() > 0 ? round($cpl->mk_count / $chartMkData->max() * 100) : 0 }}%"></div>
                         </div>
                     </div>
                     <div>
@@ -162,7 +162,7 @@
                     <a href="{{ route('public.mata-kuliah.show', $mk) }}"
                        class="group flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-3 py-1.5
                               hover:border-indigo-300 hover:shadow-sm transition">
-                        <span class="font-mono text-xs text-indigo-600 font-bold">{{ $mk->kode_rps }}</span>
+                        <span class="font-mono text-xs text-blue-700 font-bold">{{ $mk->kode_rps }}</span>
                         <span class="text-xs text-gray-600 group-hover:text-gray-900 transition max-w-[160px] truncate">{{ $mk->nama }}</span>
                         <span class="text-xs text-gray-300 shrink-0">S{{ $mk->semester }}</span>
                     </a>
@@ -284,7 +284,7 @@ function setChartMode(mode) {
     document.querySelectorAll('#chart-toggle button').forEach(btn => {
         const active = btn.dataset.mode === mode;
         btn.classList.toggle('bg-white',       active);
-        btn.classList.toggle('text-indigo-700',active);
+        btn.classList.toggle('text-blue-800',active);
         btn.classList.toggle('shadow-sm',      active);
         btn.classList.toggle('text-gray-500',  !active);
     });

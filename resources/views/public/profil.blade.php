@@ -4,11 +4,11 @@
 @section('content')
 
 {{-- ─── HERO ──────────────────────────────────────────────────── --}}
-<div class="bg-indigo-700 text-white">
+<div class="bg-blue-800 text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <p class="text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-2">Program Studi</p>
+        <p class="text-blue-200 text-xs font-semibold uppercase tracking-widest mb-2">Program Studi</p>
         <h1 class="text-2xl sm:text-3xl font-extrabold leading-tight">{{ $prodi->jenjang }} {{ $prodi->nama }}</h1>
-        <p class="text-indigo-200 text-sm mt-1.5">{{ $prodi->fakultas }} &middot; {{ $prodi->universitas }}</p>
+        <p class="text-blue-100 text-sm mt-1.5">{{ $prodi->fakultas }} &middot; {{ $prodi->universitas }}</p>
     </div>
 </div>
 
@@ -19,10 +19,10 @@
     @if($prodi->visi)
     <section>
         <div class="flex items-center gap-2 mb-4">
-            <span class="w-1 h-6 rounded-full bg-indigo-600 inline-block"></span>
+            <span class="w-1 h-6 rounded-full bg-blue-700 inline-block"></span>
             <h2 class="text-base font-bold text-gray-900 uppercase tracking-wide">Visi</h2>
         </div>
-        <div class="bg-indigo-50 border-l-4 border-indigo-600 rounded-r-2xl px-7 py-5">
+        <div class="bg-blue-50 border-l-4 border-blue-600 rounded-r-2xl px-7 py-5">
             <p class="text-gray-800 leading-relaxed text-base sm:text-lg italic font-medium">
                 &ldquo;{{ $prodi->visi }}&rdquo;
             </p>

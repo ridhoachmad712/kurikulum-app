@@ -7,9 +7,9 @@
 <div class="bg-white border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <nav class="flex items-center gap-1 text-xs text-gray-400 mb-3 flex-wrap">
-            <a href="{{ route('public.home') }}" class="hover:text-indigo-600 transition">Beranda</a>
+            <a href="{{ route('public.home') }}" class="hover:text-blue-700 transition">Beranda</a>
             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
-            <a href="{{ route('public.mata-kuliah') }}" class="hover:text-indigo-600 transition">Mata Kuliah</a>
+            <a href="{{ route('public.mata-kuliah') }}" class="hover:text-blue-700 transition">Mata Kuliah</a>
             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
             <span class="text-gray-600 font-medium">{{ $mataKuliah->kode_rps }}</span>
         </nav>
@@ -17,7 +17,7 @@
         <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
             <div>
                 <div class="flex items-center gap-2 mb-1">
-                    <span class="font-mono text-sm text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded-lg">{{ $mataKuliah->kode_rps }}</span>
+                    <span class="font-mono text-sm text-blue-700 font-bold bg-blue-50 px-2 py-0.5 rounded-lg">{{ $mataKuliah->kode_rps }}</span>
                     <span class="text-xs text-gray-400">{{ $mataKuliah->sks }} SKS · Semester {{ $mataKuliah->semester }}</span>
                 </div>
                 <h1 class="text-2xl font-bold text-gray-900">{{ $mataKuliah->nama }}</h1>
@@ -28,7 +28,7 @@
             {{-- CPL badges --}}
             <div class="flex flex-wrap gap-1.5 sm:justify-end">
                 @foreach($cpls->whereIn('id', $relatedCplIds) as $cpl)
-                <span class="px-2.5 py-1 bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-full">{{ $cpl->kode }}</span>
+                <span class="px-2.5 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">{{ $cpl->kode }}</span>
                 @endforeach
             </div>
         </div>
@@ -68,18 +68,18 @@
             {{-- CPMK header --}}
             <div class="px-5 py-4 border-b border-gray-50 flex items-start justify-between gap-4">
                 <div class="flex items-start gap-3">
-                    <span class="shrink-0 w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm">
+                    <span class="shrink-0 w-8 h-8 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-sm">
                         {{ $cpmk->urutan }}
                     </span>
                     <div>
-                        <p class="font-semibold text-indigo-700 text-sm">{{ $cpmk->kode }}</p>
+                        <p class="font-semibold text-blue-800 text-sm">{{ $cpmk->kode }}</p>
                         <p class="text-gray-700 text-sm mt-0.5">{{ $cpmk->deskripsi }}</p>
                     </div>
                 </div>
                 {{-- CPL badges for this CPMK --}}
                 <div class="shrink-0 flex flex-wrap gap-1 justify-end">
                     @foreach($cpls->whereIn('id', $hasRelCpls->toArray()) as $cpl)
-                    <span class="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-xs font-medium rounded-full">{{ $cpl->kode }}</span>
+                    <span class="px-2 py-0.5 bg-blue-50 text-blue-700 text-xs font-medium rounded-full">{{ $cpl->kode }}</span>
                     @endforeach
                 </div>
             </div>
@@ -92,8 +92,8 @@
                     @foreach($cpls->whereIn('id', array_keys($cpmkCpls)) as $cpl)
                     @php $entry = $cpmkCpls[$cpl->id] ?? []; @endphp
                     @if(($entry['has_relation'] ?? false) && ($entry['bobot'] ?? 0) > 0)
-                    <div class="flex items-center gap-1.5 bg-white border border-indigo-100 rounded-lg px-2.5 py-1">
-                        <span class="text-xs font-semibold text-indigo-600">{{ $cpl->kode }}</span>
+                    <div class="flex items-center gap-1.5 bg-white border border-blue-100 rounded-lg px-2.5 py-1">
+                        <span class="text-xs font-semibold text-blue-700">{{ $cpl->kode }}</span>
                         <span class="text-xs text-gray-500">{{ number_format($entry['bobot'], 1) }}%</span>
                     </div>
                     @endif
@@ -143,9 +143,9 @@
     <h2 class="text-lg font-bold text-gray-900 mb-4">Matriks CPMK × CPL</h2>
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-auto">
         <table class="min-w-full text-xs">
-            <thead class="bg-indigo-900 text-white">
+            <thead class="bg-blue-900 text-white">
                 <tr>
-                    <th class="sticky left-0 bg-indigo-900 px-4 py-3 text-left min-w-[220px]">CPMK</th>
+                    <th class="sticky left-0 bg-blue-900 px-4 py-3 text-left min-w-[220px]">CPMK</th>
                     @foreach($cpls->whereIn('id', $relatedCplIds) as $cpl)
                     <th class="px-3 py-3 text-center w-20">{{ $cpl->kode }}</th>
                     @endforeach
@@ -153,16 +153,16 @@
             </thead>
             <tbody class="divide-y divide-gray-50">
                 @foreach($mataKuliah->cpmks as $cpmk)
-                <tr class="hover:bg-indigo-50/30">
+                <tr class="hover:bg-blue-50/30">
                     <td class="sticky left-0 bg-white px-4 py-2.5 border-r border-gray-100">
-                        <span class="font-semibold text-indigo-700">{{ $cpmk->kode }}</span>
+                        <span class="font-semibold text-blue-800">{{ $cpmk->kode }}</span>
                         <p class="text-gray-400 text-xs mt-0.5 line-clamp-1">{{ $cpmk->deskripsi }}</p>
                     </td>
                     @foreach($cpls->whereIn('id', $relatedCplIds) as $cpl)
                     @php $entry = $cpmkCplMap[$cpmk->id][$cpl->id] ?? []; @endphp
                     <td class="px-3 py-2.5 text-center">
                         @if($entry['has_relation'] ?? false)
-                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 font-bold">✓</span>
+                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-blue-700 font-bold">✓</span>
                         @else
                         <span class="text-gray-200">—</span>
                         @endif
@@ -181,7 +181,7 @@
 {{-- Back link --}}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
     <a href="{{ route('public.mata-kuliah') }}"
-       class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-indigo-600 transition">
+       class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-700 transition">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/>
         </svg>
