@@ -9,6 +9,7 @@ use App\Http\Controllers\Kurikulum\MatriksController;
 use App\Http\Controllers\Kurikulum\AsesmenController;
 use App\Http\Controllers\Kurikulum\RpsController;
 use App\Http\Controllers\Kurikulum\SubCpmkController;
+use App\Http\Controllers\Master\BahanKajianController;
 use App\Http\Controllers\Master\CloTaxonomiController;
 use App\Http\Controllers\Master\CplController;
 use App\Http\Controllers\Master\MataKuliahController;
@@ -41,6 +42,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('program-studi', ProgramStudiController::class)->except(['show'])->middleware('role:admin|kaprodi');
         Route::resource('profil-lulusan', ProfilLulusanController::class)->except(['show'])->middleware('role:admin|kaprodi');
         Route::resource('cpl', CplController::class)->except(['show']);
+        Route::get('bahan-kajian-matriks', [BahanKajianController::class, 'matriks'])->name('bahan-kajian.matriks')->middleware('role:admin|kaprodi');
+        Route::post('bahan-kajian-matriks', [BahanKajianController::class, 'simpanMatriks'])->name('bahan-kajian.simpan-matriks')->middleware('role:admin|kaprodi');
+        Route::resource('bahan-kajian', BahanKajianController::class)->except(['show'])->middleware('role:admin|kaprodi');
         Route::resource('mata-kuliah', MataKuliahController::class)->except(['show']);
         Route::get('mata-kuliah/{mataKuliah}', [MataKuliahController::class, 'show'])
             ->name('mata-kuliah.show')
