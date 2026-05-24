@@ -295,9 +295,10 @@
         {{-- Footer --}}
         <footer class="h-11 bg-white border-t border-gray-200 flex items-center justify-center px-4 sm:px-6 shrink-0 sticky bottom-0 z-30">
             <p class="text-[13px] text-gray-500">
-                &copy; 2026 &nbsp;|&nbsp; This App made with love and coffee by
+                This App made with love and coffee by
                 <a href="https://instagram.com/ridhoachmad_" target="_blank"
-                   class="text-indigo-400 hover:text-indigo-600 font-medium transition-colors">@ridhoachmad_</a>
+                   class="text-gray-700 hover:text-gray-900 font-medium transition-colors">@ridhoachmad_</a>
+                &nbsp;&copy; 2026
             </p>
         </footer>
     </div>
