@@ -30,7 +30,7 @@ $svgPath = $icons[$icon] ?? $icons['document'];
     @endif
     @if($action)
     <a href="{{ $action }}"
-       class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 bg-indigo-600 text-white text-xs font-medium rounded-lg hover:bg-indigo-700 transition">
+       class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 bg-gray-700 text-white text-xs font-medium rounded-lg hover:bg-gray-700 transition">
         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
         </svg>

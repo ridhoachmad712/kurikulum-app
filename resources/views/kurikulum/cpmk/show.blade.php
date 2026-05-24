@@ -18,12 +18,12 @@
 {{-- TAB --}}
 <div class="flex gap-1 mb-6 border-b border-gray-200" x-data="{ tab: 'cpmk' }">
     <button @click="tab='cpmk'"
-            :class="tab==='cpmk' ? 'bg-white border border-b-white border-gray-200 text-indigo-700 -mb-px' : 'text-gray-500 hover:text-gray-700'"
+            :class="tab==='cpmk' ? 'bg-white border border-b-white border-gray-200 text-gray-800 -mb-px' : 'text-gray-500 hover:text-gray-700'"
             class="px-4 py-2 text-sm font-medium rounded-t-lg transition">
         Input CPMK & Keterkaitan CPL
     </button>
     <button @click="tab='bobot'"
-            :class="tab==='bobot' ? 'bg-white border border-b-white border-gray-200 text-indigo-700 -mb-px' : 'text-gray-500 hover:text-gray-700'"
+            :class="tab==='bobot' ? 'bg-white border border-b-white border-gray-200 text-gray-800 -mb-px' : 'text-gray-500 hover:text-gray-700'"
             class="px-4 py-2 text-sm font-medium rounded-t-lg transition">
         Bobot % CPMK per CPL
     </button>
@@ -47,9 +47,9 @@
     <form id="form-add-cpmk">
         @csrf
         <textarea id="new-deskripsi" rows="2" placeholder="Deskripsi CPMK baru (gunakan kata kerja operasional yang terukur)..."
-            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500 resize-none"></textarea>
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-gray-500 focus:border-indigo-500 resize-none"></textarea>
         <button type="submit"
-            class="mt-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition">
+            class="mt-2 px-4 py-2 bg-gray-700 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition">
             + Tambah CPMK
         </button>
         <span id="add-err" class="text-red-500 text-xs ml-3 hidden"></span>
@@ -75,20 +75,20 @@
 
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-auto">
     <table class="text-xs w-full border-collapse">
-        <thead class="bg-indigo-900 text-white">
+        <thead class="bg-gray-800 text-white">
             <tr>
-                <th class="sticky left-0 bg-indigo-900 px-4 py-2.5 text-left min-w-[220px]">CPMK</th>
+                <th class="sticky left-0 bg-gray-800 px-4 py-2.5 text-left min-w-[220px]">CPMK</th>
                 @foreach($cpls as $cpl)
                 <th class="px-3 py-2.5 text-center w-24">{{ $cpl->kode }}</th>
                 @endforeach
-                <th class="px-3 py-2.5 text-center w-20 bg-indigo-800">Total</th>
+                <th class="px-3 py-2.5 text-center w-20 bg-gray-700">Total</th>
             </tr>
         </thead>
         <tbody>
             @foreach($cpmks as $cpmk)
             <tr class="border-b border-gray-100 hover:bg-gray-50" id="bobot-row-{{ $cpmk->id }}">
                 <td class="sticky left-0 bg-white px-4 py-2 border-r border-gray-100">
-                    <span class="font-semibold text-indigo-700">{{ $cpmk->kode }}</span>
+                    <span class="font-semibold text-gray-800">{{ $cpmk->kode }}</span>
                     <p class="text-gray-500 text-xs mt-0.5 line-clamp-1">{{ $cpmk->deskripsi }}</p>
                 </td>
                 @foreach($cpls as $cpl)
@@ -101,8 +101,8 @@
                         data-cpl="{{ $cpl->id }}"
                         onchange="saveBobot(this)"
                         class="bobot-input w-20 border border-gray-200 rounded px-2 py-1 text-center text-xs
-                               focus:ring-indigo-400 focus:border-indigo-400 focus:outline-none
-                               {{ $bobot > 0 ? 'border-indigo-300 bg-indigo-50' : '' }}">
+                               focus:ring-gray-400 focus:border-gray-400 focus:outline-none
+                               {{ $bobot > 0 ? 'border-indigo-300 bg-gray-50' : '' }}">
                 </td>
                 @endforeach
                 <td class="px-2 py-2 text-center font-bold" id="total-{{ $cpmk->id }}">
@@ -181,7 +181,7 @@ function saveBobot(input) {
     const bobot  = parseFloat(input.value) || 0;
 
     input.classList.toggle('border-indigo-300', bobot > 0);
-    input.classList.toggle('bg-indigo-50', bobot > 0);
+    input.classList.toggle('bg-gray-50', bobot > 0);
 
     clearTimeout(bobotTimers[`${cpmkId}-${cplId}`]);
     bobotTimers[`${cpmkId}-${cplId}`] = setTimeout(async () => {

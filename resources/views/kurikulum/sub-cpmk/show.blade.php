@@ -9,13 +9,13 @@
         subtitle="{{ $cpmk->mataKuliah->kode_rps }} · {{ $cpmk->mataKuliah->nama }}"
         back="{{ route('kurikulum.sub-cpmk.index') }}"
         backLabel="Sub-CPMK"/>
-    <div class="mt-3 bg-indigo-50 border border-indigo-100 rounded-xl px-5 py-4">
+    <div class="mt-3 bg-gray-50 border border-gray-200 rounded-xl px-5 py-4">
         <div class="flex items-start gap-3">
-            <div class="shrink-0 w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+            <div class="shrink-0 w-10 h-10 bg-gray-700 text-white rounded-full flex items-center justify-center text-sm font-bold">
                 {{ $cpmk->urutan }}
             </div>
             <div>
-                <p class="font-bold text-indigo-700 text-sm">{{ $cpmk->kode }}</p>
+                <p class="font-bold text-gray-800 text-sm">{{ $cpmk->kode }}</p>
                 <p class="text-gray-700 text-sm mt-0.5">{{ $cpmk->deskripsi }}</p>
                 <p class="text-xs text-gray-400 mt-1">{{ $cpmk->mataKuliah->kode_rps }} · {{ $cpmk->mataKuliah->nama }}</p>
             </div>
@@ -24,7 +24,7 @@
         <div class="flex flex-wrap gap-1.5 mt-3 pl-13">
             <span class="text-xs text-gray-400">CPL yang didukung:</span>
             @foreach($cpmk->cpmkCpls->where('has_relation',true) as $cc)
-            <span class="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium">{{ $cc->cpl->kode }}</span>
+            <span class="px-2 py-0.5 bg-gray-100 text-gray-800 rounded-full text-xs font-medium">{{ $cc->cpl->kode }}</span>
             @endforeach
         </div>
         @endif
@@ -36,9 +36,9 @@
     <h3 class="text-sm font-semibold text-gray-700 mb-3">Tambah Sub-CPMK Baru</h3>
     <div class="flex gap-3">
         <textarea id="new-deskripsi" rows="2" placeholder="Tuliskan deskripsi Sub-CPMK..."
-            class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-400 resize-none"></textarea>
+            class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 resize-none"></textarea>
         <button onclick="addSubCpmk()"
-            class="shrink-0 px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 self-start">
+            class="shrink-0 px-4 py-2 bg-gray-700 text-white text-sm rounded-lg hover:bg-gray-700 self-start">
             + Tambah
         </button>
     </div>

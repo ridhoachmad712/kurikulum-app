@@ -6,7 +6,7 @@
 <div class="flex items-center justify-between mb-6 gap-3 flex-wrap">
     <div>
         <a href="{{ route('master.mata-kuliah.index') }}"
-           class="text-sm text-indigo-500 hover:text-indigo-700">← Kembali ke Daftar MK</a>
+           class="text-sm text-indigo-500 hover:text-gray-800">← Kembali ke Daftar MK</a>
         <h1 class="text-xl font-bold text-gray-800 mt-1">{{ $mataKuliah->nama }}</h1>
     </div>
     <a href="{{ route('master.mata-kuliah.edit', $mataKuliah) }}"
@@ -17,7 +17,7 @@
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 text-sm">
     <div>
         <p class="text-xs text-gray-400 mb-0.5">Kode RPS</p>
-        <p class="font-mono font-bold text-indigo-700 text-base">{{ $mataKuliah->kode_rps }}</p>
+        <p class="font-mono font-bold text-gray-800 text-base">{{ $mataKuliah->kode_rps }}</p>
     </div>
     <div>
         <p class="text-xs text-gray-400 mb-0.5">SKS</p>
@@ -48,7 +48,7 @@
     @else
         <div class="flex flex-wrap gap-2">
             @foreach($mataKuliah->dosens as $dosen)
-            <span class="inline-flex items-center gap-1.5 bg-indigo-50 text-indigo-700 text-sm px-3 py-1 rounded-full border border-indigo-100">
+            <span class="inline-flex items-center gap-1.5 bg-gray-50 text-gray-800 text-sm px-3 py-1 rounded-full border border-gray-200">
                 <svg class="w-3.5 h-3.5 opacity-60" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
                 </svg>
@@ -81,7 +81,7 @@
         <tbody class="divide-y divide-gray-50">
             @foreach($mataKuliah->mkCpls->sortBy('cpl.urutan') as $mkCpl)
             <tr class="hover:bg-gray-50">
-                <td class="px-4 py-2.5 font-bold text-indigo-700">{{ $mkCpl->cpl->kode }}</td>
+                <td class="px-4 py-2.5 font-bold text-gray-800">{{ $mkCpl->cpl->kode }}</td>
                 <td class="px-4 py-2.5 text-gray-700">{{ $mkCpl->cpl->deskripsi }}</td>
                 <td class="px-4 py-2.5 text-center">
                     @php
@@ -121,7 +121,7 @@
         <div class="px-5 py-4">
             {{-- CPMK header --}}
             <div class="flex items-start gap-3 mb-3">
-                <span class="inline-block bg-indigo-100 text-indigo-700 text-xs font-bold px-2.5 py-1 rounded-lg shrink-0 mt-0.5">
+                <span class="inline-block bg-gray-100 text-gray-800 text-xs font-bold px-2.5 py-1 rounded-lg shrink-0 mt-0.5">
                     {{ $cpmk->kode }}
                 </span>
                 <p class="text-sm text-gray-800">{{ $cpmk->deskripsi }}</p>
@@ -141,7 +141,7 @@
                     <tbody class="divide-y divide-gray-50">
                         @foreach($cpmk->cpmkCpls->sortBy('cpl.urutan') as $cc)
                         <tr>
-                            <td class="px-3 py-1.5 font-bold text-indigo-600">{{ $cc->cpl->kode }}</td>
+                            <td class="px-3 py-1.5 font-bold text-gray-700">{{ $cc->cpl->kode }}</td>
                             <td class="px-3 py-1.5 text-gray-600 max-w-md truncate" title="{{ $cc->cpl->deskripsi }}">
                                 {{ Str::limit($cc->cpl->deskripsi, 80) }}
                             </td>
@@ -181,7 +181,7 @@
             @if($cpmk->subCpmks->isNotEmpty())
             <div class="px-5 py-4">
                 {{-- CPMK label --}}
-                <p class="text-xs font-bold text-indigo-600 uppercase tracking-wide mb-3">
+                <p class="text-xs font-bold text-gray-700 uppercase tracking-wide mb-3">
                     {{ $cpmk->kode }} — {{ Str::limit($cpmk->deskripsi, 70) }}
                 </p>
 
@@ -233,19 +233,19 @@
 {{-- Quick-nav ke halaman terkait -------------------------------------------}}
 <div class="flex flex-wrap gap-3 text-sm">
     <a href="{{ route('kurikulum.cpmk.show', $mataKuliah) }}"
-       class="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition border border-indigo-100">
+       class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-50 text-gray-800 rounded-lg hover:bg-gray-100 transition border border-gray-200">
         ✏️ Edit CPMK & Bobot
     </a>
     <a href="{{ route('kurikulum.sub-cpmk.index') }}"
-       class="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition border border-indigo-100">
+       class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-50 text-gray-800 rounded-lg hover:bg-gray-100 transition border border-gray-200">
         ✏️ Edit Sub-CPMK
     </a>
     <a href="{{ route('kurikulum.asesmen.show', $mataKuliah) }}"
-       class="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition border border-indigo-100">
+       class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-50 text-gray-800 rounded-lg hover:bg-gray-100 transition border border-gray-200">
         📋 Asesmen
     </a>
     <a href="{{ route('kurikulum.matriks.input') }}"
-       class="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition border border-indigo-100">
+       class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-50 text-gray-800 rounded-lg hover:bg-gray-100 transition border border-gray-200">
         📊 Matriks MK–CPL
     </a>
 </div>

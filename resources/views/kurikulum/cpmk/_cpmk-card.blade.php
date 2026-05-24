@@ -1,16 +1,16 @@
 <div id="cpmk-card-{{ $cpmk->id }}" class="cpmk-card bg-white border border-gray-200 rounded-xl p-4">
     <div class="flex items-start gap-3">
         {{-- Nomor urut --}}
-        <div class="shrink-0 w-8 h-8 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center text-xs font-bold">
+        <div class="shrink-0 w-8 h-8 bg-gray-100 text-gray-800 rounded-full flex items-center justify-center text-xs font-bold">
             {{ $cpmk->urutan }}
         </div>
 
         <div class="flex-1 min-w-0">
             {{-- Header CPMK --}}
             <div class="flex items-center gap-2 mb-1">
-                <span class="text-xs font-bold text-indigo-600 uppercase tracking-wide">{{ $cpmk->kode }}</span>
+                <span class="text-xs font-bold text-gray-700 uppercase tracking-wide">{{ $cpmk->kode }}</span>
                 <button onclick="startEdit({{ $cpmk->id }})"
-                    class="text-gray-400 hover:text-indigo-600 text-xs ml-2">✏ Edit</button>
+                    class="text-gray-400 hover:text-gray-700 text-xs ml-2">✏ Edit</button>
                 <button onclick="deleteCpmk({{ $cpmk->id }}, '{{ $cpmk->kode }}')"
                     class="text-gray-300 hover:text-red-500 text-xs ml-1">✕ Hapus</button>
             </div>
@@ -23,11 +23,11 @@
             {{-- Deskripsi (edit mode) --}}
             <div id="desc-edit-{{ $cpmk->id }}" class="hidden">
                 <textarea rows="2"
-                    class="w-full border border-indigo-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-indigo-400 resize-none"
+                    class="w-full border border-indigo-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-gray-400 resize-none"
                     id="desc-input-{{ $cpmk->id }}">{{ $cpmk->deskripsi }}</textarea>
                 <div class="flex gap-2 mt-1">
                     <button onclick="saveEdit({{ $cpmk->id }})"
-                        class="px-3 py-1 bg-indigo-600 text-white text-xs rounded-lg hover:bg-indigo-700">Simpan</button>
+                        class="px-3 py-1 bg-gray-700 text-white text-xs rounded-lg hover:bg-gray-700">Simpan</button>
                     <button onclick="cancelEdit({{ $cpmk->id }})"
                         class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-lg hover:bg-gray-200">Batal</button>
                 </div>
@@ -39,7 +39,7 @@
                 @foreach($cpls as $cpl)
                 @php $checked = $cpmkCplMap[$cpmk->id][$cpl->id]['has_relation'] ?? false; @endphp
                 <label class="inline-flex items-center gap-1 cursor-pointer px-2 py-0.5 rounded-full border text-xs
-                              {{ $checked ? 'bg-indigo-100 border-indigo-300 text-indigo-700' : 'bg-gray-50 border-gray-200 text-gray-400' }}">
+                              {{ $checked ? 'bg-gray-100 border-indigo-300 text-gray-800' : 'bg-gray-50 border-gray-200 text-gray-400' }}">
                     <input type="checkbox"
                         class="sr-only"
                         {{ $checked ? 'checked' : '' }}

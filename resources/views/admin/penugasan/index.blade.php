@@ -7,12 +7,12 @@
 <div class="mb-5 flex items-center justify-between gap-3 flex-wrap">
     <div class="flex gap-2 flex-wrap">
         <a href="{{ route('admin.penugasan.index') }}"
-           class="px-4 py-2 text-sm font-medium rounded-lg {{ !request('semester') ? 'bg-indigo-600 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
+           class="px-4 py-2 text-sm font-medium rounded-lg {{ !request('semester') ? 'bg-gray-700 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
             Semua
         </a>
         @for($s=1;$s<=8;$s++)
         <a href="{{ route('admin.penugasan.index', ['semester'=>$s]) }}"
-           class="px-3 py-2 text-sm font-medium rounded-lg {{ request('semester')==$s ? 'bg-indigo-600 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
+           class="px-3 py-2 text-sm font-medium rounded-lg {{ request('semester')==$s ? 'bg-gray-700 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
             Smt {{ $s }}
         </a>
         @endfor
@@ -43,7 +43,7 @@
         <tbody class="divide-y divide-gray-50">
             @forelse($mataKuliahs as $mk)
             <tr class="hover:bg-gray-50" id="row-mk-{{ $mk->id }}">
-                <td class="px-4 py-3 font-mono text-indigo-600 text-xs">{{ $mk->kode_rps }}</td>
+                <td class="px-4 py-3 font-mono text-gray-700 text-xs">{{ $mk->kode_rps }}</td>
                 <td class="px-4 py-3 font-medium text-gray-800">{{ $mk->nama }}</td>
                 <td class="px-3 py-3 text-center text-gray-500">{{ $mk->semester }}</td>
                 <td class="px-3 py-3 text-center text-gray-500">{{ $mk->cpmks_count }}</td>
@@ -51,10 +51,10 @@
                 <td class="px-4 py-3">
                     <div class="flex flex-wrap gap-1.5 items-center" id="dosens-{{ $mk->id }}">
                         @foreach($mk->dosens as $d)
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium">
                             {{ $d->name }}
                             <button onclick="toggleDosen({{ $mk->id }}, {{ $d->id }})"
-                                class="ml-0.5 text-indigo-400 hover:text-red-500 leading-none">&times;</button>
+                                class="ml-0.5 text-gray-400 hover:text-red-500 leading-none">&times;</button>
                         </span>
                         @endforeach
                         @if($mk->dosens->isEmpty())
@@ -64,14 +64,14 @@
                     {{-- Dropdown tambah dosen --}}
                     <div class="mt-1.5 flex items-center gap-2">
                         <select id="sel-{{ $mk->id }}"
-                            class="border border-gray-200 rounded-lg text-xs px-2 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-400 max-w-xs">
+                            class="border border-gray-200 rounded-lg text-xs px-2 py-1 focus:outline-none focus:ring-1 focus:ring-gray-400 max-w-xs">
                             <option value="">+ Tambah dosen...</option>
                             @foreach($dosens as $d)
                             <option value="{{ $d->id }}">{{ $d->name }}{{ $d->nip ? ' ('.$d->nip.')' : '' }}</option>
                             @endforeach
                         </select>
                         <button onclick="addDosen({{ $mk->id }})"
-                            class="px-2.5 py-1 bg-indigo-600 text-white text-xs rounded-lg hover:bg-indigo-700">
+                            class="px-2.5 py-1 bg-gray-700 text-white text-xs rounded-lg hover:bg-gray-700">
                             Tugaskan
                         </button>
                     </div>
@@ -123,8 +123,8 @@ function renderDosens(mkId, dosens) {
     }
     dosens.forEach(d => {
         const span = document.createElement('span');
-        span.className = 'inline-flex items-center gap-1 px-2.5 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium';
-        span.innerHTML = `${d.name} <button onclick="toggleDosen(${mkId}, ${d.id})" class="ml-0.5 text-indigo-400 hover:text-red-500 leading-none">&times;</button>`;
+        span.className = 'inline-flex items-center gap-1 px-2.5 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium';
+        span.innerHTML = `${d.name} <button onclick="toggleDosen(${mkId}, ${d.id})" class="ml-0.5 text-gray-400 hover:text-red-500 leading-none">&times;</button>`;
         container.appendChild(span);
     });
 }

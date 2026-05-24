@@ -6,7 +6,7 @@
 <div class="grid grid-cols-3 gap-4 mb-7">
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
         <p class="text-xs text-gray-400 uppercase tracking-wider">MK Ditugaskan</p>
-        <p class="text-3xl font-bold text-indigo-600 mt-1">{{ $summary['total_mk'] }}</p>
+        <p class="text-3xl font-bold text-gray-700 mt-1">{{ $summary['total_mk'] }}</p>
         <p class="text-xs text-gray-400 mt-1">mata kuliah aktif</p>
     </div>
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
@@ -68,7 +68,7 @@
     }
 
     $barPct   = round($mk->score / 5 * 100);
-    $barColor = $mk->score == 5 ? 'bg-green-500' : ($mk->score >= 3 ? 'bg-indigo-500' : 'bg-amber-400');
+    $barColor = $mk->score == 5 ? 'bg-green-500' : ($mk->score >= 3 ? 'bg-gray-500' : 'bg-amber-400');
     $badgeClass = match($mk->score) {
         5       => 'bg-green-100 text-green-700',
         0       => 'bg-gray-100 text-gray-400',
@@ -89,7 +89,7 @@
         <div class="flex items-start justify-between gap-3 mb-3">
             <div class="min-w-0">
                 <div class="flex items-center gap-2 mb-0.5">
-                    <span class="font-mono text-xs text-indigo-600 font-semibold">{{ $mk->kode_rps }}</span>
+                    <span class="font-mono text-xs text-gray-700 font-semibold">{{ $mk->kode_rps }}</span>
                     <span class="text-xs text-gray-400">Smt {{ $mk->semester }}</span>
                     @if($mk->sks)
                     <span class="text-xs text-gray-400">· {{ $mk->sks }} SKS</span>
@@ -132,7 +132,7 @@
                     </svg>
                 </span>
                 <a href="{{ $step['href'] }}"
-                   class="text-xs text-indigo-600 hover:underline font-medium">{{ $step['label'] }}</a>
+                   class="text-xs text-gray-700 hover:underline font-medium">{{ $step['label'] }}</a>
             @endif
         </div>
         @endforeach
@@ -148,14 +148,14 @@
                 Semua langkah selesai
             </span>
             <a href="{{ route('kurikulum.asesmen.show', $mk) }}"
-               class="text-xs text-gray-400 hover:text-indigo-600 hover:underline">Lihat asesmen →</a>
+               class="text-xs text-gray-400 hover:text-gray-700 hover:underline">Lihat asesmen →</a>
         @else
             <p class="text-xs text-gray-400">
                 Lanjutkan:
                 <span class="font-medium text-gray-600">{{ $nextLabel }}</span>
             </p>
             <a href="{{ $nextHref }}"
-               class="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700
+               class="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 bg-gray-700 hover:bg-gray-700
                       text-white text-xs font-semibold rounded-lg transition-colors">
                 Isi sekarang
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">

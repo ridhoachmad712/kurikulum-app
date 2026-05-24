@@ -67,13 +67,13 @@
                 @endphp
                 <tr class="hover:bg-gray-50 {{ $rowBg }}">
                     <td class="px-4 py-2.5">
-                        <p class="font-mono text-indigo-600 font-semibold">{{ $mk->kode_rps }}</p>
+                        <p class="font-mono text-gray-700 font-semibold">{{ $mk->kode_rps }}</p>
                         <p class="text-gray-700 font-medium">{{ $mk->nama }}</p>
                         @if($mk->konsentrasi)<p class="text-gray-400 text-xs">{{ $mk->konsentrasi }}</p>@endif
                     </td>
                     <td class="px-3 py-2.5">
                         @forelse($mk->dosens as $d)
-                        <span class="inline-block bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded text-xs mb-0.5">
+                        <span class="inline-block bg-gray-50 text-gray-800 px-1.5 py-0.5 rounded text-xs mb-0.5">
                             {{ $d->name }}
                         </span>
                         @empty
@@ -116,7 +116,7 @@
                     </td>
                     <td class="px-3 py-2.5 text-center">
                         <a href="{{ route('master.mata-kuliah.show', $mk) }}"
-                           class="text-indigo-600 hover:underline text-xs">Detail</a>
+                           class="text-gray-700 hover:underline text-xs">Detail</a>
                     </td>
                 </tr>
                 @endforeach

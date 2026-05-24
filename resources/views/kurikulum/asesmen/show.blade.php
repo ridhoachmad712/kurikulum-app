@@ -18,7 +18,7 @@
 @if($cpmk->subCpmks->isNotEmpty())
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-5">
     <div class="px-5 py-3 border-b border-gray-100 bg-gray-50 flex items-center gap-3">
-        <span class="font-semibold text-indigo-600 text-sm">{{ $cpmk->kode }}</span>
+        <span class="font-semibold text-gray-700 text-sm">{{ $cpmk->kode }}</span>
         <span class="text-sm text-gray-600">{{ Str::limit($cpmk->deskripsi, 80) }}</span>
     </div>
 
@@ -54,7 +54,7 @@
                             placeholder="0"
                             oninput="debounce({{ $sc->id }})"
                             class="w-16 text-center border border-gray-200 rounded-lg px-1.5 py-1 text-xs
-                                   focus:outline-none focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400">
+                                   focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400">
                     </td>
                     @endforeach
 

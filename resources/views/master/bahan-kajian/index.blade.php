@@ -7,7 +7,7 @@
     @hasanyrole('admin|kaprodi')
     <div class="flex items-center gap-2">
         <a href="{{ route('master.bahan-kajian.matriks') }}"
-           class="px-4 py-2 bg-indigo-50 text-indigo-700 text-sm font-medium rounded-lg hover:bg-indigo-100 border border-indigo-200 transition">
+           class="px-4 py-2 bg-gray-50 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-100 border border-gray-200 transition">
             Edit Matriks CPL &amp; MK
         </a>
         <a href="{{ route('master.bahan-kajian.create') }}" class="btn-primary">+ Tambah BK</a>
@@ -33,7 +33,7 @@
         <tbody class="divide-y divide-gray-100">
             @forelse($items as $item)
             <tr class="hover:bg-gray-50">
-                <td class="px-4 py-3 font-bold text-indigo-700 font-mono">{{ $item->kode }}</td>
+                <td class="px-4 py-3 font-bold text-gray-800 font-mono">{{ $item->kode }}</td>
                 <td class="px-4 py-3 font-medium text-gray-800">{{ $item->nama }}</td>
                 <td class="px-4 py-3 text-gray-500 text-xs max-w-xs hidden md:table-cell">
                     {{ Str::limit($item->deskripsi, 80) }}
@@ -51,7 +51,7 @@
                 <td class="px-4 py-3 text-center text-gray-400">{{ $item->urutan }}</td>
                 @hasanyrole('admin|kaprodi')
                 <td class="px-4 py-3 text-center space-x-2">
-                    <a href="{{ route('master.bahan-kajian.edit', $item) }}" class="text-indigo-600 hover:underline">Edit</a>
+                    <a href="{{ route('master.bahan-kajian.edit', $item) }}" class="text-gray-700 hover:underline">Edit</a>
                     <form method="POST" action="{{ route('master.bahan-kajian.destroy', $item) }}" class="inline"
                           onsubmit="return confirm('Hapus Bahan Kajian ini?')">
                         @csrf @method('DELETE')

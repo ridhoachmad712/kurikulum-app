@@ -38,13 +38,13 @@
         <tbody class="divide-y divide-gray-100">
             @forelse($items as $item)
             <tr class="hover:bg-gray-50">
-                <td class="px-4 py-3 font-bold text-indigo-700">{{ $item->kode }}</td>
+                <td class="px-4 py-3 font-bold text-gray-800">{{ $item->kode }}</td>
                 <td class="px-4 py-3 text-gray-700">{{ $item->deskripsi }}</td>
                 <td class="px-4 py-3 text-gray-400 text-xs">{{ $item->keterangan }}</td>
                 <td class="px-4 py-3 text-center text-gray-500">{{ $item->urutan }}</td>
                 @hasanyrole('admin|kaprodi')
                 <td class="px-4 py-3 text-center space-x-2">
-                    <a href="{{ route('master.cpl.edit', $item) }}" class="text-indigo-600 hover:underline">Edit</a>
+                    <a href="{{ route('master.cpl.edit', $item) }}" class="text-gray-700 hover:underline">Edit</a>
                     <form method="POST" action="{{ route('master.cpl.destroy', $item) }}" class="inline"
                           onsubmit="return confirm('Hapus CPL ini?')">
                         @csrf @method('DELETE')

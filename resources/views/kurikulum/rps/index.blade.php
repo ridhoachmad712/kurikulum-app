@@ -9,7 +9,7 @@
         <p class="text-xs text-gray-400 mt-0.5">Kelola status pengisian RPS per mata kuliah</p>
     </div>
     <a href="{{ route('kurikulum.rps.create') }}"
-       class="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl transition-colors shadow-sm">
+       class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-700 hover:bg-gray-700 text-white text-sm font-medium rounded-xl transition-colors shadow-sm">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
         </svg>
@@ -32,7 +32,7 @@
         <option value="Final"  {{ $status == 'Final'  ? 'selected' : '' }}>Final</option>
     </select>
     <button type="submit"
-            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-xl transition-colors">
+            class="px-4 py-2 bg-gray-700 hover:bg-gray-700 text-white text-sm rounded-xl transition-colors">
         Cari
     </button>
     @if(request('search') || request('status'))
@@ -76,7 +76,7 @@
                 @endphp
                 <tr class="hover:bg-gray-50">
                     <td class="px-5 py-3">
-                        <p class="font-mono text-xs text-indigo-600 font-semibold">{{ $rps->mataKuliah->kode_rps }}</p>
+                        <p class="font-mono text-xs text-gray-700 font-semibold">{{ $rps->mataKuliah->kode_rps }}</p>
                         <p class="text-gray-800 font-medium">{{ $rps->mataKuliah->nama }}</p>
                     </td>
                     <td class="px-4 py-3 text-gray-600">{{ $rps->tahun_ajaran }}</td>
@@ -98,7 +98,7 @@
                         <div class="flex items-center justify-center gap-1.5 flex-wrap">
                             {{-- Detail --}}
                             <a href="{{ route('kurikulum.rps.show', $rps) }}"
-                               class="inline-flex items-center px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs rounded-lg transition-colors">
+                               class="inline-flex items-center px-2.5 py-1 bg-gray-50 hover:bg-gray-100 text-gray-800 text-xs rounded-lg transition-colors">
                                 Detail
                             </a>
 

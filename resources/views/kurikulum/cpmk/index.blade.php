@@ -7,7 +7,7 @@
 <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
     <div class="flex items-center gap-2">
         <a href="{{ route('kurikulum.matriks.input') }}"
-           class="text-xs text-indigo-500 hover:text-indigo-700 hover:underline transition">
+           class="text-xs text-indigo-500 hover:text-gray-800 hover:underline transition">
             ← Lihat Tabel 1–12
         </a>
     </div>
@@ -18,13 +18,13 @@
 <div class="inline-flex items-center bg-gray-100 rounded-xl p-1 gap-0.5 mb-5 flex-wrap">
     <a href="{{ route('kurikulum.cpmk.index') }}"
        class="px-4 py-1.5 text-sm font-medium rounded-lg transition-colors
-              {{ !request('semester') ? 'bg-white text-indigo-700 font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">
+              {{ !request('semester') ? 'bg-white text-gray-800 font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">
         Semua
     </a>
     @for($s=1;$s<=8;$s++)
     <a href="{{ route('kurikulum.cpmk.index', ['semester'=>$s]) }}"
        class="px-3 py-1.5 text-sm font-medium rounded-lg transition-colors
-              {{ request('semester')==$s ? 'bg-white text-indigo-700 font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">
+              {{ request('semester')==$s ? 'bg-white text-gray-800 font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">
         Smt {{ $s }}
     </a>
     @endfor
@@ -48,7 +48,7 @@
         <tbody class="divide-y divide-gray-50">
             @forelse($mataKuliahs as $mk)
             <tr class="hover:bg-gray-50">
-                <td class="px-4 py-2.5 font-mono text-indigo-600 text-xs">{{ $mk->kode_rps }}</td>
+                <td class="px-4 py-2.5 font-mono text-gray-700 text-xs">{{ $mk->kode_rps }}</td>
                 <td class="px-4 py-2.5 font-medium text-gray-800">{{ $mk->nama }}</td>
                 <td class="px-4 py-2.5 text-center text-gray-500">{{ $mk->sks }}</td>
                 <td class="px-4 py-2.5 text-center text-gray-500">{{ $mk->semester }}</td>
@@ -63,7 +63,7 @@
                 </td>
                 <td class="px-4 py-2.5 text-center">
                     <a href="{{ route('kurikulum.cpmk.show', $mk) }}"
-                       class="inline-flex items-center px-3 py-1 bg-indigo-600 text-white text-xs font-medium rounded-lg hover:bg-indigo-700">
+                       class="inline-flex items-center px-3 py-1 bg-gray-700 text-white text-xs font-medium rounded-lg hover:bg-gray-700">
                         {{ $mk->cpmks_count > 0 ? 'Edit CPMK' : 'Isi CPMK' }}
                     </a>
                 </td>

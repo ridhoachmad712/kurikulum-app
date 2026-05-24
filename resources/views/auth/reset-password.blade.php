@@ -43,8 +43,8 @@
 
         <button type="submit"
                 class="w-full flex items-center justify-center gap-2 px-4 py-3
-                       bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold
-                       rounded-xl transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                       bg-gray-700 hover:bg-gray-700 text-white text-sm font-semibold
+                       rounded-xl transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
             Simpan Kata Sandi Baru
         </button>
     </form>

@@ -4,7 +4,7 @@
 
 <div class="max-w-2xl">
     <div class="mb-4">
-        <a href="{{ route('master.bahan-kajian.index') }}" class="text-sm text-indigo-600 hover:underline">← Kembali ke daftar</a>
+        <a href="{{ route('master.bahan-kajian.index') }}" class="text-sm text-gray-700 hover:underline">← Kembali ke daftar</a>
     </div>
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
@@ -45,7 +45,7 @@
             </div>
 
             <div class="flex gap-3 mt-6">
-                <button type="submit" class="px-5 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700">
+                <button type="submit" class="px-5 py-2 bg-gray-700 text-white text-sm font-medium rounded-lg hover:bg-gray-700">
                     {{ $item->exists ? 'Perbarui' : 'Simpan' }}
                 </button>
                 <a href="{{ route('master.bahan-kajian.index') }}"

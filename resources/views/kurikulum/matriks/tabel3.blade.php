@@ -13,14 +13,14 @@
     <div class="overflow-auto max-h-[72vh]">
         <table class="text-xs border-collapse w-full">
             <thead>
-                <tr class="bg-indigo-900 text-white">
-                    <th class="sticky left-0 top-0 z-20 bg-indigo-900 px-3 py-2 text-left w-8">#</th>
-                    <th class="sticky left-8 top-0 z-20 bg-indigo-900 px-3 py-2 text-left min-w-[220px]">Mata Kuliah</th>
-                    <th class="sticky top-0 z-10 bg-indigo-900 px-2 py-2 text-center w-10">SKS</th>
+                <tr class="bg-gray-800 text-white">
+                    <th class="sticky left-0 top-0 z-20 bg-gray-800 px-3 py-2 text-left w-8">#</th>
+                    <th class="sticky left-8 top-0 z-20 bg-gray-800 px-3 py-2 text-left min-w-[220px]">Mata Kuliah</th>
+                    <th class="sticky top-0 z-10 bg-gray-800 px-2 py-2 text-center w-10">SKS</th>
                     @foreach($cpls as $cpl)
-                    <th class="sticky top-0 z-10 bg-indigo-900 px-2 py-2 text-center w-16">{{ $cpl->kode }}</th>
+                    <th class="sticky top-0 z-10 bg-gray-800 px-2 py-2 text-center w-16">{{ $cpl->kode }}</th>
                     @endforeach
-                    <th class="sticky top-0 z-10 bg-indigo-800 px-2 py-2 text-center w-16">Total</th>
+                    <th class="sticky top-0 z-10 bg-gray-700 px-2 py-2 text-center w-16">Total</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,7 +28,7 @@
                 <tr class="border-b border-gray-100 hover:bg-gray-50 group">
                     <td class="sticky left-0 z-10 bg-white group-hover:bg-gray-50 px-3 py-1.5 text-gray-400 text-right">{{ $loop->iteration }}</td>
                     <td class="sticky left-8 z-10 bg-white group-hover:bg-gray-50 px-3 py-1.5 border-r border-gray-100">
-                        <span class="font-mono text-indigo-600 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}
+                        <span class="font-mono text-gray-700 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}
                     </td>
                     <td class="px-2 py-1.5 text-center text-gray-500">{{ $mk->sks }}</td>
                     @foreach($cpls as $cpl)
@@ -43,13 +43,13 @@
                         @endif
                     </td>
                     @endforeach
-                    <td class="px-2 py-1.5 text-center font-bold bg-indigo-50 text-indigo-700">{{ $rowTotals[$mk->id] ?? 0 }}</td>
+                    <td class="px-2 py-1.5 text-center font-bold bg-gray-50 text-gray-800">{{ $rowTotals[$mk->id] ?? 0 }}</td>
                 </tr>
                 @endforeach
 
                 {{-- Baris total kolom --}}
-                <tr class="bg-indigo-900 text-white font-bold text-xs">
-                    <td class="sticky left-0 z-10 bg-indigo-900 px-3 py-2 text-center" colspan="3">Total per CPL</td>
+                <tr class="bg-gray-800 text-white font-bold text-xs">
+                    <td class="sticky left-0 z-10 bg-gray-800 px-3 py-2 text-center" colspan="3">Total per CPL</td>
                     @foreach($cpls as $cpl)
                     <td class="px-2 py-2 text-center">{{ $colTotals[$cpl->id] ?? 0 }}</td>
                     @endforeach

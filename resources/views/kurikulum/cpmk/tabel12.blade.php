@@ -13,10 +13,10 @@
     $mkGrandTotal = 0;
 @endphp
 <div class="mb-6 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-    <div class="bg-indigo-900 text-white px-4 py-2.5 flex items-center gap-3">
-        <span class="font-mono text-xs text-indigo-300">{{ $mk->kode_rps }}</span>
+    <div class="bg-gray-800 text-white px-4 py-2.5 flex items-center gap-3">
+        <span class="font-mono text-xs text-gray-400">{{ $mk->kode_rps }}</span>
         <span class="font-semibold text-sm">{{ $mk->nama }}</span>
-        <span class="ml-auto text-xs text-indigo-400">Smt {{ $mk->semester }}</span>
+        <span class="ml-auto text-xs text-gray-400">Smt {{ $mk->semester }}</span>
     </div>
     <div class="overflow-x-auto">
         <table class="text-xs w-full border-collapse">
@@ -27,7 +27,7 @@
                     <th class="border border-gray-200 px-2 py-2 text-center w-16 text-gray-600"
                         title="{{ $cpl->deskripsi }}">{{ $cpl->kode }}</th>
                     @endforeach
-                    <th class="border border-gray-200 px-2 py-2 text-center w-20 bg-indigo-50 text-gray-600">Tabel 11</th>
+                    <th class="border border-gray-200 px-2 py-2 text-center w-20 bg-gray-50 text-gray-600">Tabel 11</th>
                 </tr>
             </thead>
             <tbody>
@@ -48,7 +48,7 @@
                         {{ $mkCplSums[$cpl->id] > 0 ? number_format($mkCplSums[$cpl->id], 1).'%' : '—' }}
                     </td>
                     @endforeach
-                    <td class="border border-gray-200 px-2 py-1.5 text-center bg-indigo-50 text-xs">
+                    <td class="border border-gray-200 px-2 py-1.5 text-center bg-gray-50 text-xs">
                         {{ number_format(array_sum($mkCplSums), 1) }}%
                     </td>
                 </tr>
@@ -59,7 +59,7 @@
                 @endphp
                 <tr class="hover:bg-gray-50">
                     <td class="border border-gray-200 px-3 py-2 text-gray-700">
-                        <span class="font-semibold text-indigo-600 mr-1">{{ $cpmk->kode }}</span>
+                        <span class="font-semibold text-gray-700 mr-1">{{ $cpmk->kode }}</span>
                         {{ Str::limit($cpmk->deskripsi, 75) }}
                     </td>
                     @foreach($cpls as $cpl)
@@ -79,7 +79,7 @@
                     </td>
                     @endforeach
                     {{-- Tabel 11 = total bobot CPMK --}}
-                    <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-indigo-50
+                    <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-gray-50
                                {{ abs($rowTotal - 100) < 0.1 && $rowTotal > 0 ? 'text-green-600' : ($rowTotal > 0 ? 'text-amber-600' : 'text-gray-300') }}">
                         {{ $rowTotal > 0 ? number_format($rowTotal, 2).'%' : '—' }}
                     </td>
@@ -87,14 +87,14 @@
                 @endforeach
 
                 {{-- Total row per CPL --}}
-                <tr class="bg-indigo-900 text-white font-bold">
-                    <td class="border border-indigo-800 px-3 py-2">Total per CPL</td>
+                <tr class="bg-gray-800 text-white font-bold">
+                    <td class="border border-gray-700 px-3 py-2">Total per CPL</td>
                     @foreach($cpls as $cpl)
-                    <td class="border border-indigo-800 px-2 py-2 text-center">
+                    <td class="border border-gray-700 px-2 py-2 text-center">
                         {{ $cplTotals[$cpl->id] > 0 ? number_format($cplTotals[$cpl->id], 1).'%' : '—' }}
                     </td>
                     @endforeach
-                    <td class="border border-indigo-800 px-2 py-2 text-center">
+                    <td class="border border-gray-700 px-2 py-2 text-center">
                         {{ number_format(array_sum($cplTotals), 1) }}%
                     </td>
                 </tr>

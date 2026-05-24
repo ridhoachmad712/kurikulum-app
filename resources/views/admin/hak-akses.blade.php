@@ -56,7 +56,7 @@ $rows = [
                 <th class="px-5 py-3 text-left font-semibold text-gray-600">Keterangan</th>
                 <th class="px-4 py-3 text-center font-semibold text-gray-600 w-28">
                     <span class="inline-flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span> Admin
+                        <span class="w-2 h-2 rounded-full bg-gray-500"></span> Admin
                     </span>
                 </th>
                 <th class="px-4 py-3 text-center font-semibold text-gray-600 w-28">

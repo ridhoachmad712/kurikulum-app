@@ -20,11 +20,11 @@
         <table class="text-xs border-collapse w-full">
             {{-- Header CPL --}}
             <thead>
-                <tr class="bg-indigo-900 text-white">
-                    <th class="sticky left-0 top-0 z-20 bg-indigo-900 px-3 py-2 text-left w-8 font-normal">#</th>
-                    <th class="sticky left-8 top-0 z-20 bg-indigo-900 px-3 py-2 text-left min-w-[220px] font-semibold">Mata Kuliah</th>
+                <tr class="bg-gray-800 text-white">
+                    <th class="sticky left-0 top-0 z-20 bg-gray-800 px-3 py-2 text-left w-8 font-normal">#</th>
+                    <th class="sticky left-8 top-0 z-20 bg-gray-800 px-3 py-2 text-left min-w-[220px] font-semibold">Mata Kuliah</th>
                     @foreach($cpls as $cpl)
-                    <th class="sticky top-0 z-10 bg-indigo-900 px-2 py-2 text-center w-24">
+                    <th class="sticky top-0 z-10 bg-gray-800 px-2 py-2 text-center w-24">
                         <span class="font-bold">{{ $cpl->kode }}</span>
                     </th>
                     @endforeach
@@ -32,10 +32,10 @@
             </thead>
             <tbody>
                 @foreach($mataKuliahs as $mk)
-                <tr class="border-b border-gray-100 hover:bg-indigo-50/30 group">
-                    <td class="sticky left-0 z-10 bg-white group-hover:bg-indigo-50/30 px-3 py-1.5 text-gray-400 text-right">{{ $loop->iteration }}</td>
-                    <td class="sticky left-8 z-10 bg-white group-hover:bg-indigo-50/30 px-3 py-1.5 border-r border-gray-100">
-                        <span class="font-mono text-indigo-600 mr-1">{{ $mk->kode_rps }}</span>
+                <tr class="border-b border-gray-100 hover:bg-gray-50/30 group">
+                    <td class="sticky left-0 z-10 bg-white group-hover:bg-gray-50/30 px-3 py-1.5 text-gray-400 text-right">{{ $loop->iteration }}</td>
+                    <td class="sticky left-8 z-10 bg-white group-hover:bg-gray-50/30 px-3 py-1.5 border-r border-gray-100">
+                        <span class="font-mono text-gray-700 mr-1">{{ $mk->kode_rps }}</span>
                         <span class="text-gray-800">{{ $mk->nama }}</span>
                         <span class="text-gray-400 ml-1">({{ $mk->sks }} SKS)</span>
                     </td>
@@ -46,7 +46,7 @@
                             data-mk="{{ $mk->id }}"
                             data-cpl="{{ $cpl->id }}"
                             onchange="saveCell(this)"
-                            class="cell-select w-full rounded px-1 py-0.5 text-xs border cursor-pointer focus:outline-none focus:ring-1 focus:ring-indigo-400
+                            class="cell-select w-full rounded px-1 py-0.5 text-xs border cursor-pointer focus:outline-none focus:ring-1 focus:ring-gray-400
                                    {{ $currentLevel === 'Tinggi' ? 'bg-red-50 border-red-200 text-red-700' :
                                       ($currentLevel === 'Sedang' ? 'bg-yellow-50 border-yellow-200 text-yellow-700' :
                                       ($currentLevel === 'Rendah' ? 'bg-green-50 border-green-200 text-green-700' :

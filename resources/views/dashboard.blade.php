@@ -11,7 +11,7 @@
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-7">
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
         <p class="text-xs text-gray-400 uppercase tracking-wider">Total MK</p>
-        <p class="text-3xl font-bold text-indigo-600 mt-1">{{ $summary['total_mk'] }}</p>
+        <p class="text-3xl font-bold text-gray-700 mt-1">{{ $summary['total_mk'] }}</p>
     </div>
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
         <p class="text-xs text-gray-400 uppercase tracking-wider">MK Lengkap</p>
@@ -38,7 +38,7 @@
     <div class="flex items-center gap-1">
         @php
         $steps = [
-            ['label' => '1. Matriks',    'pct' => $summary['pct_matriks'],  'color' => 'bg-indigo-500'],
+            ['label' => '1. Matriks',    'pct' => $summary['pct_matriks'],  'color' => 'bg-gray-500'],
             ['label' => '2. CPMK',       'pct' => $summary['pct_cpmk'],     'color' => 'bg-emerald-500'],
             ['label' => '3. Sub-CPMK',   'pct' => $summary['pct_subcpmk'],  'color' => 'bg-blue-500'],
             ['label' => '4. CLO',        'pct' => $summary['pct_clo'],      'color' => 'bg-purple-500'],
@@ -64,7 +64,7 @@
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-7">
     <div class="flex items-center justify-between mb-4">
         <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Progress per Semester</h2>
-        <a href="{{ route('kelengkapan') }}" class="text-xs text-indigo-600 hover:underline">Lihat semua →</a>
+        <a href="{{ route('kelengkapan') }}" class="text-xs text-gray-700 hover:underline">Lihat semua →</a>
     </div>
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
         @foreach($bySemester as $smt => $data)
@@ -89,7 +89,7 @@
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-7">
     <div class="px-5 py-3 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
         <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Ringkasan Asesmen per Mata Kuliah</h2>
-        <a href="{{ route('kurikulum.asesmen.index') }}" class="text-xs text-indigo-600 hover:underline">Input Asesmen →</a>
+        <a href="{{ route('kurikulum.asesmen.index') }}" class="text-xs text-gray-700 hover:underline">Input Asesmen →</a>
     </div>
     <div class="overflow-x-auto">
         <table class="min-w-full text-xs">
@@ -108,7 +108,7 @@
                 @endphp
                 <tr class="hover:bg-gray-50">
                     <td class="px-4 py-2">
-                        <span class="font-mono text-indigo-600 mr-1.5">{{ $mk->kode_rps }}</span>
+                        <span class="font-mono text-gray-700 mr-1.5">{{ $mk->kode_rps }}</span>
                         <span class="text-gray-700">{{ $mk->nama }}</span>
                     </td>
                     <td class="px-3 py-2 text-center text-gray-500">{{ $mk->semester }}</td>
@@ -145,7 +145,7 @@
     <div class="xl:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="px-5 py-3 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
             <h2 class="font-semibold text-gray-700 text-sm">Mata Kuliah Belum Selesai</h2>
-            <a href="{{ route('admin.penugasan.index') }}" class="text-xs text-indigo-600 hover:underline">Kelola Penugasan →</a>
+            <a href="{{ route('admin.penugasan.index') }}" class="text-xs text-gray-700 hover:underline">Kelola Penugasan →</a>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full text-xs">
@@ -160,7 +160,7 @@
                     @forelse($mkPending->flatten() as $mk)
                     <tr class="hover:bg-gray-50">
                         <td class="px-4 py-2.5">
-                            <p class="font-mono text-indigo-600">{{ $mk->kode_rps }}</p>
+                            <p class="font-mono text-gray-700">{{ $mk->kode_rps }}</p>
                             <p class="text-gray-600 truncate max-w-xs">{{ $mk->nama }}</p>
                             <p class="text-gray-400">Smt {{ $mk->semester }}</p>
                         </td>
@@ -172,7 +172,7 @@
                         </td>
                         <td class="px-4 py-2.5">
                             @forelse($mk->dosens as $d)
-                            <span class="inline-block px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-full mr-1 mb-1">{{ $d->name }}</span>
+                            <span class="inline-block px-2 py-0.5 bg-gray-100 text-gray-800 rounded-full mr-1 mb-1">{{ $d->name }}</span>
                             @empty
                             <span class="text-gray-300 italic">—</span>
                             @endforelse

@@ -29,7 +29,7 @@
                 <td class="px-5 py-3 text-gray-500">{{ $u->email }}</td>
                 <td class="px-5 py-3 text-center">
                     <span class="px-2.5 py-0.5 rounded-full text-xs font-medium
-                        {{ $u->hasRole('kaprodi') ? 'bg-indigo-100 text-indigo-700' : 'bg-teal-100 text-teal-700' }}">
+                        {{ $u->hasRole('kaprodi') ? 'bg-gray-100 text-gray-800' : 'bg-teal-100 text-teal-700' }}">
                         {{ $u->getRoleNames()->first() ?? '–' }}
                     </span>
                 </td>

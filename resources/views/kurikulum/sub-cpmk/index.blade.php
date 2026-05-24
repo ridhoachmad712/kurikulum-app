@@ -7,12 +7,12 @@
 <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
     <div class="flex gap-2 flex-wrap">
         <a href="{{ route('kurikulum.sub-cpmk.index') }}"
-           class="px-4 py-2 text-sm font-medium rounded-lg {{ !request('semester') ? 'bg-indigo-600 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
+           class="px-4 py-2 text-sm font-medium rounded-lg {{ !request('semester') ? 'bg-gray-700 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
             Semua
         </a>
         @for($s=1;$s<=8;$s++)
         <a href="{{ route('kurikulum.sub-cpmk.index', ['semester'=>$s]) }}"
-           class="px-3 py-2 text-sm font-medium rounded-lg {{ request('semester')==$s ? 'bg-indigo-600 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
+           class="px-3 py-2 text-sm font-medium rounded-lg {{ request('semester')==$s ? 'bg-gray-700 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
             Smt {{ $s }}
         </a>
         @endfor
@@ -30,7 +30,7 @@
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-4">
     <div class="px-5 py-3 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
         <div>
-            <span class="font-mono text-xs text-indigo-600 mr-2">{{ $mk->kode_rps }}</span>
+            <span class="font-mono text-xs text-gray-700 mr-2">{{ $mk->kode_rps }}</span>
             <span class="font-semibold text-gray-800">{{ $mk->nama }}</span>
             <span class="ml-2 text-xs text-gray-400">{{ $mk->sks }} SKS · Smt {{ $mk->semester }}</span>
         </div>
@@ -47,7 +47,7 @@
         <tbody class="divide-y divide-gray-50">
             @foreach($mk->cpmks as $cpmk)
             <tr class="hover:bg-gray-50">
-                <td class="px-4 py-2.5 font-semibold text-indigo-600 text-xs">{{ $cpmk->kode }}</td>
+                <td class="px-4 py-2.5 font-semibold text-gray-700 text-xs">{{ $cpmk->kode }}</td>
                 <td class="px-4 py-2.5 text-gray-700">{{ $cpmk->deskripsi }}</td>
                 <td class="px-4 py-2.5 text-center">
                     @if($cpmk->sub_cpmks_count > 0)
@@ -62,7 +62,7 @@
                 </td>
                 <td class="px-4 py-2.5 text-center">
                     <a href="{{ route('kurikulum.sub-cpmk.show', $cpmk) }}"
-                       class="text-xs px-3 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                       class="text-xs px-3 py-1 bg-gray-700 text-white rounded-lg hover:bg-gray-700">
                         Kelola
                     </a>
                 </td>

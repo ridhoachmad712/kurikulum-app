@@ -35,10 +35,10 @@ foreach (array_merge($row1, $row2) as $tab) {
            class="flex flex-1 items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-medium
                   whitespace-nowrap transition-all duration-150
                   {{ $isActive
-                      ? 'bg-white shadow-sm text-indigo-700 font-semibold'
+                      ? 'bg-white shadow-sm text-gray-800 font-semibold'
                       : 'text-gray-500 hover:text-gray-700 hover:bg-white/60' }}">
             <span class="w-5 h-5 rounded-md text-[10px] font-bold flex items-center justify-center shrink-0
-                         {{ $isActive ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-500' }}">
+                         {{ $isActive ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-500' }}">
                 {{ $tab['n'] }}
             </span>
             {{ $tab['title'] }}
@@ -54,10 +54,10 @@ foreach (array_merge($row1, $row2) as $tab) {
            class="flex flex-1 items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-medium
                   whitespace-nowrap transition-all duration-150
                   {{ $isActive
-                      ? 'bg-white shadow-sm text-indigo-700 font-semibold'
+                      ? 'bg-white shadow-sm text-gray-800 font-semibold'
                       : 'text-gray-500 hover:text-gray-700 hover:bg-white/60' }}">
             <span class="w-5 h-5 rounded-md text-[10px] font-bold flex items-center justify-center shrink-0
-                         {{ $isActive ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-500' }}">
+                         {{ $isActive ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-500' }}">
                 {{ $tab['n'] }}
             </span>
             {{ $tab['title'] }}
@@ -71,7 +71,7 @@ foreach (array_merge($row1, $row2) as $tab) {
 @if($activeInfo)
 <p class="text-xs text-gray-400 -mt-3 mb-5">
     <span class="inline-flex items-center gap-1.5">
-        <span class="w-4 h-4 rounded bg-indigo-600 text-white text-[9px] font-bold flex items-center justify-center">
+        <span class="w-4 h-4 rounded bg-gray-700 text-white text-[9px] font-bold flex items-center justify-center">
             {{ $activeInfo['n'] }}
         </span>
         <span class="font-semibold text-gray-600">{{ $activeInfo['title'] }}</span>

@@ -15,7 +15,7 @@
                     CLO: <span id="clo-badge-{{ $sc->id }}">{{ $sc->kode_clo_tertinggi ?? '–' }}</span>
                 </span>
 
-                <button onclick="startEdit({{ $sc->id }})" class="text-gray-400 hover:text-indigo-600 text-xs ml-2">✏ Edit</button>
+                <button onclick="startEdit({{ $sc->id }})" class="text-gray-400 hover:text-gray-700 text-xs ml-2">✏ Edit</button>
                 <button onclick="deleteSubCpmk({{ $sc->id }}, '{{ $sc->kode }}')" class="text-gray-300 hover:text-red-500 text-xs ml-1">✕ Hapus</button>
             </div>
 
@@ -25,10 +25,10 @@
             {{-- Deskripsi edit --}}
             <div id="desc-edit-{{ $sc->id }}" class="hidden">
                 <textarea rows="2"
-                    class="w-full border border-indigo-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-indigo-400 resize-none"
+                    class="w-full border border-indigo-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-gray-400 resize-none"
                     id="desc-input-{{ $sc->id }}">{{ $sc->deskripsi }}</textarea>
                 <div class="flex gap-2 mt-1">
-                    <button onclick="saveEdit({{ $sc->id }})" class="px-3 py-1 bg-indigo-600 text-white text-xs rounded-lg hover:bg-indigo-700">Simpan</button>
+                    <button onclick="saveEdit({{ $sc->id }})" class="px-3 py-1 bg-gray-700 text-white text-xs rounded-lg hover:bg-gray-700">Simpan</button>
                     <button onclick="cancelEdit({{ $sc->id }})" class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-lg hover:bg-gray-200">Batal</button>
                 </div>
             </div>

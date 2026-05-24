@@ -29,7 +29,7 @@
                   pl-9 {{ request('search') ? 'pr-8' : 'pr-4' }} text-sm
                   text-gray-800 placeholder-gray-400
                   focus:outline-none focus:bg-white focus:border-indigo-300
-                  focus:ring-2 focus:ring-indigo-500/20 focus:w-64
+                  focus:ring-2 focus:ring-gray-500/20 focus:w-64
                   transition-all duration-200 ease-in-out">
 
     {{-- Clear button — only when there is an active search --}}

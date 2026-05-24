@@ -7,12 +7,12 @@
 <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
     <div class="flex gap-2 flex-wrap">
         <a href="{{ route('kurikulum.asesmen.index') }}"
-           class="px-4 py-2 text-sm font-medium rounded-lg {{ !request('semester') ? 'bg-indigo-600 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
+           class="px-4 py-2 text-sm font-medium rounded-lg {{ !request('semester') ? 'bg-gray-700 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
             Semua
         </a>
         @for($s=1;$s<=8;$s++)
         <a href="{{ route('kurikulum.asesmen.index', ['semester'=>$s]) }}"
-           class="px-3 py-2 text-sm font-medium rounded-lg {{ request('semester')==$s ? 'bg-indigo-600 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
+           class="px-3 py-2 text-sm font-medium rounded-lg {{ request('semester')==$s ? 'bg-gray-700 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
             Smt {{ $s }}
         </a>
         @endfor
@@ -38,7 +38,7 @@
         <tbody class="divide-y divide-gray-50">
             @forelse($mataKuliahs as $mk)
             <tr class="hover:bg-gray-50">
-                <td class="px-4 py-2.5 font-mono text-indigo-600 text-xs">{{ $mk->kode_rps }}</td>
+                <td class="px-4 py-2.5 font-mono text-gray-700 text-xs">{{ $mk->kode_rps }}</td>
                 <td class="px-4 py-2.5 font-medium text-gray-800">{{ $mk->nama }}</td>
                 <td class="px-4 py-2.5 text-center text-gray-500">{{ $mk->sks }}</td>
                 <td class="px-4 py-2.5 text-center text-gray-500">{{ $mk->semester }}</td>
@@ -54,7 +54,7 @@
                 </td>
                 <td class="px-4 py-2.5 text-center">
                     <a href="{{ route('kurikulum.asesmen.show', $mk) }}"
-                       class="text-xs px-3 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                       class="text-xs px-3 py-1 bg-gray-700 text-white rounded-lg hover:bg-gray-700">
                         Input
                     </a>
                 </td>

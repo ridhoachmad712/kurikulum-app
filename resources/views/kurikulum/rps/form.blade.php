@@ -36,7 +36,7 @@
                 @if(isset($rps->id))
                 {{-- Edit mode: non-editable display + hidden --}}
                 <div class="form-input bg-gray-50 text-gray-500 cursor-not-allowed">
-                    <span class="font-mono text-indigo-600 mr-2">{{ $rps->mataKuliah->kode_rps }}</span>
+                    <span class="font-mono text-gray-700 mr-2">{{ $rps->mataKuliah->kode_rps }}</span>
                     {{ $rps->mataKuliah->nama }}
                 </div>
                 <input type="hidden" name="mata_kuliah_id" value="{{ $rps->mata_kuliah_id }}">
@@ -95,7 +95,7 @@
             {{-- Actions --}}
             <div class="flex items-center gap-3">
                 <button type="submit"
-                        class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl transition-colors shadow-sm">
+                        class="px-5 py-2 bg-gray-700 hover:bg-gray-700 text-white text-sm font-medium rounded-xl transition-colors shadow-sm">
                     {{ isset($rps->id) ? 'Simpan Perubahan' : 'Buat RPS' }}
                 </button>
                 <a href="{{ route('kurikulum.rps.index') }}"

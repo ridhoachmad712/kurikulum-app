@@ -5,7 +5,7 @@
 <div class="flex justify-between items-center mb-6">
     <div></div>
     <a href="{{ route('master.program-studi.create') }}"
-       class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition">
+       class="inline-flex items-center px-4 py-2 bg-gray-700 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition">
         + Tambah Program Studi
     </a>
 </div>
@@ -27,7 +27,7 @@
         <tbody class="divide-y divide-gray-100">
             @forelse($items as $item)
             <tr class="hover:bg-gray-50">
-                <td class="px-4 py-3 font-mono text-indigo-700">{{ $item->kode }}</td>
+                <td class="px-4 py-3 font-mono text-gray-800">{{ $item->kode }}</td>
                 <td class="px-4 py-3 font-medium">{{ $item->nama }}</td>
                 <td class="px-4 py-3">{{ $item->jenjang }}</td>
                 <td class="px-4 py-3 text-gray-500">{{ $item->fakultas }}</td>
@@ -39,7 +39,7 @@
                     </span>
                 </td>
                 <td class="px-4 py-3 text-center space-x-2">
-                    <a href="{{ route('master.program-studi.edit', $item) }}" class="text-indigo-600 hover:underline">Edit</a>
+                    <a href="{{ route('master.program-studi.edit', $item) }}" class="text-gray-700 hover:underline">Edit</a>
                     <form method="POST" action="{{ route('master.program-studi.destroy', $item) }}" class="inline"
                           onsubmit="return confirm('Hapus program studi ini?')">
                         @csrf @method('DELETE')

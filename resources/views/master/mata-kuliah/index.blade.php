@@ -57,11 +57,11 @@
         <tbody class="divide-y divide-gray-100">
             @forelse($items as $item)
             <tr class="hover:bg-gray-50">
-                <td class="px-4 py-2.5 font-mono text-indigo-700 text-xs">{{ $item->kode_rps }}</td>
+                <td class="px-4 py-2.5 font-mono text-gray-800 text-xs">{{ $item->kode_rps }}</td>
                 <td class="px-4 py-2.5 font-medium text-gray-800">
                     @hasanyrole('admin|kaprodi')
                     <a href="{{ route('master.mata-kuliah.show', $item) }}"
-                       class="hover:text-indigo-700 hover:underline">{{ $item->nama }}</a>
+                       class="hover:text-gray-800 hover:underline">{{ $item->nama }}</a>
                     @else
                     {{ $item->nama }}
                     @endhasanyrole
@@ -81,8 +81,8 @@
                 </td>
                 @hasanyrole('admin|kaprodi')
                 <td class="px-4 py-2.5 text-center space-x-2">
-                    <a href="{{ route('master.mata-kuliah.show', $item) }}" class="text-indigo-600 hover:underline text-xs font-medium">Detail</a>
-                    <a href="{{ route('master.mata-kuliah.edit', $item) }}" class="text-indigo-600 hover:underline text-xs">Edit</a>
+                    <a href="{{ route('master.mata-kuliah.show', $item) }}" class="text-gray-700 hover:underline text-xs font-medium">Detail</a>
+                    <a href="{{ route('master.mata-kuliah.edit', $item) }}" class="text-gray-700 hover:underline text-xs">Edit</a>
                     <form method="POST" action="{{ route('master.mata-kuliah.destroy', $item) }}" class="inline"
                           onsubmit="return confirm('Hapus mata kuliah ini?')">
                         @csrf @method('DELETE')

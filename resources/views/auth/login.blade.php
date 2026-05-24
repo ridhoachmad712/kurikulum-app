@@ -19,7 +19,7 @@
 
     {{-- Logo & Title --}}
     <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-14 h-14 bg-indigo-600 rounded-2xl mb-4">
+        <div class="inline-flex items-center justify-center w-14 h-14 bg-gray-700 rounded-2xl mb-4">
             <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zm5.99 7.176A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
             </svg>
@@ -56,7 +56,7 @@
                        required autofocus autocomplete="username"
                        placeholder="nama@kampus.ac.id"
                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900
-                              placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500
+                              placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500
                               focus:border-indigo-500 transition @error('email') border-red-400 @enderror">
             </div>
 
@@ -66,7 +66,7 @@
                     <label for="password" class="text-sm font-medium text-gray-700">Kata Sandi</label>
                     @if (Route::has('password.request'))
                         <a href="{{ route('password.request') }}"
-                           class="text-xs text-indigo-600 hover:underline">Lupa kata sandi?</a>
+                           class="text-xs text-gray-700 hover:underline">Lupa kata sandi?</a>
                     @endif
                 </div>
                 <div class="relative">
@@ -75,7 +75,7 @@
                            required autocomplete="current-password"
                            placeholder="••••••••"
                            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900
-                                  placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500
+                                  placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500
                                   focus:border-indigo-500 transition pr-10 @error('password') border-red-400 @enderror">
                     <button type="button" @click="show = !show"
                             class="absolute inset-y-0 right-0 px-3 text-gray-400 hover:text-gray-600">
@@ -93,15 +93,15 @@
             {{-- Remember --}}
             <div class="flex items-center gap-2 mb-5">
                 <input id="remember_me" name="remember" type="checkbox"
-                       class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                       class="w-4 h-4 text-gray-700 border-gray-300 rounded focus:ring-gray-500">
                 <label for="remember_me" class="text-sm text-gray-600 cursor-pointer">Ingat saya</label>
             </div>
 
             {{-- Submit --}}
             <button type="submit"
-                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold
+                    class="w-full bg-gray-700 hover:bg-gray-700 text-white text-sm font-semibold
                            py-2.5 rounded-lg transition focus:outline-none focus:ring-2
-                           focus:ring-indigo-500 focus:ring-offset-2">
+                           focus:ring-gray-500 focus:ring-offset-2">
                 Masuk
             </button>
         </form>

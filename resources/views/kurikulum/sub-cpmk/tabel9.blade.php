@@ -12,10 +12,10 @@
     $subCount = $allSubs->count();
 @endphp
 <div class="mb-6 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-    <div class="bg-indigo-900 text-white px-4 py-2.5 flex items-center gap-3">
-        <span class="font-mono text-xs text-indigo-300">{{ $mk->kode_rps }}</span>
+    <div class="bg-gray-800 text-white px-4 py-2.5 flex items-center gap-3">
+        <span class="font-mono text-xs text-gray-400">{{ $mk->kode_rps }}</span>
         <span class="font-semibold text-sm">{{ $mk->nama }}</span>
-        <span class="ml-auto text-xs text-indigo-400">Smt {{ $mk->semester }}</span>
+        <span class="ml-auto text-xs text-gray-400">Smt {{ $mk->semester }}</span>
     </div>
     <div class="overflow-x-auto">
         <table class="text-xs w-full border-collapse">
@@ -27,14 +27,14 @@
                         {{ $sub->kode }}
                     </th>
                     @endforeach
-                    <th class="border border-gray-200 px-2 py-2 text-center w-16 bg-indigo-50 text-gray-600">Jml</th>
+                    <th class="border border-gray-200 px-2 py-2 text-center w-16 bg-gray-50 text-gray-600">Jml</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
                 @foreach($mk->cpmks as $cpmk)
                 <tr class="hover:bg-gray-50">
                     <td class="border border-gray-200 px-3 py-2 text-gray-700">
-                        <span class="font-semibold text-indigo-600 mr-1">{{ $cpmk->kode }}</span>
+                        <span class="font-semibold text-gray-700 mr-1">{{ $cpmk->kode }}</span>
                         {{ Str::limit($cpmk->deskripsi, 70) }}
                     </td>
                     @foreach($allSubs as $sub)
@@ -46,19 +46,19 @@
                         @endif
                     </td>
                     @endforeach
-                    <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-indigo-50 text-indigo-700">
+                    <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-gray-50 text-gray-800">
                         {{ $cpmk->subCpmks->count() }}
                     </td>
                 </tr>
                 @endforeach
 
                 {{-- Baris total --}}
-                <tr class="bg-indigo-900 text-white font-bold text-xs">
-                    <td class="border border-indigo-800 px-3 py-2">Total Sub-CPMK</td>
+                <tr class="bg-gray-800 text-white font-bold text-xs">
+                    <td class="border border-gray-700 px-3 py-2">Total Sub-CPMK</td>
                     @foreach($allSubs as $sub)
-                    <td class="border border-indigo-800 px-2 py-2 text-center">1</td>
+                    <td class="border border-gray-700 px-2 py-2 text-center">1</td>
                     @endforeach
-                    <td class="border border-indigo-800 px-2 py-2 text-center">{{ $subCount }}</td>
+                    <td class="border border-gray-700 px-2 py-2 text-center">{{ $subCount }}</td>
                 </tr>
             </tbody>
         </table>

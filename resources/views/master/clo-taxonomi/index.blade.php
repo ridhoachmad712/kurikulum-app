@@ -25,12 +25,12 @@
         <tbody class="divide-y divide-gray-50">
             @foreach($clos as $clo)
             <tr class="hover:bg-gray-50">
-                <td class="px-4 py-2.5 font-bold text-indigo-700">{{ $clo->kode }}</td>
+                <td class="px-4 py-2.5 font-bold text-gray-800">{{ $clo->kode }}</td>
                 <td class="px-4 py-2.5 text-center text-gray-500">{{ $clo->level }}</td>
                 <td class="px-4 py-2.5 text-gray-700">{{ $clo->deskripsi }}</td>
                 @hasanyrole('admin|kaprodi')
                 <td class="px-4 py-2.5 text-center">
-                    <a href="{{ route('master.clo-taxonomi.edit', $clo) }}" class="text-indigo-600 hover:underline text-xs">Edit</a>
+                    <a href="{{ route('master.clo-taxonomi.edit', $clo) }}" class="text-gray-700 hover:underline text-xs">Edit</a>
                 </td>
                 @endhasanyrole
             </tr>

@@ -7,7 +7,7 @@
 @forelse($mataKuliahs as $mk)
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-6">
     <div class="px-5 py-3 border-b border-gray-100 bg-gray-50">
-        <span class="font-mono text-xs text-indigo-600 mr-2">{{ $mk->kode_rps }}</span>
+        <span class="font-mono text-xs text-gray-700 mr-2">{{ $mk->kode_rps }}</span>
         <span class="font-semibold text-gray-800">{{ $mk->nama }}</span>
         <span class="ml-2 text-xs text-gray-400">Smt {{ $mk->semester }}</span>
     </div>
@@ -32,7 +32,7 @@
                     @endphp
                     <tr class="hover:bg-gray-50">
                         @if($loop->first)
-                        <td class="border border-gray-200 px-3 py-2 font-semibold text-indigo-600 align-top"
+                        <td class="border border-gray-200 px-3 py-2 font-semibold text-gray-700 align-top"
                             rowspan="{{ $cpmk->subCpmks->count() }}">
                             {{ $cpmk->kode }}
                         </td>

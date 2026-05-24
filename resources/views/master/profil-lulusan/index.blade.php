@@ -11,7 +11,7 @@
     </div>
     @hasanyrole('admin|kaprodi')
     <a href="{{ route('master.profil-lulusan.create') }}"
-       class="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition">
+       class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-700 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
         </svg>
@@ -29,8 +29,8 @@
     @foreach($items as $pl)
     <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
         <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center shrink-0">
-                <span class="text-indigo-700 font-bold text-sm">{{ $pl->kode }}</span>
+            <div class="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center shrink-0">
+                <span class="text-gray-800 font-bold text-sm">{{ $pl->kode }}</span>
             </div>
             <div class="flex-1 min-w-0">
                 <p class="font-semibold text-gray-800 text-sm">{{ $pl->nama }}</p>
@@ -41,7 +41,7 @@
             @hasanyrole('admin|kaprodi')
             <div class="flex items-center gap-2 shrink-0">
                 <a href="{{ route('master.profil-lulusan.edit', $pl) }}"
-                   class="px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition">
+                   class="px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
                     Edit
                 </a>
                 <form method="POST" action="{{ route('master.profil-lulusan.destroy', $pl) }}"
