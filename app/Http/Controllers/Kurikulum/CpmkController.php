@@ -66,7 +66,7 @@ class CpmkController extends Controller
             ->get();
 
         $cpmks = Cpmk::where('mata_kuliah_id', $mataKuliah->id)
-            ->with(['cpmkCpls'])
+            ->with(['cpmkCpls', 'subCpmks'])
             ->orderBy('urutan')
             ->get();
 
@@ -81,7 +81,24 @@ class CpmkController extends Controller
             }
         }
 
-        return view('kurikulum.cpmk.show', compact('mataKuliah', 'cpls', 'cpmks', 'cpmkCplMap'));
+        // Hitung referensi Tabel 5: % bobot per CPL dalam MK ini
+        // (nilai / rowTotal × 100, sama persis dengan kalkulasi Tabel 5)
+        $mkCplRows = MkCpl::where('mata_kuliah_id', $mataKuliah->id)
+            ->whereIn('cpl_id', $cpls->pluck('id'))
+            ->get(['cpl_id', 'level'])
+            ->keyBy('cpl_id');
+
+        $nilaiPerCpl = $cpls->mapWithKeys(fn($cpl) => [
+            $cpl->id => match ($mkCplRows[$cpl->id]->level ?? null) {
+                'Tinggi' => 5, 'Sedang' => 3, 'Rendah' => 1, default => 0,
+            },
+        ]);
+        $mkRowTotal = $nilaiPerCpl->sum();
+        $tabel5 = $nilaiPerCpl->mapWithKeys(fn($nilai, $cplId) => [
+            $cplId => $mkRowTotal > 0 ? round($nilai / $mkRowTotal * 100, 2) : 0,
+        ])->toArray();
+
+        return view('kurikulum.cpmk.show', compact('mataKuliah', 'cpls', 'cpmks', 'cpmkCplMap', 'tabel5'));
     }
 
     /* ----------------------------------------------------------------
@@ -111,6 +128,9 @@ class CpmkController extends Controller
      * ---------------------------------------------------------------- */
     public function update(Request $request, Cpmk $cpmk): JsonResponse
     {
+        $cpmk->loadMissing('mataKuliah');
+        $this->authorizeDosenMk($cpmk->mataKuliah);
+
         $data = $request->validate([
             'deskripsi' => 'required|string|max:1000',
         ]);
@@ -124,6 +144,9 @@ class CpmkController extends Controller
      * ---------------------------------------------------------------- */
     public function destroy(Cpmk $cpmk): JsonResponse
     {
+        $cpmk->loadMissing('mataKuliah');
+        $this->authorizeDosenMk($cpmk->mataKuliah);
+
         $cpmk->delete();
         return response()->json(['ok' => true]);
     }
@@ -133,17 +156,30 @@ class CpmkController extends Controller
      * ---------------------------------------------------------------- */
     public function saveCplRelation(Request $request, Cpmk $cpmk): JsonResponse
     {
+        $cpmk->loadMissing('mataKuliah');
+        $this->authorizeDosenMk($cpmk->mataKuliah);
+
         $data = $request->validate([
             'cpl_id'       => 'required|exists:cpls,id',
             'has_relation' => 'required|boolean',
         ]);
 
+        $updateData = ['has_relation' => $data['has_relation']];
+        if (!$data['has_relation']) {
+            $updateData['bobot_persen'] = 0;   // reset bobot hanya saat uncheck
+        }
+
         CpmkCpl::updateOrCreate(
             ['cpmk_id' => $cpmk->id, 'cpl_id' => $data['cpl_id']],
-            ['has_relation' => $data['has_relation']]
+            $updateData
         );
 
-        return response()->json(['ok' => true]);
+        // Hitung ulang total bobot (hanya CPL yang has_relation=true)
+        $totalBobot = CpmkCpl::where('cpmk_id', $cpmk->id)
+            ->where('has_relation', true)
+            ->sum('bobot_persen');
+
+        return response()->json(['ok' => true, 'total_bobot' => round($totalBobot, 2)]);
     }
 
     /* ----------------------------------------------------------------
@@ -151,18 +187,31 @@ class CpmkController extends Controller
      * ---------------------------------------------------------------- */
     public function saveBobot(Request $request, Cpmk $cpmk): JsonResponse
     {
+        $cpmk->loadMissing('mataKuliah');
+        $this->authorizeDosenMk($cpmk->mataKuliah);
+
         $data = $request->validate([
             'cpl_id' => 'required|exists:cpls,id',
             'bobot'  => 'required|numeric|min:0|max:100',
         ]);
 
+        // Jangan ubah has_relation saat bobot dikosongkan —
+        // has_relation hanya dikelola lewat endpoint cpl-relation.
+        // Hanya set has_relation=true saat bobot baru diisi (baris baru).
+        $updateData = ['bobot_persen' => $data['bobot']];
+        if ($data['bobot'] > 0) {
+            $updateData['has_relation'] = true;
+        }
+
         CpmkCpl::updateOrCreate(
             ['cpmk_id' => $cpmk->id, 'cpl_id' => $data['cpl_id']],
-            ['bobot_persen' => $data['bobot'], 'has_relation' => $data['bobot'] > 0]
+            $updateData
         );
 
-        // Hitung total bobot per CPMK (untuk validasi di frontend)
-        $totalBobot = CpmkCpl::where('cpmk_id', $cpmk->id)->sum('bobot_persen');
+        // Hitung total bobot per CPMK (hanya CPL yang has_relation=true)
+        $totalBobot = CpmkCpl::where('cpmk_id', $cpmk->id)
+            ->where('has_relation', true)
+            ->sum('bobot_persen');
 
         return response()->json(['ok' => true, 'total_bobot' => round($totalBobot, 2)]);
     }
@@ -223,7 +272,7 @@ class CpmkController extends Controller
             $maxSubs = $mk->cpmks->max(fn($c) => $c->subCpmks->count()) ?? 0;
             $mk->max_subs = $mk->cpmks->flatMap->subCpmks->count(); // total subs in MK
             foreach ($mk->cpmks as $cpmk) {
-                $totalBobot   = $cpmk->cpmkCpls->sum('bobot_persen');
+                $totalBobot   = $cpmk->cpmkCpls->where('has_relation', true)->sum('bobot_persen');
                 $subCount     = $cpmk->subCpmks->count();
                 $bobotPerSub  = $subCount > 0 ? round($totalBobot / $subCount, 2) : 0;
                 $cpmk->total_bobot  = $totalBobot;

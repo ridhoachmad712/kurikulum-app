@@ -31,7 +31,7 @@ $rows = [
     ['Matriks – Tabel 2 s.d. 5', 'Lihat tabel kalkulasi bobot MK–CPL', $check, $check, $cross],
     ['CPMK', 'Isi & ubah Capaian Pembelajaran Mata Kuliah', $check, $check, $partial],
     ['Sub-CPMK & CLO Tertinggi', 'Isi sub-CPMK dan tentukan CLO taksonomi tertinggi', $check, $check, $partial],
-    ['Bobot Asesmen', 'Input bobot Tugas, Quis, Kasus/Proyek, UTS, UAS per Sub-CPMK', $check, $check, $partial],
+    ['Bobot Asesmen', 'Input bobot Tugas, Kuis, Kasus/Proyek, UTS, UAS per Sub-CPMK', $check, $check, $partial],
 ];
 @endphp
 

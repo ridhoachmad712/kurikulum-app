@@ -14,7 +14,8 @@
     <x-search-input placeholder="Cari kode atau nama MK..." />
 </div>
 
-{{-- Filter semester --}}
+{{-- Filter semester (admin/kaprodi only) --}}
+@hasanyrole('admin|kaprodi')
 <div class="inline-flex items-center bg-gray-100 rounded-xl p-1 gap-0.5 mb-5 flex-wrap">
     <a href="{{ route('kurikulum.cpmk.index') }}"
        class="px-4 py-1.5 text-sm font-medium rounded-lg transition-colors
@@ -29,6 +30,17 @@
     </a>
     @endfor
 </div>
+@endhasanyrole
+{{-- Info scope dosen --}}
+@hasrole('dosen')
+<div class="flex items-center gap-2 bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-2.5 mb-4 text-xs text-indigo-700">
+    <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    <span>Menampilkan hanya mata kuliah yang ditugaskan kepada Anda. Hubungi Kaprodi jika ada MK yang tidak muncul.</span>
+</div>
+@endhasrole
+
 @if(request('search'))
 <p class="text-xs text-gray-500 mb-3">Hasil untuk <strong>"{{ request('search') }}"</strong> — {{ $mataKuliahs->total() }} ditemukan</p>
 @endif
@@ -70,9 +82,16 @@
             </tr>
             @empty
             <tr><td colspan="6" class="p-0">
-                <x-empty-state icon="document"
-                    :title="request('search') ? 'Tidak ada hasil pencarian' : 'Belum ada mata kuliah'"
-                    :subtitle="request('search') ? 'Coba kata kunci lain.' : 'Tambahkan mata kuliah di menu Master terlebih dahulu.'"/>
+                @if(request('search'))
+                    <x-empty-state icon="document" title="Tidak ada hasil pencarian" subtitle="Coba kata kunci lain."/>
+                @elseif(auth()->user()->hasRole('dosen'))
+                    <x-empty-state icon="document"
+                        title="Belum ada mata kuliah yang ditugaskan"
+                        subtitle="Anda belum mendapat penugasan mata kuliah. Hubungi Kaprodi untuk pengaturan penugasan."/>
+                @else
+                    <x-empty-state icon="document" title="Belum ada mata kuliah"
+                        subtitle="Tambahkan mata kuliah di menu Master terlebih dahulu."/>
+                @endif
             </td></tr>
             @endforelse
         </tbody>

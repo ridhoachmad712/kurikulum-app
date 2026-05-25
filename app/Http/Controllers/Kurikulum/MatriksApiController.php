@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Kurikulum;
 
+use App\Http\Controllers\Concerns\DosenMkScope;
 use App\Http\Controllers\Controller;
 use App\Models\MataKuliah;
 use App\Models\MkCpl;
@@ -10,6 +11,8 @@ use Illuminate\Http\Request;
 
 class MatriksApiController extends Controller
 {
+    use DosenMkScope;
+
     /**
      * Simpan satu sel (mata_kuliah × cpl) via fetch/AJAX.
      * level: Tinggi|Sedang|Rendah|'' (kosong = hapus relasi)
@@ -21,6 +24,8 @@ class MatriksApiController extends Controller
             'cpl_id'         => 'required|exists:cpls,id',
             'level'          => 'nullable|in:Tinggi,Sedang,Rendah',
         ]);
+
+        $this->authorizeDosenMk(MataKuliah::findOrFail($data['mata_kuliah_id']));
 
         $level = $data['level'] ?: null;
 
@@ -51,6 +56,14 @@ class MatriksApiController extends Controller
             'cells.*.cpl_id'         => 'required|exists:cpls,id',
             'cells.*.level'          => 'nullable|in:Tinggi,Sedang,Rendah',
         ])['cells'];
+
+        // Pastikan semua MK dalam batch milik dosen (jika role dosen)
+        if (auth()->user()->hasRole('dosen')) {
+            $mkIds = collect($cells)->pluck('mata_kuliah_id')->unique();
+            foreach ($mkIds as $mkId) {
+                $this->authorizeDosenMk(MataKuliah::findOrFail($mkId));
+            }
+        }
 
         foreach ($cells as $cell) {
             $level = $cell['level'] ?: null;

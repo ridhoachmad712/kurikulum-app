@@ -3,6 +3,9 @@
 @section('content')
 
 {{-- ── STAT CARDS ── --}}
+@php
+    $pct = $summary['total_mk'] > 0 ? round($summary['mk_lengkap'] / $summary['total_mk'] * 100) : 0;
+@endphp
 <div class="grid grid-cols-3 gap-4 mb-7">
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
         <p class="text-xs text-gray-400 uppercase tracking-wider">MK Ditugaskan</p>
@@ -12,7 +15,6 @@
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
         <p class="text-xs text-gray-400 uppercase tracking-wider">Sudah Lengkap</p>
         <p class="text-3xl font-bold text-green-600 mt-1">{{ $summary['mk_lengkap'] }}</p>
-        @php $pct = $summary['total_mk'] > 0 ? round($summary['mk_lengkap'] / $summary['total_mk'] * 100) : 0; @endphp
         <div class="mt-2 bg-gray-100 rounded-full h-1.5">
             <div class="bg-green-500 h-1.5 rounded-full transition-all" style="width: {{ $pct }}%"></div>
         </div>
@@ -27,7 +29,7 @@
     </div>
 </div>
 
-{{-- ── MK CARDS ── --}}
+{{-- ── MK CARDS — grouped by semester ── --}}
 @if($mataKuliahs->isEmpty())
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
     <svg class="w-12 h-12 mx-auto text-gray-200 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -38,51 +40,102 @@
 </div>
 @else
 
-<div class="flex items-center justify-between mb-4">
-    <h2 class="text-sm font-semibold text-gray-600">Mata Kuliah Saya ({{ $mataKuliahs->count() }} MK)</h2>
+@php $bySemester = $mataKuliahs->groupBy('semester')->sortKeys(); @endphp
+
+@foreach($bySemester as $semester => $mks)
+
+{{-- Semester heading --}}
+<div class="flex items-center gap-3 mb-3 {{ !$loop->first ? 'mt-8' : '' }}">
+    <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Semester {{ $semester }}</span>
+    <div class="flex-1 h-px bg-gray-200"></div>
+    @php
+        $smtLengkap = $mks->where('score', 5)->count();
+        $smtTotal   = $mks->count();
+    @endphp
+    <span class="text-xs text-gray-400">{{ $smtLengkap }}/{{ $smtTotal }} lengkap</span>
 </div>
 
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-@foreach($mataKuliahs as $mk)
+@foreach($mks as $mk)
 @php
     $allClo  = $mk->sub_cpmks_count > 0 && $mk->sub_clo_count  == $mk->sub_cpmks_count;
     $allAses = $mk->sub_cpmks_count > 0 && $mk->sub_asesmen_count == $mk->sub_cpmks_count;
 
+    /*
+     * Checklist dengan label angka granular:
+     *   label     = teks item
+     *   done      = apakah langkah selesai
+     *   detail    = angka progres (opsional)
+     *   href      = link aksi
+     */
+    $firstCpmk = $firstCpmkByMk[$mk->id] ?? null;
+
     $checks = [
-        ['label' => 'Matriks MK–CPL',  'done' => $mk->has_matriks,        'href' => route('kurikulum.matriks.input')],
-        ['label' => 'CPMK',             'done' => $mk->cpmks_count > 0,    'href' => route('kurikulum.cpmk.show', $mk)],
-        ['label' => 'Sub-CPMK',         'done' => $mk->sub_cpmks_count > 0,'href' => route('kurikulum.sub-cpmk.index')],
-        ['label' => 'CLO Tertinggi',    'done' => $allClo,                 'href' => route('kurikulum.sub-cpmk.index')],
-        ['label' => 'Bobot Asesmen',    'done' => $allAses,                'href' => route('kurikulum.asesmen.show', $mk)],
+        [
+            'label'  => 'Matriks MK–CPL',
+            'done'   => $mk->has_matriks,
+            'detail' => $mk->has_matriks ? 'sudah terhubung' : 'belum diisi',
+            'href'   => route('kurikulum.matriks.input'),
+        ],
+        [
+            'label'  => 'CPMK',
+            'done'   => $mk->cpmks_count > 0,
+            'detail' => $mk->cpmks_count > 0 ? $mk->cpmks_count . ' CPMK' : 'belum ada',
+            'href'   => route('kurikulum.cpmk.show', $mk),
+        ],
+        [
+            'label'  => 'Sub-CPMK',
+            'done'   => $mk->sub_cpmks_count > 0,
+            'detail' => $mk->sub_cpmks_count > 0 ? $mk->sub_cpmks_count . ' Sub-CPMK' : 'belum ada',
+            'href'   => $firstCpmk
+                            ? route('kurikulum.sub-cpmk.show', $firstCpmk)
+                            : route('kurikulum.cpmk.show', $mk),
+        ],
+        [
+            'label'  => 'CLO Tertinggi',
+            'done'   => $allClo,
+            'detail' => $mk->sub_cpmks_count > 0
+                            ? $mk->sub_clo_count . '/' . $mk->sub_cpmks_count . ' sub-CPMK terisi'
+                            : 'belum ada Sub-CPMK',
+            'href'   => $firstCpmk
+                            ? route('kurikulum.sub-cpmk.show', $firstCpmk)
+                            : route('kurikulum.cpmk.show', $mk),
+        ],
+        [
+            'label'  => 'Bobot Asesmen',
+            'done'   => $allAses,
+            'detail' => $mk->sub_cpmks_count > 0
+                            ? $mk->sub_asesmen_count . '/' . $mk->sub_cpmks_count . ' sub-CPMK terisi'
+                            : 'belum ada Sub-CPMK',
+            'href'   => route('kurikulum.asesmen.show', $mk),
+        ],
     ];
 
-    // First incomplete step
-    $nextHref  = null;
-    $nextLabel = null;
-    foreach ($checks as $step) {
-        if (!$step['done']) {
-            $nextHref  = $step['href'];
-            $nextLabel = $step['label'];
-            break;
-        }
-    }
+    // Langkah berikutnya yang belum selesai
+    $nextStep = collect($checks)->first(fn($s) => !$s['done']);
 
     $barPct   = round($mk->score / 5 * 100);
     $barColor = $mk->score == 5 ? 'bg-green-500' : ($mk->score >= 3 ? 'bg-gray-500' : 'bg-amber-400');
-    $badgeClass = match($mk->score) {
-        5       => 'bg-green-100 text-green-700',
-        0       => 'bg-gray-100 text-gray-400',
-        default => 'bg-amber-100 text-amber-700',
+
+    $badgeClass = match(true) {
+        $mk->score == 5 => 'bg-green-100 text-green-700',
+        $mk->score == 0 => 'bg-gray-100 text-gray-400',
+        default         => 'bg-amber-100 text-amber-700',
     };
     $badgeLabel = match($mk->score) {
-        5 => 'Lengkap',
-        0 => 'Belum mulai',
+        5       => '✓ Lengkap',
+        0       => 'Belum mulai',
         default => "Langkah {$mk->score}/5",
+    };
+
+    $borderClass = match(true) {
+        $mk->score == 5 => 'border-l-4 border-l-green-400',
+        $mk->score == 0 => '',
+        default         => 'border-l-4 border-l-amber-400',
     };
 @endphp
 
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col overflow-hidden
-            {{ $mk->score == 5 ? 'border-l-4 border-l-green-400' : ($mk->score == 0 ? '' : 'border-l-4 border-l-amber-400') }}">
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col overflow-hidden {{ $borderClass }}">
 
     {{-- Card header --}}
     <div class="px-5 pt-4 pb-3">
@@ -90,7 +143,6 @@
             <div class="min-w-0">
                 <div class="flex items-center gap-2 mb-0.5">
                     <span class="font-mono text-xs text-gray-700 font-semibold">{{ $mk->kode_rps }}</span>
-                    <span class="text-xs text-gray-400">Smt {{ $mk->semester }}</span>
                     @if($mk->sks)
                     <span class="text-xs text-gray-400">· {{ $mk->sks }} SKS</span>
                     @endif
@@ -112,28 +164,32 @@
         </div>
     </div>
 
-    {{-- Checklist --}}
-    <div class="px-5 py-3 border-t border-gray-50 grid grid-cols-2 gap-x-4 gap-y-2">
-        @foreach($checks as $step)
-        <div class="flex items-center gap-2">
-            @if($step['done'])
-                {{-- Done: green checkmark --}}
-                <span class="shrink-0 w-5 h-5 rounded-full bg-green-100 flex items-center justify-center">
-                    <svg class="w-3 h-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                    </svg>
-                </span>
-                <span class="text-xs text-gray-500 line-through">{{ $step['label'] }}</span>
-            @else
-                {{-- Pending: link to fill --}}
-                <span class="shrink-0 w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center">
-                    <svg class="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-                    </svg>
-                </span>
-                <a href="{{ $step['href'] }}"
-                   class="text-xs text-gray-700 hover:underline font-medium">{{ $step['label'] }}</a>
-            @endif
+    {{-- Checklist: 5 langkah dengan detail angka --}}
+    <div class="px-5 py-3 border-t border-gray-50 space-y-2">
+        @foreach($checks as $i => $step)
+        <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 min-w-0">
+                @if($step['done'])
+                    <span class="shrink-0 w-5 h-5 rounded-full bg-green-100 flex items-center justify-center">
+                        <svg class="w-3 h-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </span>
+                    <span class="text-xs text-gray-400 line-through">{{ $step['label'] }}</span>
+                @else
+                    <span class="shrink-0 w-5 h-5 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center">
+                        <span class="text-[9px] font-bold text-amber-500">{{ $i + 1 }}</span>
+                    </span>
+                    <a href="{{ $step['href'] }}"
+                       class="text-xs text-gray-700 hover:text-gray-900 font-medium hover:underline truncate">
+                        {{ $step['label'] }}
+                    </a>
+                @endif
+            </div>
+            {{-- Detail angka di kanan --}}
+            <span class="shrink-0 text-xs {{ $step['done'] ? 'text-green-600 font-medium' : 'text-gray-400' }}">
+                {{ $step['detail'] }}
+            </span>
         </div>
         @endforeach
     </div>
@@ -150,12 +206,12 @@
             <a href="{{ route('kurikulum.asesmen.show', $mk) }}"
                class="text-xs text-gray-400 hover:text-gray-700 hover:underline">Lihat asesmen →</a>
         @else
-            <p class="text-xs text-gray-400">
+            <p class="text-xs text-gray-400 truncate">
                 Lanjutkan:
-                <span class="font-medium text-gray-600">{{ $nextLabel }}</span>
+                <span class="font-medium text-gray-600">{{ $nextStep['label'] }}</span>
             </p>
-            <a href="{{ $nextHref }}"
-               class="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 bg-gray-700 hover:bg-gray-700
+            <a href="{{ $nextStep['href'] }}"
+               class="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 bg-gray-700 hover:bg-gray-600
                       text-white text-xs font-semibold rounded-lg transition-colors">
                 Isi sekarang
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -167,7 +223,9 @@
 
 </div>
 @endforeach
-</div>
+</div>{{-- end grid --}}
+
+@endforeach{{-- end semester loop --}}
 
 @endif
 

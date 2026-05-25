@@ -32,7 +32,7 @@ class AsesmenController extends Controller
 
         $q = MataKuliah::where('program_studi_id', $psId)
             ->where('aktif', true)
-            ->with(['cpmks.subCpmks.asesmen'])
+            ->with(['cpmks.subCpmks.asesmen', 'cpmks.subCpmks.subCpmkClos'])
             ->when($semester, fn($q) => $q->where('semester', $semester))
             ->when($search, fn($q) => $q->where(fn($s) =>
                 $s->where('nama', 'like', "%$search%")
@@ -43,11 +43,11 @@ class AsesmenController extends Controller
         $mataKuliahs = $q->get()
             ->filter(fn($mk) => $mk->cpmks->flatMap->subCpmks->isNotEmpty())
             ->map(function ($mk) {
-                $subCpmks   = $mk->cpmks->flatMap->subCpmks;
-                $total      = $subCpmks->count();
-                $filled     = $subCpmks->filter(fn($sc) => $sc->asesmen !== null)->count();
-                $mk->total_sub  = $total;
-                $mk->filled_sub = $filled;
+                $subCpmks        = $mk->cpmks->flatMap->subCpmks;
+                $withClo         = $subCpmks->filter(fn($sc) => $sc->subCpmkClos->isNotEmpty());
+                $mk->all_sub     = $subCpmks->count();   // total sub termasuk yang belum ber-CLO
+                $mk->total_sub   = $withClo->count();    // hanya sub yang sudah ber-CLO
+                $mk->filled_sub  = $withClo->filter(fn($sc) => $sc->asesmen !== null)->count();
                 return $mk;
             });
 
@@ -62,11 +62,32 @@ class AsesmenController extends Controller
         $this->authorizeDosenMk($mataKuliah);
 
         $cpmks = $mataKuliah->cpmks()
-            ->with(['subCpmks.asesmen'])
+            ->with(['subCpmks.asesmen', 'subCpmks.subCpmkClos', 'cpmkCpls'])
             ->orderBy('urutan')
             ->get();
 
-        return view('kurikulum.asesmen.show', compact('mataKuliah', 'cpmks'));
+        // Bobot teoritis per Sub-CPMK = total bobot CPMK terhadap CPL / jumlah Sub-CPMK
+        // Sama dengan kalkulasi di PengukuranController::cpmk()
+        $subCpmkBobot = [];   // [sub_cpmk_id => bobot_teoritis]
+        $cpmkMeta     = [];   // [cpmk_id => ['total_bobot', 'bobot_per_sub', 'sub_count']]
+
+        foreach ($cpmks as $cpmk) {
+            $totalBobot  = (float) $cpmk->cpmkCpls->where('has_relation', true)->sum('bobot_persen');
+            $subCount    = $cpmk->subCpmks->count();
+            $bobotPerSub = $subCount > 0 ? round($totalBobot / $subCount, 2) : 0;
+
+            $cpmkMeta[$cpmk->id] = [
+                'total_bobot'  => $totalBobot,
+                'bobot_per_sub'=> $bobotPerSub,
+                'sub_count'    => $subCount,
+            ];
+
+            foreach ($cpmk->subCpmks as $sc) {
+                $subCpmkBobot[$sc->id] = $bobotPerSub;
+            }
+        }
+
+        return view('kurikulum.asesmen.show', compact('mataKuliah', 'cpmks', 'subCpmkBobot', 'cpmkMeta'));
     }
 
     /* ----------------------------------------------------------------
@@ -74,6 +95,9 @@ class AsesmenController extends Controller
      * ---------------------------------------------------------------- */
     public function save(Request $request, SubCpmk $subCpmk): JsonResponse
     {
+        $subCpmk->loadMissing('mataKuliah');
+        $this->authorizeDosenMk($subCpmk->mataKuliah);
+
         $data = $request->validate([
             'tugas'        => 'required|numeric|min:0|max:100',
             'quis'         => 'required|numeric|min:0|max:100',

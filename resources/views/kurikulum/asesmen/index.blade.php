@@ -2,9 +2,10 @@
 @section('title','Bobot Asesmen Sub-CPMK')
 @section('content')
 
-<x-page-header title="Bobot Asesmen" subtitle="Input bobot metode asesmen per Sub-CPMK (Tugas, Quis, UTS, UAS, dll.)"/>
+<x-page-header title="Bobot Asesmen" subtitle="Input bobot metode asesmen per Sub-CPMK (Tugas, Kuis, UTS, UAS, dll.)"/>
 
 <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+    @hasanyrole('admin|kaprodi')
     <div class="flex gap-2 flex-wrap">
         <a href="{{ route('kurikulum.asesmen.index') }}"
            class="px-4 py-2 text-sm font-medium rounded-lg {{ !request('semester') ? 'bg-gray-700 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
@@ -17,8 +18,19 @@
         </a>
         @endfor
     </div>
+    @endhasanyrole
     <x-search-input placeholder="Cari kode atau nama MK..." />
 </div>
+{{-- Info scope dosen --}}
+@hasrole('dosen')
+<div class="flex items-center gap-2 bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-2.5 mb-4 text-xs text-indigo-700">
+    <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    <span>Menampilkan hanya mata kuliah yang ditugaskan kepada Anda. Hubungi Kaprodi jika ada MK yang tidak muncul.</span>
+</div>
+@endhasrole
+
 @if(request('search'))
 <p class="text-xs text-gray-500 mb-3">Hasil untuk <strong>"{{ request('search') }}"</strong> — {{ $mataKuliahs->count() }} ditemukan</p>
 @endif
@@ -43,7 +55,15 @@
                 <td class="px-4 py-2.5 text-center text-gray-500">{{ $mk->sks }}</td>
                 <td class="px-4 py-2.5 text-center text-gray-500">{{ $mk->semester }}</td>
                 <td class="px-4 py-2.5 text-center">
-                    @php $pct = $mk->total_sub > 0 ? round($mk->filled_sub / $mk->total_sub * 100) : 0; @endphp
+                    @if($mk->total_sub === 0)
+                    {{-- Semua sub belum punya CLO — progress tidak bermakna --}}
+                    <a href="{{ route('kurikulum.cpmk.show', $mk) }}"
+                       class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium
+                              bg-amber-50 border border-amber-200 text-amber-700 hover:bg-amber-100 transition-colors">
+                        ⚠ Belum ada CLO
+                    </a>
+                    @else
+                    @php $pct = round($mk->filled_sub / $mk->total_sub * 100); @endphp
                     <div class="flex items-center gap-2">
                         <div class="flex-1 bg-gray-100 rounded-full h-1.5">
                             <div class="h-1.5 rounded-full {{ $pct == 100 ? 'bg-green-500' : 'bg-amber-400' }}"
@@ -51,6 +71,7 @@
                         </div>
                         <span class="text-xs text-gray-500 w-14 text-right">{{ $mk->filled_sub }}/{{ $mk->total_sub }}</span>
                     </div>
+                    @endif
                 </td>
                 <td class="px-4 py-2.5 text-center">
                     <a href="{{ route('kurikulum.asesmen.show', $mk) }}"
@@ -61,10 +82,16 @@
             </tr>
             @empty
             <tr><td colspan="6" class="p-0">
-                <x-empty-state icon="document" title="Belum ada Sub-CPMK"
-                    subtitle="Isi Sub-CPMK terlebih dahulu sebelum mengatur bobot asesmen."
-                    action="{{ route('kurikulum.sub-cpmk.index') }}"
-                    actionLabel="Isi Sub-CPMK"/>
+                @if(auth()->user()->hasRole('dosen'))
+                    <x-empty-state icon="document"
+                        title="Belum ada mata kuliah yang ditugaskan"
+                        subtitle="Anda belum mendapat penugasan mata kuliah. Hubungi Kaprodi untuk pengaturan penugasan."/>
+                @else
+                    <x-empty-state icon="document" title="Belum ada Sub-CPMK"
+                        subtitle="Isi Sub-CPMK terlebih dahulu sebelum mengatur bobot asesmen."
+                        action="{{ route('kurikulum.sub-cpmk.index') }}"
+                        actionLabel="Isi Sub-CPMK"/>
+                @endif
             </td></tr>
             @endforelse
         </tbody>

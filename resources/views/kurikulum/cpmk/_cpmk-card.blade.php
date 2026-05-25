@@ -38,15 +38,29 @@
                 <span class="text-xs text-gray-400 self-center">CPL yang didukung:</span>
                 @foreach($cpls as $cpl)
                 @php $checked = $cpmkCplMap[$cpmk->id][$cpl->id]['has_relation'] ?? false; @endphp
-                <label class="inline-flex items-center gap-1 cursor-pointer px-2 py-0.5 rounded-full border text-xs
-                              {{ $checked ? 'bg-gray-100 border-indigo-300 text-gray-800' : 'bg-gray-50 border-gray-200 text-gray-400' }}">
-                    <input type="checkbox"
-                        class="sr-only"
-                        {{ $checked ? 'checked' : '' }}
-                        onchange="toggleCpl(this, {{ $cpmk->id }}, {{ $cpl->id }})">
+                <button type="button"
+                    id="cpl-label-{{ $cpmk->id }}-{{ $cpl->id }}"
+                    data-checked="{{ $checked ? '1' : '0' }}"
+                    onclick="toggleCpl(this, {{ $cpmk->id }}, {{ $cpl->id }})"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-xs transition-colors
+                           {{ $checked ? 'bg-indigo-100 border-indigo-400 text-indigo-800 font-semibold' : 'bg-gray-50 border-gray-200 text-gray-400 hover:border-gray-300' }}">
                     {{ $cpl->kode }}
-                </label>
+                </button>
                 @endforeach
+            </div>
+
+            {{-- Link ke Sub-CPMK --}}
+            <div class="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between gap-2">
+                <span class="text-xs text-gray-400">
+                    {{ $cpmk->subCpmks->count() }} Sub-CPMK
+                </span>
+                <a href="{{ route('kurikulum.sub-cpmk.show', $cpmk) }}"
+                   class="inline-flex items-center gap-1 text-xs text-gray-600 hover:text-gray-900 font-medium hover:underline">
+                    Kelola Sub-CPMK
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
             </div>
         </div>
     </div>

@@ -96,6 +96,9 @@ class SubCpmkController extends Controller
      * ---------------------------------------------------------------- */
     public function update(Request $request, SubCpmk $subCpmk): JsonResponse
     {
+        $subCpmk->loadMissing('mataKuliah');
+        $this->authorizeDosenMk($subCpmk->mataKuliah);
+
         $data = $request->validate([
             'deskripsi' => 'required|string|max:1000',
         ]);
@@ -109,6 +112,9 @@ class SubCpmkController extends Controller
      * ---------------------------------------------------------------- */
     public function destroy(SubCpmk $subCpmk): JsonResponse
     {
+        $subCpmk->loadMissing('mataKuliah');
+        $this->authorizeDosenMk($subCpmk->mataKuliah);
+
         $subCpmk->delete();
         return response()->json(['ok' => true]);
     }
@@ -118,26 +124,59 @@ class SubCpmkController extends Controller
      * ---------------------------------------------------------------- */
     public function saveClo(Request $request, SubCpmk $subCpmk): JsonResponse
     {
+        $subCpmk->loadMissing('mataKuliah');
+        $this->authorizeDosenMk($subCpmk->mataKuliah);
+
         $data = $request->validate([
             'clo_id' => 'nullable|exists:clo_taxonomis,id',
         ]);
 
         if ($data['clo_id']) {
-            SubCpmkClo::where('sub_cpmk_id', $subCpmk->id)->delete();
-            SubCpmkClo::create([
-                'sub_cpmk_id' => $subCpmk->id,
-                'clo_id'      => $data['clo_id'],
-                'is_tertinggi' => true,
-            ]);
-            $kode = CloTaxonomi::find($data['clo_id'])->kode;
-            $subCpmk->update(['kode_clo_tertinggi' => $kode]);
+            $clo    = CloTaxonomi::find($data['clo_id']);
+            $domain = $clo->domain;
+
+            // Toggle: jika CLO ini sudah dipilih → hapus (deselect)
+            $alreadySelected = SubCpmkClo::where('sub_cpmk_id', $subCpmk->id)
+                ->where('clo_id', $data['clo_id'])
+                ->exists();
+
+            if ($alreadySelected) {
+                SubCpmkClo::where('sub_cpmk_id', $subCpmk->id)
+                    ->where('clo_id', $data['clo_id'])
+                    ->delete();
+            } else {
+                // Hapus CLO lama untuk domain yang sama (maks 1 per domain)
+                SubCpmkClo::where('sub_cpmk_id', $subCpmk->id)
+                    ->whereHas('cloTaxonomi', fn($q) => $q->where('domain', $domain))
+                    ->delete();
+
+                SubCpmkClo::create([
+                    'sub_cpmk_id'  => $subCpmk->id,
+                    'clo_id'       => $data['clo_id'],
+                    'is_tertinggi' => true,
+                ]);
+            }
         } else {
+            // Hapus semua CLO
             SubCpmkClo::where('sub_cpmk_id', $subCpmk->id)->delete();
-            $subCpmk->update(['kode_clo_tertinggi' => null]);
-            $kode = null;
         }
 
-        return response()->json(['ok' => true, 'kode_clo_tertinggi' => $kode]);
+        // Reload dan susun ulang badge (semua domain terpilih)
+        $selectedClos = SubCpmkClo::where('sub_cpmk_id', $subCpmk->id)
+            ->with('cloTaxonomi')
+            ->get()
+            ->sortBy(fn($sc) => $sc->cloTaxonomi->domain);
+
+        $kodeBadge   = $selectedClos->map(fn($sc) => $sc->cloTaxonomi->kode)->implode(', ');
+        $selectedIds = $selectedClos->pluck('clo_id')->values()->toArray();
+
+        $subCpmk->update(['kode_clo_tertinggi' => $kodeBadge ?: null]);
+
+        return response()->json([
+            'ok'             => true,
+            'kode_clo_badge' => $kodeBadge ?: null,
+            'selected_ids'   => $selectedIds,
+        ]);
     }
 
     /* ----------------------------------------------------------------
@@ -184,6 +223,9 @@ class SubCpmkController extends Controller
     {
         $psId = $this->programStudiId();
 
+        // Ambil semua domain CLO yang tersedia (urut abjad)
+        $domains = CloTaxonomi::distinct()->orderBy('domain')->pluck('domain');
+
         $q = MataKuliah::where('program_studi_id', $psId)
             ->where('aktif', true)
             ->with([
@@ -195,6 +237,6 @@ class SubCpmkController extends Controller
         $this->applyDosenScope($q);
         $mataKuliahs = $q->get()->filter(fn($mk) => $mk->cpmks->flatMap->subCpmks->isNotEmpty());
 
-        return view('kurikulum.sub-cpmk.tabel8', compact('mataKuliahs'));
+        return view('kurikulum.sub-cpmk.tabel8', compact('mataKuliahs', 'domains'));
     }
 }

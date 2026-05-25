@@ -109,7 +109,7 @@
                     <tr>
                         <th class="border border-gray-200 px-3 py-2 text-left min-w-[160px] text-gray-600">Sub-CPMK</th>
                         <th class="border border-gray-200 px-2 py-2 text-center w-16 text-gray-600">Tugas</th>
-                        <th class="border border-gray-200 px-2 py-2 text-center w-16 text-gray-600">Quis</th>
+                        <th class="border border-gray-200 px-2 py-2 text-center w-16 text-gray-600">Kuis</th>
                         <th class="border border-gray-200 px-2 py-2 text-center w-20 text-gray-600">Kasus/Proyek</th>
                         <th class="border border-gray-200 px-2 py-2 text-center w-16 text-gray-600">UTS</th>
                         <th class="border border-gray-200 px-2 py-2 text-center w-16 text-gray-600">UAS</th>

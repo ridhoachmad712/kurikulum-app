@@ -201,6 +201,27 @@
                 <span x-show="!collapsed" x-cloak>Bobot Asesmen</span>
             </x-nav-link>
 
+            {{-- Pengukuran CPMK --}}
+            <x-nav-link href="{{ route('kurikulum.pengukuran.cpmk') }}" :active="request()->routeIs('kurikulum.pengukuran.cpmk*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </x-slot>
+                <span x-show="!collapsed" x-cloak>Pengukuran CPMK</span>
+            </x-nav-link>
+
+            {{-- Pengukuran CPL --}}
+            <x-nav-link href="{{ route('kurikulum.pengukuran.cpl') }}" :active="request()->routeIs('kurikulum.pengukuran.cpl')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/>
+                    </svg>
+                </x-slot>
+                <span x-show="!collapsed" x-cloak>Pengukuran CPL</span>
+            </x-nav-link>
+
             {{-- RPS --}}
             <x-nav-link href="{{ route('kurikulum.rps.index') }}" :active="request()->routeIs('kurikulum.rps.*')">
                 <x-slot name="icon">

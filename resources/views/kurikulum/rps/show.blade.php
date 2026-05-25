@@ -213,7 +213,7 @@
                 @foreach($rps->mataKuliah->cpmks as $cpmk)
                 <tr class="hover:bg-gray-50 align-top">
                     <td class="px-5 py-2.5 font-mono text-gray-700 font-semibold whitespace-nowrap">
-                        {{ $cpmk->kode_cpmk }}
+                        {{ $cpmk->kode }}
                     </td>
                     <td class="px-4 py-2.5 text-gray-700 max-w-sm">{{ $cpmk->deskripsi }}</td>
                     <td class="px-4 py-2.5">
@@ -223,7 +223,7 @@
                         <div class="flex flex-wrap gap-1">
                             @foreach($cpmk->subCpmks as $sub)
                             <span class="inline-block bg-gray-50 text-gray-800 px-2 py-0.5 rounded font-mono">
-                                {{ $sub->kode_sub_cpmk }}
+                                {{ $sub->kode }}
                             </span>
                             @endforeach
                         </div>

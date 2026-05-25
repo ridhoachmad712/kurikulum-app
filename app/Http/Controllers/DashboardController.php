@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cpmk;
 use App\Models\MataKuliah;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -190,6 +191,13 @@ class DashboardController extends Controller
             'mk_pending' => $mataKuliahs->where('score', '<', 5)->count(),
         ];
 
-        return view('dashboard-dosen', compact('summary', 'mataKuliahs'));
+        // CPMK pertama (urutan terendah) per MK — untuk link langsung ke sub-cpmk.show
+        $firstCpmkByMk = Cpmk::whereIn('mata_kuliah_id', $mataKuliahs->pluck('id'))
+            ->orderBy('urutan')->orderBy('id')
+            ->get(['id', 'mata_kuliah_id'])
+            ->unique('mata_kuliah_id')
+            ->keyBy('mata_kuliah_id');
+
+        return view('dashboard-dosen', compact('summary', 'mataKuliahs', 'firstCpmkByMk'));
     }
 }

@@ -4,6 +4,16 @@
 
 @include('kurikulum.matriks._tabs')
 
+{{-- Info scope dosen --}}
+@hasrole('dosen')
+<div class="flex items-center gap-2 bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-2.5 mb-4 text-xs text-indigo-700">
+    <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    <span>Anda hanya dapat mengisi matriks untuk mata kuliah yang ditugaskan kepada Anda. Baris MK lain tidak ditampilkan.</span>
+</div>
+@endhasrole
+
 {{-- Legend --}}
 <div class="flex items-center gap-4 mb-4 text-xs">
     <span class="font-medium text-gray-600">Level keterkaitan:</span>
@@ -32,12 +42,18 @@
             </thead>
             <tbody>
                 @foreach($mataKuliahs as $mk)
-                <tr class="border-b border-gray-100 hover:bg-gray-50/30 group">
+                @php
+                    $canEdit = !auth()->user()->hasRole('dosen') || $mk->dosen_id === auth()->id();
+                @endphp
+                <tr class="border-b border-gray-100 {{ $canEdit ? 'hover:bg-gray-50/30' : 'opacity-50' }} group">
                     <td class="sticky left-0 z-10 bg-white group-hover:bg-gray-50/30 px-3 py-1.5 text-gray-400 text-right">{{ $loop->iteration }}</td>
                     <td class="sticky left-8 z-10 bg-white group-hover:bg-gray-50/30 px-3 py-1.5 border-r border-gray-100">
                         <span class="font-mono text-gray-700 mr-1">{{ $mk->kode_rps }}</span>
                         <span class="text-gray-800">{{ $mk->nama }}</span>
                         <span class="text-gray-400 ml-1">({{ $mk->sks }} SKS)</span>
+                        @if(!$canEdit)
+                        <span class="ml-1 text-[10px] text-gray-300 italic">— read only</span>
+                        @endif
                     </td>
                     @foreach($cpls as $cpl)
                     @php $currentLevel = $matriksInput[$mk->id][$cpl->id] ?? ''; @endphp
@@ -46,7 +62,9 @@
                             data-mk="{{ $mk->id }}"
                             data-cpl="{{ $cpl->id }}"
                             onchange="saveCell(this)"
-                            class="cell-select w-full rounded px-1 py-0.5 text-xs border cursor-pointer focus:outline-none focus:ring-1 focus:ring-gray-400
+                            {{ $canEdit ? '' : 'disabled' }}
+                            class="cell-select w-full rounded px-1 py-0.5 text-xs border
+                                   {{ $canEdit ? 'cursor-pointer focus:outline-none focus:ring-1 focus:ring-gray-400' : 'cursor-not-allowed opacity-60' }}
                                    {{ $currentLevel === 'Tinggi' ? 'bg-red-50 border-red-200 text-red-700' :
                                       ($currentLevel === 'Sedang' ? 'bg-yellow-50 border-yellow-200 text-yellow-700' :
                                       ($currentLevel === 'Rendah' ? 'bg-green-50 border-green-200 text-green-700' :

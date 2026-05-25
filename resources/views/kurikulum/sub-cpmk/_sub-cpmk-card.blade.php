@@ -9,9 +9,10 @@
             <div class="flex items-center gap-2 mb-1 flex-wrap">
                 <span class="text-xs font-bold text-teal-600 uppercase tracking-wide">{{ $sc->kode }}</span>
 
-                {{-- CLO Tertinggi badge --}}
-                <span class="text-xs px-2 py-0.5 rounded-full font-medium
-                    {{ $sc->kode_clo_tertinggi ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-400' }}">
+                {{-- CLO badge (bisa menampung lebih dari 1 kode) --}}
+                <span id="clo-badge-wrap-{{ $sc->id }}"
+                    class="text-xs px-2 py-0.5 rounded-full font-medium
+                        {{ $sc->kode_clo_tertinggi ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-400' }}">
                     CLO: <span id="clo-badge-{{ $sc->id }}">{{ $sc->kode_clo_tertinggi ?? '–' }}</span>
                 </span>
 
@@ -33,17 +34,33 @@
                 </div>
             </div>
 
-            {{-- CLO Taxonomy selector --}}
+            {{-- CLO Taxonomy selector — maks 1 per ranah (Afektif, Kognitif, Psikomotorik) --}}
+            @php
+                $selectedCloIds = $sc->subCpmkClos->pluck('clo_id')->toArray();
+            @endphp
             <div class="mt-3">
-                <p class="text-xs text-gray-400 mb-1.5">CLO Tertinggi (Taksonomi Bloom):</p>
+                <div class="flex items-center gap-2 mb-1.5">
+                    <p class="text-xs text-gray-400">CLO Tertinggi per Ranah <span class="text-gray-300">(klik untuk simpan — maks 1 Afektif · 1 Kognitif · 1 Psikomotorik)</span></p>
+                    <span id="clo-save-status-{{ $sc->id }}"
+                          class="hidden text-xs font-medium text-green-600 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full">
+                        ✓ Tersimpan
+                    </span>
+                    <span id="clo-save-error-{{ $sc->id }}"
+                          class="hidden text-xs font-medium text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">
+                        ✕ Gagal menyimpan
+                    </span>
+                </div>
                 <div class="flex flex-wrap gap-3">
                     @foreach($clos as $domain => $items)
                     <div>
                         <p class="text-xs text-gray-400 mb-1">{{ $domain }}</p>
                         <div class="flex flex-wrap gap-1">
                             @foreach($items as $clo)
-                            @php $selected = $sc->kode_clo_tertinggi === $clo->kode; @endphp
+                            @php $selected = in_array($clo->id, $selectedCloIds); @endphp
                             <button
+                                id="clo-btn-{{ $sc->id }}-{{ $clo->id }}"
+                                data-sc-id="{{ $sc->id }}"
+                                data-clo-id="{{ $clo->id }}"
                                 onclick="saveClo({{ $sc->id }}, {{ $clo->id }})"
                                 title="{{ $clo->deskripsi }}"
                                 class="px-2 py-0.5 rounded text-xs font-mono font-semibold border transition-colors

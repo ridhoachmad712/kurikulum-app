@@ -9,6 +9,25 @@
         subtitle="{{ $cpmk->mataKuliah->kode_rps }} · {{ $cpmk->mataKuliah->nama }}"
         back="{{ route('kurikulum.sub-cpmk.index') }}"
         backLabel="Sub-CPMK"/>
+    {{-- Quick nav ke modul lain --}}
+    <div class="mt-3 flex items-center gap-3 text-xs">
+        <a href="{{ route('kurikulum.cpmk.show', $cpmk->mataKuliah) }}"
+           class="inline-flex items-center gap-1 text-gray-500 hover:text-gray-700 hover:underline">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            CPMK
+        </a>
+        <span class="text-gray-300">|</span>
+        <a href="{{ route('kurikulum.asesmen.show', $cpmk->mataKuliah) }}"
+           class="inline-flex items-center gap-1 text-gray-500 hover:text-gray-700 hover:underline">
+            Bobot Asesmen
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+            </svg>
+        </a>
+    </div>
+
     <div class="mt-3 bg-gray-50 border border-gray-200 rounded-xl px-5 py-4">
         <div class="flex items-start gap-3">
             <div class="shrink-0 w-10 h-10 bg-gray-700 text-white rounded-full flex items-center justify-center text-sm font-bold">
@@ -103,7 +122,7 @@ function cancelEdit(id) {
 }
 
 async function deleteSubCpmk(id, kode) {
-    if (!confirm(`Hapus ${kode}?`)) return;
+    if (!confirm(`Hapus ${kode}?\n\nData berikut akan ikut terhapus permanen:\n• CLO yang dipilih untuk ${kode}\n• Bobot asesmen ${kode}\n\nLanjutkan?`)) return;
     const res = await fetch(`/kurikulum/api/sub-cpmk/${id}`, {
         method: 'DELETE',
         headers: { 'X-CSRF-TOKEN': CSRF },
@@ -113,17 +132,81 @@ async function deleteSubCpmk(id, kode) {
     }
 }
 
-async function saveClo(id, cloId) {
-    const res = await fetch(`/kurikulum/api/sub-cpmk/${id}/clo`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
-        body: JSON.stringify({ clo_id: cloId }),
-    });
-    const json = await res.json();
-    if (json.ok) {
-        const badge = document.getElementById('clo-badge-' + id);
-        if (badge) badge.textContent = json.kode_clo_tertinggi ?? '–';
+async function saveClo(scId, cloId) {
+    // Tampilkan loading sementara pada tombol yang diklik
+    const clickedBtn = document.getElementById(`clo-btn-${scId}-${cloId}`);
+    if (clickedBtn) {
+        clickedBtn.disabled = true;
+        clickedBtn.style.opacity = '0.6';
     }
+
+    let json;
+    try {
+        const res = await fetch(`/kurikulum/api/sub-cpmk/${scId}/clo`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
+            body: JSON.stringify({ clo_id: cloId }),
+        });
+        json = await res.json();
+    } catch (e) {
+        showCloStatus(scId, false);
+        if (clickedBtn) { clickedBtn.disabled = false; clickedBtn.style.opacity = ''; }
+        return;
+    }
+
+    if (clickedBtn) { clickedBtn.disabled = false; clickedBtn.style.opacity = ''; }
+
+    if (!json.ok) {
+        showCloStatus(scId, false);
+        return;
+    }
+
+    // Update badge text
+    const badge = document.getElementById('clo-badge-' + scId);
+    if (badge) badge.textContent = json.kode_clo_badge ?? '–';
+
+    // Update badge wrapper color
+    const wrap = document.getElementById('clo-badge-wrap-' + scId);
+    if (wrap) {
+        if (json.kode_clo_badge) {
+            wrap.classList.remove('bg-gray-100', 'text-gray-400');
+            wrap.classList.add('bg-purple-100', 'text-purple-700');
+        } else {
+            wrap.classList.remove('bg-purple-100', 'text-purple-700');
+            wrap.classList.add('bg-gray-100', 'text-gray-400');
+        }
+    }
+
+    // Update semua tombol CLO di kartu ini
+    const selectedIds = json.selected_ids || [];
+    document.querySelectorAll(`[data-sc-id="${scId}"]`).forEach(btn => {
+        const btnCloId = parseInt(btn.dataset.cloId);
+        const isSelected = selectedIds.includes(btnCloId);
+        if (isSelected) {
+            btn.classList.remove('bg-white', 'text-gray-500', 'border-gray-300',
+                'hover:border-purple-400', 'hover:text-purple-600');
+            btn.classList.add('bg-purple-600', 'text-white', 'border-purple-600');
+        } else {
+            btn.classList.remove('bg-purple-600', 'text-white', 'border-purple-600');
+            btn.classList.add('bg-white', 'text-gray-500', 'border-gray-300',
+                'hover:border-purple-400', 'hover:text-purple-600');
+        }
+    });
+
+    showCloStatus(scId, true);
+}
+
+function showCloStatus(scId, success) {
+    const okEl  = document.getElementById('clo-save-status-' + scId);
+    const errEl = document.getElementById('clo-save-error-' + scId);
+    if (!okEl || !errEl) return;
+
+    okEl.classList.add('hidden');
+    errEl.classList.add('hidden');
+
+    const el = success ? okEl : errEl;
+    el.classList.remove('hidden');
+    setTimeout(() => el.classList.add('hidden'), 2500);
 }
 
 function showMsg(el, text, cls) {

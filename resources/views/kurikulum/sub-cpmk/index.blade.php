@@ -5,6 +5,7 @@
 <x-page-header title="Sub-CPMK" subtitle="Kelola sub-capaian dan CLO tertinggi per CPMK"/>
 
 <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+    @hasanyrole('admin|kaprodi')
     <div class="flex gap-2 flex-wrap">
         <a href="{{ route('kurikulum.sub-cpmk.index') }}"
            class="px-4 py-2 text-sm font-medium rounded-lg {{ !request('semester') ? 'bg-gray-700 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
@@ -17,11 +18,22 @@
         </a>
         @endfor
     </div>
+    @endhasanyrole
     <div class="flex gap-2 items-center flex-wrap">
         <x-search-input placeholder="Cari kode atau nama MK..." />
         <a href="{{ route('kurikulum.sub-cpmk.tabel8') }}" class="btn-secondary btn-sm">Tabel 8</a>
     </div>
 </div>
+{{-- Info scope dosen --}}
+@hasrole('dosen')
+<div class="flex items-center gap-2 bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-2.5 mb-4 text-xs text-indigo-700">
+    <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    <span>Menampilkan hanya mata kuliah yang ditugaskan kepada Anda. Hubungi Kaprodi jika ada MK yang tidak muncul.</span>
+</div>
+@endhasrole
+
 @if(request('search'))
 <p class="text-xs text-gray-500 mb-3">Hasil untuk <strong>"{{ request('search') }}"</strong></p>
 @endif
@@ -72,10 +84,16 @@
     </table>
 </div>
 @empty
-<x-empty-state icon="document" title="Belum ada CPMK"
-    subtitle="Isi CPMK terlebih dahulu sebelum menambahkan Sub-CPMK."
-    action="{{ route('kurikulum.cpmk.index') }}"
-    actionLabel="Isi CPMK"/>
+@if(auth()->user()->hasRole('dosen'))
+    <x-empty-state icon="document"
+        title="Belum ada mata kuliah yang ditugaskan"
+        subtitle="Anda belum mendapat penugasan mata kuliah. Hubungi Kaprodi untuk pengaturan penugasan."/>
+@else
+    <x-empty-state icon="document" title="Belum ada CPMK"
+        subtitle="Isi CPMK terlebih dahulu sebelum menambahkan Sub-CPMK."
+        action="{{ route('kurikulum.cpmk.index') }}"
+        actionLabel="Isi CPMK"/>
+@endif
 @endforelse
 
 @endsection

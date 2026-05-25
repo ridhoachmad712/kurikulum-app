@@ -7,6 +7,7 @@ use App\Http\Controllers\Kurikulum\CpmkController;
 use App\Http\Controllers\Kurikulum\MatriksApiController;
 use App\Http\Controllers\Kurikulum\MatriksController;
 use App\Http\Controllers\Kurikulum\AsesmenController;
+use App\Http\Controllers\Kurikulum\PengukuranController;
 use App\Http\Controllers\Kurikulum\RpsController;
 use App\Http\Controllers\Kurikulum\SubCpmkController;
 use App\Http\Controllers\Master\BahanKajianController;
@@ -44,7 +45,8 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('cpl', CplController::class)->except(['show']);
         Route::get('bahan-kajian-matriks', [BahanKajianController::class, 'matriks'])->name('bahan-kajian.matriks')->middleware('role:admin|kaprodi');
         Route::post('bahan-kajian-matriks', [BahanKajianController::class, 'simpanMatriks'])->name('bahan-kajian.simpan-matriks')->middleware('role:admin|kaprodi');
-        Route::resource('bahan-kajian', BahanKajianController::class)->except(['show'])->middleware('role:admin|kaprodi');
+        Route::get('bahan-kajian', [BahanKajianController::class, 'index'])->name('bahan-kajian.index');
+        Route::resource('bahan-kajian', BahanKajianController::class)->except(['show','index'])->middleware('role:admin|kaprodi');
         Route::resource('mata-kuliah', MataKuliahController::class)->except(['show']);
         Route::get('mata-kuliah/{mataKuliah}', [MataKuliahController::class, 'show'])
             ->name('mata-kuliah.show')
@@ -92,6 +94,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get ('asesmen',               [AsesmenController::class, 'index']) ->name('asesmen.index');
         Route::get ('asesmen/{mataKuliah}',  [AsesmenController::class, 'show'])  ->name('asesmen.show');
         Route::post('api/asesmen/{subCpmk}', [AsesmenController::class, 'save'])  ->name('api.asesmen.save');
+
+        // Pengukuran CPMK & CPL
+        Route::get('pengukuran-cpmk',              [PengukuranController::class, 'cpmk'])     ->name('pengukuran.cpmk');
+        Route::get('pengukuran-cpmk/{mataKuliah}', [PengukuranController::class, 'cpmkShow'])->name('pengukuran.cpmk.show');
+        Route::get('pengukuran-cpl',               [PengukuranController::class, 'cpl'])       ->name('pengukuran.cpl');
 
         // RPS
         Route::resource('rps', RpsController::class);

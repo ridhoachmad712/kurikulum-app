@@ -118,7 +118,7 @@
                     @if($sc->asesmen)
                     @php $a = $sc->asesmen; @endphp
                     <div class="shrink-0 flex flex-wrap gap-1.5 text-xs justify-end">
-                        @foreach(['tugas'=>'Tugas','quis'=>'Quis','kasus_proyek'=>'Kasus','uts'=>'UTS','uas'=>'UAS'] as $field => $label)
+                        @foreach(['tugas'=>'Tugas','quis'=>'Kuis','kasus_proyek'=>'Kasus','uts'=>'UTS','uas'=>'UAS'] as $field => $label)
                         @if($a->$field > 0)
                         <span class="px-2 py-0.5 bg-amber-50 text-amber-700 rounded-full font-medium">{{ $label }}: {{ $a->$field }}%</span>
                         @endif
@@ -170,6 +170,104 @@
                     @endforeach
                 </tr>
                 @endforeach
+            </tbody>
+        </table>
+    </div>
+</section>
+@endif
+
+{{-- ─── PENGUKURAN CPL ──────────────────────────────────────────── --}}
+@php
+    $relatedCpls = $cpls->whereIn('id', $relatedCplIds);
+    $hasBobotData = false;
+    foreach ($mataKuliah->cpmks as $cpmk) {
+        foreach ($cpmkCplMap[$cpmk->id] ?? [] as $entry) {
+            if (($entry['has_relation'] ?? false) && ($entry['bobot'] ?? 0) > 0) {
+                $hasBobotData = true; break 2;
+            }
+        }
+    }
+@endphp
+
+@if($hasBobotData && $relatedCpls->isNotEmpty())
+<section>
+    <h2 class="text-lg font-bold text-gray-900 mb-1">Pengukuran CPL</h2>
+    <p class="text-sm text-gray-500 mb-4">Bobot kontribusi setiap CPMK terhadap CPL (dalam %)</p>
+
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-auto">
+        <table class="min-w-full text-xs">
+            <thead class="bg-blue-900 text-white">
+                <tr>
+                    <th class="sticky left-0 bg-blue-900 px-4 py-3 text-left min-w-[220px]">CPMK</th>
+                    @foreach($relatedCpls as $cpl)
+                    <th class="px-3 py-3 text-center w-20">
+                        <p class="font-semibold">{{ $cpl->kode }}</p>
+                    </th>
+                    @endforeach
+                    <th class="px-3 py-3 text-center w-20 bg-blue-800">Total</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+                @foreach($mataKuliah->cpmks as $cpmk)
+                @php
+                    $rowTotal = 0;
+                    foreach ($relatedCpls as $cpl) {
+                        $e = $cpmkCplMap[$cpmk->id][$cpl->id] ?? [];
+                        if (($e['has_relation'] ?? false) && ($e['bobot'] ?? 0) > 0) {
+                            $rowTotal += $e['bobot'];
+                        }
+                    }
+                @endphp
+                @if($rowTotal > 0)
+                <tr class="hover:bg-blue-50/30">
+                    <td class="sticky left-0 bg-white px-4 py-2.5 border-r border-gray-100">
+                        <span class="font-semibold text-blue-800">{{ $cpmk->kode }}</span>
+                        <p class="text-gray-400 text-xs mt-0.5 line-clamp-1">{{ $cpmk->deskripsi }}</p>
+                    </td>
+                    @foreach($relatedCpls as $cpl)
+                    @php
+                        $entry = $cpmkCplMap[$cpmk->id][$cpl->id] ?? [];
+                        $bobot = (($entry['has_relation'] ?? false) && ($entry['bobot'] ?? 0) > 0)
+                                    ? $entry['bobot'] : 0;
+                    @endphp
+                    <td class="px-3 py-2.5 text-center {{ $bobot > 0 ? 'bg-blue-50 text-blue-800 font-semibold' : 'text-gray-200' }}">
+                        {{ $bobot > 0 ? number_format($bobot, 1).'%' : '—' }}
+                    </td>
+                    @endforeach
+                    <td class="px-3 py-2.5 text-center font-bold text-blue-900 bg-blue-50">
+                        {{ number_format($rowTotal, 1) }}%
+                    </td>
+                </tr>
+                @endif
+                @endforeach
+
+                {{-- Total per CPL --}}
+                @php
+                    $colTotalsPengukuran = [];
+                    $grandTotalPengukuran = 0;
+                    foreach ($relatedCpls as $cpl) {
+                        $sum = 0;
+                        foreach ($mataKuliah->cpmks as $cpmk) {
+                            $e = $cpmkCplMap[$cpmk->id][$cpl->id] ?? [];
+                            if (($e['has_relation'] ?? false) && ($e['bobot'] ?? 0) > 0) {
+                                $sum += $e['bobot'];
+                            }
+                        }
+                        $colTotalsPengukuran[$cpl->id] = $sum;
+                        $grandTotalPengukuran += $sum;
+                    }
+                @endphp
+                <tr class="bg-blue-900 text-white font-bold text-xs">
+                    <td class="sticky left-0 bg-blue-900 px-4 py-2.5">Total per CPL</td>
+                    @foreach($relatedCpls as $cpl)
+                    <td class="px-3 py-2.5 text-center {{ ($colTotalsPengukuran[$cpl->id] ?? 0) > 0 ? '' : 'text-blue-700' }}">
+                        {{ ($colTotalsPengukuran[$cpl->id] ?? 0) > 0 ? number_format($colTotalsPengukuran[$cpl->id], 1).'%' : '—' }}
+                    </td>
+                    @endforeach
+                    <td class="px-3 py-2.5 text-center bg-blue-800">
+                        {{ number_format($grandTotalPengukuran, 1) }}%
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
