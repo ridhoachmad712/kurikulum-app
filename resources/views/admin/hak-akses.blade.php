@@ -16,22 +16,31 @@ $rows = [
     ['section' => 'Umum'],
     ['Dashboard', 'Halaman utama setelah login', $check, $check, $partial],
 
-    ['section' => 'Admin'],
+    ['section' => 'Administrasi'],
     ['Kelola Akun', 'Buat, ubah, hapus akun dosen & kaprodi', $check, $check, $cross],
     ['Penugasan Dosen', 'Tugaskan dosen ke mata kuliah tertentu', $check, $check, $cross],
+    ['Hak Akses', 'Referensi hak akses tiap role', $check, $check, $cross],
 
     ['section' => 'Master Data'],
     ['Program Studi', 'Kelola data program studi', $check, $check, $cross],
+    ['Profil Lulusan', 'Kelola profil lulusan program studi', $check, $check, $cross],
     ['CPL', 'Tambah, ubah, hapus Capaian Pembelajaran Lulusan', $check, $check, $cross],
     ['Mata Kuliah', 'Kelola daftar mata kuliah beserta semester & SKS', $check, $check, $cross],
+    ['Bahan Kajian', 'Kelola topik/materi yang diajarkan', $check, $check, $cross],
     ['CLO Taxonomy', 'Edit taksonomi CLO (Kognitif, Afektif, Psikomotorik)', $check, $check, $cross],
 
-    ['section' => 'Kurikulum'],
-    ['Matriks MK–CPL (Input Level)', 'Input level keterkaitan setiap MK terhadap CPL', $check, $check, $cross],
-    ['Matriks – Tabel 2 s.d. 5', 'Lihat tabel kalkulasi bobot MK–CPL', $check, $check, $cross],
-    ['CPMK', 'Isi & ubah Capaian Pembelajaran Mata Kuliah', $check, $check, $partial],
-    ['Sub-CPMK & CLO Tertinggi', 'Isi sub-CPMK dan tentukan CLO taksonomi tertinggi', $check, $check, $partial],
+    ['section' => 'Input'],
+    ['Level CPL Mata Kuliah', 'Input level keterkaitan MK terhadap CPL (Tinggi/Sedang/Rendah); hasil otomatis mengisi Tabel 1–5', $check, $check, $partial],
+    ['CPMK', 'Isi CPMK dan tentukan keterkaitan & bobot per CPL (Tabel 6–7)', $check, $check, $partial],
+    ['Sub CPMK', 'Isi Sub-CPMK dan tentukan CLO taksonomi tertinggi per ranah (Tabel 8)', $check, $check, $partial],
     ['Bobot Asesmen', 'Input bobot Tugas, Kuis, Kasus/Proyek, UTS, UAS per Sub-CPMK', $check, $check, $partial],
+    ['Pengukuran', 'Cek keselarasan bobot asesmen terhadap target teoritis per CPMK', $check, $check, $partial],
+
+    ['section' => 'Rekap'],
+    ['Tabel Kurikulum', 'Lihat semua tabel rekapan kurikulum (Tabel 1–12, otomatis)', $check, $check, $partial],
+    ['Hasil Pengukuran', 'Lihat distribusi bobot mata kuliah per CPL', $check, $check, $partial],
+    ['RPS', 'Lihat Rencana Pembelajaran Semester per mata kuliah', $check, $check, $partial],
+    ['Halaman Publik', 'Akses halaman informasi kurikulum yang dapat dilihat umum', $check, $check, $check],
 ];
 @endphp
 
@@ -98,7 +107,8 @@ $rows = [
     <p class="text-xs font-semibold text-amber-700 mb-2">Catatan – Akses Terbatas (Dosen)</p>
     <ul class="text-xs text-amber-700 space-y-1 list-disc list-inside">
         <li><strong>Dashboard</strong>: Dosen hanya melihat ringkasan dan daftar mata kuliah yang ditugaskan kepadanya.</li>
-        <li><strong>CPMK, Sub-CPMK, Bobot Asesmen</strong>: Dosen hanya dapat mengedit data untuk mata kuliah yang ditugaskan oleh Kaprodi/Admin melalui menu Penugasan Dosen.</li>
+        <li><strong>Input (Level CPL MK, CPMK, Sub CPMK, Bobot Asesmen, Pengukuran)</strong>: Dosen hanya dapat mengisi data untuk mata kuliah yang ditugaskan oleh Kaprodi/Admin melalui menu Penugasan Dosen. MK lain tidak ditampilkan.</li>
+        <li><strong>Rekap (Tabel Kurikulum, Hasil Pengukuran, RPS)</strong>: Dosen hanya dapat melihat rekap untuk mata kuliah yang ditugaskan kepadanya.</li>
     </ul>
 </div>
 

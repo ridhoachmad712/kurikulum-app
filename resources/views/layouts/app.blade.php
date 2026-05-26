@@ -62,8 +62,12 @@
                 <span x-show="!collapsed" x-cloak>Dashboard</span>
             </x-nav-link>
 
+            {{-- ════════════════════════════════════
+                 ADMIN / KAPRODI
+            ════════════════════════════════════ --}}
             @hasanyrole('admin|kaprodi')
-            <p class="nav-section-label" x-show="!collapsed" x-cloak>Admin</p>
+
+            <p class="nav-section-label" x-show="!collapsed" x-cloak>Administrasi</p>
             <x-nav-link href="{{ route('kelengkapan') }}" :active="request()->routeIs('kelengkapan')">
                 <x-slot name="icon">
                     <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -96,10 +100,8 @@
                 </x-slot>
                 <span x-show="!collapsed" x-cloak>Hak Akses</span>
             </x-nav-link>
-            @endhasanyrole
 
             <p class="nav-section-label" x-show="!collapsed" x-cloak>Master Data</p>
-            @hasanyrole('admin|kaprodi')
             <x-nav-link href="{{ route('master.program-studi.index') }}" :active="request()->routeIs('master.program-studi.*')">
                 <x-slot name="icon">
                     <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -108,8 +110,6 @@
                 </x-slot>
                 <span x-show="!collapsed" x-cloak>Program Studi</span>
             </x-nav-link>
-            @endhasanyrole
-            @hasanyrole('admin|kaprodi')
             <x-nav-link href="{{ route('master.profil-lulusan.index') }}" :active="request()->routeIs('master.profil-lulusan.*')">
                 <x-slot name="icon">
                     <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -118,7 +118,6 @@
                 </x-slot>
                 <span x-show="!collapsed" x-cloak>Profil Lulusan</span>
             </x-nav-link>
-            @endhasanyrole
             <x-nav-link href="{{ route('master.cpl.index') }}" :active="request()->routeIs('master.cpl.*')">
                 <x-slot name="icon">
                     <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -127,14 +126,6 @@
                 </x-slot>
                 <span x-show="!collapsed" x-cloak>CPL</span>
             </x-nav-link>
-            <x-nav-link href="{{ route('master.bahan-kajian.index') }}" :active="request()->routeIs('master.bahan-kajian.*')">
-                <x-slot name="icon">
-                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/>
-                    </svg>
-                </x-slot>
-                <span x-show="!collapsed" x-cloak>Bahan Kajian</span>
-            </x-nav-link>
             <x-nav-link href="{{ route('master.mata-kuliah.index') }}" :active="request()->routeIs('master.mata-kuliah.*')">
                 <x-slot name="icon">
                     <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -142,6 +133,14 @@
                     </svg>
                 </x-slot>
                 <span x-show="!collapsed" x-cloak>Mata Kuliah</span>
+            </x-nav-link>
+            <x-nav-link href="{{ route('master.bahan-kajian.index') }}" :active="request()->routeIs('master.bahan-kajian.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/>
+                    </svg>
+                </x-slot>
+                <span x-show="!collapsed" x-cloak>Bahan Kajian</span>
             </x-nav-link>
             <x-nav-link href="{{ route('master.clo-taxonomi.index') }}" :active="request()->routeIs('master.clo-taxonomi.*')">
                 <x-slot name="icon">
@@ -152,15 +151,13 @@
                 <span x-show="!collapsed" x-cloak>CLO Taxonomy</span>
             </x-nav-link>
 
-            <p class="nav-section-label" x-show="!collapsed" x-cloak>Kurikulum</p>
-
-            {{-- Tabel Kurikulum (1–12) --}}
+            <p class="nav-section-label" x-show="!collapsed" x-cloak>Informasi & Laporan</p>
             @php
-            $tabelActive = request()->routeIs('kurikulum.matriks.*')
-                        || request()->routeIs('kurikulum.cpmk.tabel*')
-                        || request()->routeIs('kurikulum.sub-cpmk.tabel*');
+            $tabelViewActive = request()->routeIs('kurikulum.matriks.tabel*')
+                            || request()->routeIs('kurikulum.cpmk.tabel*')
+                            || request()->routeIs('kurikulum.sub-cpmk.tabel*');
             @endphp
-            <x-nav-link href="{{ route('kurikulum.matriks.input') }}" :active="$tabelActive">
+            <x-nav-link href="{{ route('kurikulum.matriks.tabel1') }}" :active="$tabelViewActive">
                 <x-slot name="icon">
                     <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
@@ -168,8 +165,47 @@
                 </x-slot>
                 <span x-show="!collapsed" x-cloak>Tabel Kurikulum</span>
             </x-nav-link>
+            <x-nav-link href="{{ route('kurikulum.rps.index') }}" :active="request()->routeIs('kurikulum.rps.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </x-slot>
+                <span x-show="!collapsed" x-cloak>RPS</span>
+            </x-nav-link>
+            <a href="{{ route('public.home') }}" target="_blank"
+               class="flex items-center gap-3 px-3 py-2 rounded-xl text-gray-400 hover:bg-white/10 hover:text-white text-sm transition-colors">
+                <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                </svg>
+                <span x-show="!collapsed" x-cloak class="flex items-center gap-1">
+                    Halaman Publik
+                    <svg class="w-3 h-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                    </svg>
+                </span>
+            </a>
 
-            {{-- Input CPMK --}}
+            @endhasanyrole
+
+            {{-- ════════════════════════════════════
+                 DOSEN
+            ════════════════════════════════════ --}}
+            @hasrole('dosen')
+
+            {{-- SEKSI 1: INPUT --}}
+            <p class="nav-section-label" x-show="!collapsed" x-cloak>Input</p>
+
+            {{-- Level CPL Mata Kuliah (Tabel 1, hasil otomatis ke Tabel 2–5) --}}
+            <x-nav-link href="{{ route('kurikulum.matriks.input') }}" :active="request()->routeIs('kurikulum.matriks.input')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                    </svg>
+                </x-slot>
+                <span x-show="!collapsed" x-cloak>Level CPL Mata Kuliah</span>
+            </x-nav-link>
+
             @php $cpmkInputActive = request()->routeIs('kurikulum.cpmk.index') || request()->routeIs('kurikulum.cpmk.show'); @endphp
             <x-nav-link href="{{ route('kurikulum.cpmk.index') }}" :active="$cpmkInputActive">
                 <x-slot name="icon">
@@ -177,10 +213,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
                     </svg>
                 </x-slot>
-                <span x-show="!collapsed" x-cloak>Input CPMK</span>
+                <span x-show="!collapsed" x-cloak>CPMK</span>
             </x-nav-link>
 
-            {{-- Input Sub-CPMK --}}
             @php $subInputActive = request()->routeIs('kurikulum.sub-cpmk.index') || request()->routeIs('kurikulum.sub-cpmk.show'); @endphp
             <x-nav-link href="{{ route('kurikulum.sub-cpmk.index') }}" :active="$subInputActive">
                 <x-slot name="icon">
@@ -188,10 +223,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
                     </svg>
                 </x-slot>
-                <span x-show="!collapsed" x-cloak>Input Sub-CPMK</span>
+                <span x-show="!collapsed" x-cloak>Sub CPMK</span>
             </x-nav-link>
 
-            {{-- Bobot Asesmen --}}
             <x-nav-link href="{{ route('kurikulum.asesmen.index') }}" :active="request()->routeIs('kurikulum.asesmen.*')">
                 <x-slot name="icon">
                     <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -201,17 +235,32 @@
                 <span x-show="!collapsed" x-cloak>Bobot Asesmen</span>
             </x-nav-link>
 
-            {{-- Pengukuran CPMK --}}
             <x-nav-link href="{{ route('kurikulum.pengukuran.cpmk') }}" :active="request()->routeIs('kurikulum.pengukuran.cpmk*')">
                 <x-slot name="icon">
                     <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                     </svg>
                 </x-slot>
-                <span x-show="!collapsed" x-cloak>Pengukuran CPMK</span>
+                <span x-show="!collapsed" x-cloak>Pengukuran</span>
             </x-nav-link>
 
-            {{-- Pengukuran CPL --}}
+            {{-- SEKSI 2: REKAP --}}
+            @php
+            $tabelViewActive = request()->routeIs('kurikulum.matriks.tabel*')
+                            || request()->routeIs('kurikulum.cpmk.tabel*')
+                            || request()->routeIs('kurikulum.sub-cpmk.tabel*');
+            @endphp
+            <p class="nav-section-label" x-show="!collapsed" x-cloak>Rekap</p>
+
+            <x-nav-link href="{{ route('kurikulum.matriks.tabel1') }}" :active="$tabelViewActive">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                    </svg>
+                </x-slot>
+                <span x-show="!collapsed" x-cloak>Tabel Kurikulum</span>
+            </x-nav-link>
+
             <x-nav-link href="{{ route('kurikulum.pengukuran.cpl') }}" :active="request()->routeIs('kurikulum.pengukuran.cpl')">
                 <x-slot name="icon">
                     <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -219,10 +268,10 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/>
                     </svg>
                 </x-slot>
-                <span x-show="!collapsed" x-cloak>Pengukuran CPL</span>
+                <span x-show="!collapsed" x-cloak>Hasil Pengukuran</span>
             </x-nav-link>
 
-            {{-- RPS --}}
+            <p class="nav-section-label" x-show="!collapsed" x-cloak>— On Development —</p>
             <x-nav-link href="{{ route('kurikulum.rps.index') }}" :active="request()->routeIs('kurikulum.rps.*')">
                 <x-slot name="icon">
                     <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -231,6 +280,9 @@
                 </x-slot>
                 <span x-show="!collapsed" x-cloak>RPS</span>
             </x-nav-link>
+
+            @endhasrole
+
         </nav>
 
         {{-- User info + collapse button --}}

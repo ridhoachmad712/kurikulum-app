@@ -1,6 +1,6 @@
 @php
 $row1 = [
-    ['route' => 'kurikulum.matriks.input',  'n' => 1,  'title' => 'Input Level',        'sub' => 'Set level keterkaitan MK & CPL (Tinggi / Sedang / Rendah)'],
+    ['route' => 'kurikulum.matriks.tabel1', 'n' => 1,  'title' => 'Input Level',        'sub' => 'Level keterkaitan MK & CPL (Tinggi / Sedang / Rendah)'],
     ['route' => 'kurikulum.matriks.tabel2', 'n' => 2,  'title' => 'Keterkaitan (0/1)',  'sub' => 'Matriks biner — ada (1) atau tidak (0) keterkaitan MK terhadap CPL'],
     ['route' => 'kurikulum.matriks.tabel3', 'n' => 3,  'title' => 'Nilai Level',        'sub' => 'Nilai numerik dari level keterkaitan MK terhadap CPL'],
     ['route' => 'kurikulum.matriks.tabel4', 'n' => 4,  'title' => '% Bobot Global',     'sub' => 'Persentase bobot MK terhadap CPL secara keseluruhan'],

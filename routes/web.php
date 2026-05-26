@@ -59,6 +59,7 @@ Route::middleware(['auth'])->group(function () {
 
         // Matriks MK–CPL
         Route::get('matriks',        [MatriksController::class, 'input'])   ->name('matriks.input');
+        Route::get('matriks/tabel1', [MatriksController::class, 'tabel1'])  ->name('matriks.tabel1');
         Route::get('matriks/tabel2', [MatriksController::class, 'tabel2'])  ->name('matriks.tabel2');
         Route::get('matriks/tabel3', [MatriksController::class, 'tabel3'])  ->name('matriks.tabel3');
         Route::get('matriks/tabel4', [MatriksController::class, 'tabel4'])  ->name('matriks.tabel4');

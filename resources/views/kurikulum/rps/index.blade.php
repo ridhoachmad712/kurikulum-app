@@ -2,6 +2,18 @@
 @section('title','Daftar RPS')
 @section('content')
 
+{{-- ── BANNER ON DEVELOPMENT ── --}}
+<div class="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-5 py-4 mb-6">
+    <span class="text-2xl leading-none">☕</span>
+    <div>
+        <p class="text-sm font-bold text-amber-800">Fitur Dalam Pengembangan</p>
+        <p class="text-xs text-amber-700 mt-1">
+            Fitur RPS masih dalam proses pengembangan dan belum dapat digunakan.
+            Fitur ini akan segera dirampungkan <strong>tergantung kopinya enak atau tidak</strong>.
+        </p>
+    </div>
+</div>
+
 {{-- ── HEADER ── --}}
 <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
     <div>

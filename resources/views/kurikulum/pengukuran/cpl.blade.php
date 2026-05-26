@@ -84,7 +84,8 @@
 </div>
 @else
 
-{{-- Ringkasan total per CPL (lintas semua MK) --}}
+{{-- Ringkasan total per CPL (lintas semua MK) — hanya admin & kaprodi --}}
+@hasanyrole('admin|kaprodi')
 @php
     $maxCplScore = count($cplTotals) > 0 ? max(array_values($cplTotals)) : 0;
     $avgScore    = $cpls->count() > 0 && $grandTotal > 0 ? $grandTotal / $cpls->count() : 0;
@@ -111,6 +112,7 @@
         @endforeach
     </div>
 </div>
+@endhasanyrole
 
 {{-- Per Mata Kuliah --}}
 @foreach($mataKuliahs as $mk)

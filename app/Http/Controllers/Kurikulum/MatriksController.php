@@ -20,6 +20,20 @@ class MatriksController extends Controller
         return (int) $request->input('program_studi_id', auth()->user()->program_studi_id);
     }
 
+    /** Tabel 1: Level Keterkaitan MK–CPL (view-only, tanpa edit) */
+    public function tabel1(Request $request)
+    {
+        $programStudiId = $this->getProgramStudiId($request);
+        $cpls           = Cpl::where('program_studi_id', $programStudiId)->orderBy('urutan')->get();
+        $q              = MataKuliah::where('program_studi_id', $programStudiId)
+                            ->where('aktif', true)->orderBy('urutan');
+        $this->applyDosenScope($q);
+        $mataKuliahs    = $q->get();
+        $matriksInput   = $this->service->getMatriksInput($programStudiId);
+
+        return view('kurikulum.matriks.tabel1', compact('cpls', 'mataKuliahs', 'matriksInput', 'programStudiId'));
+    }
+
     /** Tabel Input: Level Keterkaitan MK–CPL */
     public function input(Request $request)
     {
