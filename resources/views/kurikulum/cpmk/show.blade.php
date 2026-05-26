@@ -177,11 +177,11 @@
                 @foreach($cpls as $cpl)
                 @php $ref = $tabel5[$cpl->id] ?? 0; @endphp
                 <td class="px-2 py-2 text-center text-xs font-semibold text-emerald-700">
-                    {{ $ref > 0 ? number_format($ref, 1).'%' : '—' }}
+                    {{ $ref > 0 ? $ref.'%' : '—' }}
                 </td>
                 @endforeach
                 <td class="px-2 py-2 text-center text-xs text-emerald-600 font-semibold">
-                    {{ number_format(array_sum($tabel5), 1) }}%
+                    {{ array_sum($tabel5) }}%
                 </td>
             </tr>
 
@@ -434,7 +434,7 @@ async function simpanSemuaBobot() {
         sum = Math.round(sum * 10) / 10;
         if (Math.abs(sum - ref) >= 0.2) {
             const kode = CPL_CODES[cplId] ?? `CPL-${cplId}`;
-            errors.push(`${kode}: total isian ${sum.toFixed(1)}% — acuan ${Math.round(ref * 10) / 10}%`);
+            errors.push(`${kode}: total isian ${sum.toFixed(1)}% — acuan ${Math.round(ref)}%`);
         }
     }
 

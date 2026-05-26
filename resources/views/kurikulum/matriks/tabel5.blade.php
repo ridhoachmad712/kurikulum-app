@@ -6,7 +6,7 @@
 
 <div class="mb-2">
     <h2 class="text-sm font-semibold text-gray-700 mb-1">Tabel 5 — % Bobot CPL dalam Satu Mata Kuliah</h2>
-    <p class="text-xs text-gray-400 mb-3">= Nilai / Total Nilai per MK × 100. Menunjukkan distribusi bobot CPL di dalam satu mata kuliah (setiap baris = 100%).</p>
+    <p class="text-xs text-gray-400 mb-3">= Nilai / Total Nilai per MK × 100, dibulatkan ke bilangan bulat (Largest Remainder Method). Setiap baris menjumlah tepat 100%.</p>
 </div>
 
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -37,14 +37,14 @@
                     @php $val = $pctPerMk[$mk->id][$cpl->id] ?? 0; $rowSum += $val; @endphp
                     <td class="px-2 py-1.5 text-center border-r border-gray-50">
                         @if($val > 0)
-                            <span class="text-emerald-700 font-medium">{{ number_format($val, 1) }}%</span>
+                            <span class="text-emerald-700 font-medium">{{ $val }}%</span>
                         @else
                             <span class="text-gray-200">—</span>
                         @endif
                     </td>
                     @endforeach
                     <td class="px-2 py-1.5 text-center font-bold bg-emerald-50 text-emerald-700">
-                        {{ $rowHasData ? number_format($rowSum, 1).'%' : '—' }}
+                        {{ $rowHasData ? $rowSum.'%' : '—' }}
                     </td>
                 </tr>
                 @endforeach

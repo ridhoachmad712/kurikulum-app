@@ -9,6 +9,7 @@ use App\Models\Cpmk;
 use App\Models\CpmkCpl;
 use App\Models\MataKuliah;
 use App\Models\MkCpl;
+use App\Services\MatriksService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -94,9 +95,12 @@ class CpmkController extends Controller
             },
         ]);
         $mkRowTotal = $nilaiPerCpl->sum();
-        $tabel5 = $nilaiPerCpl->mapWithKeys(fn($nilai, $cplId) => [
-            $cplId => $mkRowTotal > 0 ? round($nilai / $mkRowTotal * 100, 2) : 0,
-        ])->toArray();
+        // Gunakan Largest Remainder Method (sama dengan Tabel 5) agar integer & total = 100
+        $tabel5 = $mkRowTotal > 0
+            ? MatriksService::roundToIntegers($nilaiPerCpl->mapWithKeys(fn($nilai, $cplId) => [
+                $cplId => $nilai / $mkRowTotal * 100,
+              ])->toArray())
+            : $nilaiPerCpl->mapWithKeys(fn($_, $cplId) => [$cplId => 0])->toArray();
 
         return view('kurikulum.cpmk.show', compact('mataKuliah', 'cpls', 'cpmks', 'cpmkCplMap', 'tabel5'));
     }

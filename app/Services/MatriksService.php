@@ -106,20 +106,47 @@ class MatriksService
     }
 
     /**
-     * Tabel 5: % Bobot CPL dalam 1 MK
-     * = nilai / rowTotal * 100
+     * Tabel 5: % Bobot CPL dalam 1 MK (bilangan bulat, total tepat 100)
+     * Menggunakan Largest Remainder Method agar pembulatan tidak meleset dari 100.
      */
     public function getPctBobotPerMk(array $nilaiMatrix, array $rowTotals): array
     {
         $result = [];
         foreach ($nilaiMatrix as $mkId => $cplValues) {
             $rowTotal = $rowTotals[$mkId] ?? 0;
-            foreach ($cplValues as $cplId => $nilai) {
-                $result[$mkId][$cplId] = $rowTotal > 0
-                    ? round($nilai / $rowTotal * 100, 2)
-                    : 0;
+            if ($rowTotal <= 0) {
+                $result[$mkId] = array_fill_keys(array_keys($cplValues), 0);
+                continue;
             }
+            $floats = [];
+            foreach ($cplValues as $cplId => $nilai) {
+                $floats[$cplId] = $nilai / $rowTotal * 100;
+            }
+            $result[$mkId] = self::roundToIntegers($floats);
         }
         return $result;
+    }
+
+    /**
+     * Largest Remainder Method: membulatkan array float yang totalnya 100
+     * ke bilangan bulat yang totalnya tetap 100.
+     */
+    public static function roundToIntegers(array $floats): array
+    {
+        $floors = [];
+        $frac   = [];
+        foreach ($floats as $key => $val) {
+            $floors[$key] = (int) floor($val);
+            $frac[$key]   = $val - floor($val);
+        }
+        $need = 100 - array_sum($floors);   // berapa +1 yang harus didistribusi
+        arsort($frac);                       // urutkan sisa desimal terbesar dulu
+        $count = 0;
+        foreach ($frac as $key => $_) {
+            if ($count >= $need) break;
+            $floors[$key]++;
+            $count++;
+        }
+        return $floors;
     }
 }
