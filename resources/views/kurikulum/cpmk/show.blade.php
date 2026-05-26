@@ -199,8 +199,25 @@
 </div><!-- /tab bobot -->
 </div><!-- /x-data tabs -->
 
+{{-- Toast notifikasi --}}
+<div id="cpmk-toast"
+     class="fixed bottom-4 right-4 z-50 hidden px-4 py-2 rounded-full shadow-lg
+            bg-green-600 text-white text-xs font-medium transition-all"></div>
+
 <script>
 const CSRF = '{{ csrf_token() }}';
+
+// ── Flash after reload ────────────────────────────────────────────
+const flashMsg = sessionStorage.getItem('cpmk_flash');
+if (flashMsg) {
+    sessionStorage.removeItem('cpmk_flash');
+    const toast = document.getElementById('cpmk-toast');
+    if (toast) {
+        toast.textContent = '✓ ' + flashMsg;
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 3000);
+    }
+}
 
 // ── Add CPMK ──────────────────────────────────────────────────────
 document.getElementById('form-add-cpmk')?.addEventListener('submit', async (e) => {
@@ -216,7 +233,9 @@ document.getElementById('form-add-cpmk')?.addEventListener('submit', async (e) =
         body: JSON.stringify({ deskripsi: desc }),
     });
     if (res.ok) {
-        location.href = location.pathname + location.search + '#cpmk';
+        const data = await res.json();
+        sessionStorage.setItem('cpmk_flash', `CPMK ${data.cpmk?.kode ?? 'baru'} berhasil ditambahkan.`);
+        location.reload();
     } else {
         const data = await res.json();
         err.textContent = data.message || 'Gagal menyimpan.';
