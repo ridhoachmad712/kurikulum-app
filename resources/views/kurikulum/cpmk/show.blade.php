@@ -55,20 +55,16 @@
     @endif
 </div>
 
-{{-- Form tambah CPMK --}}
+{{-- Tombol buka modal --}}
 @if($cpls->isNotEmpty())
-<div class="bg-white border border-dashed border-indigo-300 rounded-xl p-4">
-    <p class="text-xs font-semibold text-indigo-500 mb-2 uppercase tracking-wide">Tambah CPMK Baru</p>
-    <form id="form-add-cpmk">
-        @csrf
-        <textarea id="new-deskripsi" rows="2" placeholder="Deskripsi CPMK baru (gunakan kata kerja operasional yang terukur)..."
-            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-gray-500 focus:border-indigo-500 resize-none"></textarea>
-        <button type="submit"
-            class="mt-2 px-4 py-2 bg-gray-700 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition">
-            + Tambah CPMK
-        </button>
-        <span id="add-err" class="text-red-500 text-xs ml-3 hidden"></span>
-    </form>
+<div class="flex justify-end">
+    <button onclick="openAddModal()"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-800 text-white text-sm font-medium rounded-xl transition">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+        </svg>
+        Tambah CPMK
+    </button>
 </div>
 @endif
 
@@ -234,6 +230,87 @@
 </div><!-- /tab bobot -->
 </div><!-- /x-data tabs -->
 
+{{-- ===== MODAL TAMBAH CPMK ===== --}}
+@if($cpls->isNotEmpty())
+<div id="modal-add-cpmk"
+     class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm px-4"
+     onclick="if(event.target===this) closeAddModal()">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg">
+
+        {{-- Header --}}
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <div>
+                <h3 class="font-semibold text-gray-800 text-sm">Tambah CPMK Baru</h3>
+                <p class="text-xs text-gray-400 mt-0.5">{{ $mataKuliah->kode_rps }} — {{ $mataKuliah->nama }}</p>
+            </div>
+            <button onclick="closeAddModal()" class="text-gray-400 hover:text-gray-700 transition">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        {{-- Body --}}
+        <div class="px-6 py-5 space-y-5">
+
+            {{-- Deskripsi --}}
+            <div>
+                <label class="block text-xs font-semibold text-gray-600 mb-1.5">
+                    Deskripsi CPMK <span class="text-red-400">*</span>
+                </label>
+                <textarea id="modal-deskripsi" rows="3"
+                    placeholder="Gunakan kata kerja operasional yang terukur (mis. Mampu menganalisis…)"
+                    oninput="validateAddModal()"
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
+                           focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 focus:outline-none resize-none"></textarea>
+            </div>
+
+            {{-- Pilihan CPL --}}
+            <div>
+                <label class="block text-xs font-semibold text-gray-600 mb-1.5">
+                    CPL yang Didukung <span class="text-red-400">*</span>
+                    <span class="ml-1 font-normal text-gray-400">(pilih minimal 1)</span>
+                </label>
+                <div class="flex flex-wrap gap-2" id="modal-cpl-list">
+                    @foreach($cpls as $cpl)
+                    <button type="button"
+                        data-cpl-id="{{ $cpl->id }}"
+                        data-selected="0"
+                        onclick="toggleModalCpl(this)"
+                        title="{{ $cpl->deskripsi ?? $cpl->kode }}"
+                        class="modal-cpl-btn px-3 py-1.5 rounded-full border text-xs font-medium transition-all
+                               bg-gray-50 border-gray-200 text-gray-500 hover:border-gray-400 hover:text-gray-700">
+                        {{ $cpl->kode }}
+                    </button>
+                    @endforeach
+                </div>
+                <p id="modal-cpl-err" class="hidden mt-2 text-xs text-red-500 flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    Pilih minimal satu CPL yang didukung.
+                </p>
+            </div>
+
+        </div>
+
+        {{-- Footer --}}
+        <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between gap-3">
+            <p class="text-xs text-gray-400">Relasi CPL dapat diubah lagi setelah CPMK tersimpan.</p>
+            <div class="flex gap-2 shrink-0">
+                <button onclick="closeAddModal()"
+                    class="px-4 py-2 text-sm text-gray-500 hover:text-gray-800 font-medium transition">Batal</button>
+                <button id="btn-modal-add" onclick="submitAddCpmk()" disabled
+                    class="px-5 py-2 bg-gray-700 hover:bg-gray-800 text-white text-sm font-semibold rounded-lg transition
+                           disabled:opacity-40 disabled:cursor-not-allowed">
+                    Simpan CPMK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
 {{-- Toast notifikasi --}}
 <div id="cpmk-toast"
      class="fixed bottom-4 right-4 z-50 hidden px-4 py-2 rounded-full shadow-lg
@@ -254,28 +331,93 @@ if (flashMsg) {
     }
 }
 
-// ── Add CPMK ──────────────────────────────────────────────────────
-document.getElementById('form-add-cpmk')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const desc = document.getElementById('new-deskripsi').value.trim();
-    if (!desc) return;
-    const err = document.getElementById('add-err');
-    err.classList.add('hidden');
-
-    const res = await fetch('{{ route("kurikulum.cpmk.store", $mataKuliah) }}', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
-        body: JSON.stringify({ deskripsi: desc }),
+// ── Modal Tambah CPMK ─────────────────────────────────────────────
+function openAddModal() {
+    document.getElementById('modal-deskripsi').value = '';
+    document.querySelectorAll('.modal-cpl-btn').forEach(btn => {
+        btn.dataset.selected = '0';
+        btn.className = 'modal-cpl-btn px-3 py-1.5 rounded-full border text-xs font-medium transition-all ' +
+            'bg-gray-50 border-gray-200 text-gray-500 hover:border-gray-400 hover:text-gray-700';
     });
-    if (res.ok) {
-        const data = await res.json();
-        sessionStorage.setItem('cpmk_flash', `CPMK ${data.cpmk?.kode ?? 'baru'} berhasil ditambahkan.`);
-        location.reload();
+    document.getElementById('modal-cpl-err')?.classList.add('hidden');
+    document.getElementById('btn-modal-add').disabled = true;
+    const modal = document.getElementById('modal-add-cpmk');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    setTimeout(() => document.getElementById('modal-deskripsi').focus(), 50);
+}
+
+function closeAddModal() {
+    const modal = document.getElementById('modal-add-cpmk');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
+function toggleModalCpl(btn) {
+    const nowSelected = btn.dataset.selected !== '1';
+    btn.dataset.selected = nowSelected ? '1' : '0';
+    if (nowSelected) {
+        btn.className = 'modal-cpl-btn px-3 py-1.5 rounded-full border text-xs font-semibold transition-all ' +
+            'bg-indigo-100 border-indigo-400 text-indigo-800 ring-2 ring-indigo-200';
     } else {
-        const data = await res.json();
-        err.textContent = data.message || 'Gagal menyimpan.';
-        err.classList.remove('hidden');
+        btn.className = 'modal-cpl-btn px-3 py-1.5 rounded-full border text-xs font-medium transition-all ' +
+            'bg-gray-50 border-gray-200 text-gray-500 hover:border-gray-400 hover:text-gray-700';
     }
+    validateAddModal();
+}
+
+function validateAddModal() {
+    const desc        = document.getElementById('modal-deskripsi')?.value.trim() ?? '';
+    const cplSelected = document.querySelectorAll('.modal-cpl-btn[data-selected="1"]').length > 0;
+    const valid       = desc.length > 0 && cplSelected;
+    document.getElementById('btn-modal-add').disabled = !valid;
+    // Tampilkan pesan error CPL hanya jika user sudah mulai mengisi deskripsi
+    if (desc.length > 0 && !cplSelected) {
+        document.getElementById('modal-cpl-err')?.classList.remove('hidden');
+    } else {
+        document.getElementById('modal-cpl-err')?.classList.add('hidden');
+    }
+    return valid;
+}
+
+async function submitAddCpmk() {
+    if (!validateAddModal()) return;
+    const desc        = document.getElementById('modal-deskripsi').value.trim();
+    const selectedIds = [...document.querySelectorAll('.modal-cpl-btn[data-selected="1"]')]
+                          .map(b => parseInt(b.dataset.cplId));
+    const btn = document.getElementById('btn-modal-add');
+    btn.disabled    = true;
+    btn.textContent = 'Menyimpan…';
+    try {
+        // 1. Buat CPMK baru
+        const res = await fetch('{{ route("kurikulum.cpmk.store", $mataKuliah) }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
+            body: JSON.stringify({ deskripsi: desc }),
+        });
+        if (!res.ok) throw new Error();
+        const data   = await res.json();
+        const cpmkId = data.cpmk.id;
+        // 2. Set relasi CPL yang dipilih (parallel)
+        await Promise.all(selectedIds.map(cplId =>
+            fetch(`/kurikulum/api/cpmk/${cpmkId}/cpl-relation`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
+                body: JSON.stringify({ cpl_id: cplId, has_relation: true }),
+            })
+        ));
+        sessionStorage.setItem('cpmk_flash', `${data.cpmk.kode} berhasil ditambahkan.`);
+        location.reload();
+    } catch {
+        alert('Gagal menyimpan. Silakan coba lagi.');
+        btn.disabled    = false;
+        btn.textContent = 'Simpan CPMK';
+    }
+}
+
+// Tutup modal dengan Escape
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeAddModal();
 });
 
 // ── Delete CPMK ───────────────────────────────────────────────────
