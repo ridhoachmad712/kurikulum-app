@@ -95,12 +95,22 @@
         <span class="font-semibold text-gray-700 text-sm">{{ $cpmk->kode }}</span>
         <span class="text-sm text-gray-600">{{ Str::limit($cpmk->deskripsi, 70) }}</span>
 
-        {{-- Bobot info --}}
+        {{-- Bobot info + status distribusi --}}
         @if($totalBobot > 0)
-        <span class="px-2 py-0.5 bg-emerald-50 border border-emerald-200 rounded-full text-xs text-emerald-700">
-            Bobot CPMK: {{ number_format($totalBobot, 1) }}%
-            @if($meta['sub_count'] > 1)
-            → {{ number_format($bobotPerSub, 2) }}% / Sub-CPMK
+        @php
+            $totalManual = $meta['total_manual'] ?? 0;
+            $sisa = round($totalBobot - $totalManual, 2);
+            $sisaCls = abs($sisa) <= 0.01
+                ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                : ($sisa < 0 ? 'bg-red-50 border-red-200 text-red-600' : 'bg-amber-50 border-amber-200 text-amber-700');
+        @endphp
+        <span class="px-2 py-0.5 bg-gray-100 border border-gray-200 rounded-full text-xs text-gray-600">
+            Total CPMK: {{ number_format($totalBobot, 1) }}%
+        </span>
+        <span id="sisa-badge-{{ $cpmk->id }}" class="px-2 py-0.5 border rounded-full text-xs {{ $sisaCls }}">
+            @if(abs($sisa) <= 0.01) ✓ Bobot terdistribusi
+            @elseif($sisa < 0) ⚠ Melebihi {{ number_format(abs($sisa), 2) }}%
+            @else Sisa: {{ number_format($sisa, 2) }}%
             @endif
         </span>
         @else
@@ -132,6 +142,7 @@
                 <tr class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
                     <th class="border-b border-gray-100 px-4 py-2.5 text-left w-36">Sub-CPMK</th>
                     <th class="border-b border-gray-100 px-4 py-2.5 text-left">Deskripsi</th>
+                    <th class="border-b border-gray-100 px-3 py-2.5 text-center w-24 bg-indigo-50 text-indigo-600">Bobot (%)</th>
                     <th class="border-b border-gray-100 px-3 py-2.5 text-center w-20">Tugas</th>
                     <th class="border-b border-gray-100 px-3 py-2.5 text-center w-20">Kuis</th>
                     <th class="border-b border-gray-100 px-3 py-2.5 text-center w-24">Kasus/Proyek</th>
@@ -153,9 +164,22 @@
                               : ($total > 0 ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-400'));
                 @endphp
                 <tr class="hover:bg-gray-50" id="row-{{ $sc->id }}"
-                    data-target="{{ $target }}">
+                    data-target="{{ $target }}"
+                    data-cpmk-id="{{ $cpmk->id }}"
+                    data-total-cpmk="{{ $totalBobot }}">
                     <td class="px-4 py-2.5 font-medium text-teal-700 text-xs align-middle">{{ $sc->kode }}</td>
                     <td class="px-4 py-2.5 text-gray-600 text-xs align-middle">{{ $sc->deskripsi }}</td>
+
+                    {{-- Kolom Bobot manual --}}
+                    <td class="px-3 py-2 text-center align-middle bg-indigo-50/40">
+                        <input type="number" min="0" max="100" step="0.01"
+                            id="bobot-{{ $sc->id }}"
+                            value="{{ $sc->bobot !== null ? (float)$sc->bobot : '' }}"
+                            placeholder="0"
+                            oninput="debounceBobot({{ $sc->id }}, {{ $cpmk->id }})"
+                            class="w-16 text-center border border-indigo-200 rounded-lg px-1.5 py-1 text-xs
+                                   focus:outline-none focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 bg-white">
+                    </td>
 
                     @foreach(['tugas','quis','kasus_proyek','uts','uas'] as $field)
                     <td class="px-3 py-2 text-center align-middle">
@@ -197,8 +221,59 @@
     bg-white border border-gray-200 text-gray-600 transition-all"></div>
 
 <script>
-const CSRF   = '{{ csrf_token() }}';
-const timers = {};
+const CSRF        = '{{ csrf_token() }}';
+const timers      = {};
+const bobotTimers = {};
+
+// ── Auto-save Bobot Sub-CPMK ──────────────────────────────────────
+function debounceBobot(scId, cpmkId) {
+    clearTimeout(bobotTimers[scId]);
+    showStatus('Menyimpan bobot...');
+    bobotTimers[scId] = setTimeout(() => saveBobotSc(scId, cpmkId), 500);
+}
+
+async function saveBobotSc(scId, cpmkId) {
+    const bobot = parseFloat(document.getElementById('bobot-' + scId)?.value || 0) || 0;
+    try {
+        const res  = await fetch(`/kurikulum/api/sub-cpmk/${scId}/bobot`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
+            body:    JSON.stringify({ bobot }),
+        });
+        const json = await res.json();
+        if (json.ok) {
+            // Update target di baris asesmen
+            const row = document.getElementById('row-' + scId);
+            if (row) row.dataset.target = bobot;
+            updateTotal(scId, parseFloat(document.getElementById('total-' + scId)?.textContent) || 0);
+
+            // Update badge sisa di header CPMK
+            updateSisaBadge(cpmkId, json.total_cpmk, json.total_sub_bobot);
+            showStatus('✓ Tersimpan');
+            setTimeout(() => hideStatus(), 2000);
+        }
+    } catch {
+        showStatus('⚠ Gagal menyimpan');
+    }
+}
+
+function updateSisaBadge(cpmkId, totalCpmk, totalSub) {
+    const badge = document.getElementById('sisa-badge-' + cpmkId);
+    if (!badge) return;
+    const sisa = Math.round((totalCpmk - totalSub) * 100) / 100;
+    const abs  = Math.abs(sisa);
+    badge.className = 'px-2 py-0.5 border rounded-full text-xs ' +
+        (abs <= 0.01
+            ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+            : sisa < 0
+                ? 'bg-red-50 border-red-200 text-red-600'
+                : 'bg-amber-50 border-amber-200 text-amber-700');
+    badge.textContent = abs <= 0.01
+        ? '✓ Bobot terdistribusi'
+        : sisa < 0
+            ? '⚠ Melebihi ' + abs.toFixed(2) + '%'
+            : 'Sisa: ' + sisa.toFixed(2) + '%';
+}
 
 function debounce(id) {
     clearTimeout(timers[id]);

@@ -33,6 +33,19 @@
 {{-- ===================== TAB 1: CPMK ===================== --}}
 <div x-show="tab==='cpmk'" x-cloak class="w-full">
 
+{{-- Panduan pemilihan CPL --}}
+<div class="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 mb-4 text-xs text-blue-700">
+    <svg class="w-4 h-4 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+    </svg>
+    <div class="space-y-1">
+        <p class="font-semibold text-blue-800">Panduan Pemilihan CPL</p>
+        <p>CPL yang ditampilkan adalah CPL yang sudah dikaitkan dengan mata kuliah ini di menu <strong>Level CPL Mata Kuliah</strong>.</p>
+        <p>Untuk setiap CPMK, <strong>centang CPL yang didukung</strong> oleh CPMK tersebut — yaitu CPL yang pencapaiannya berkontribusi melalui CPMK ini. Satu CPMK bisa mendukung lebih dari satu CPL.</p>
+        <p>Setelah memilih CPL, lanjutkan ke tab <strong>Bobot % CPMK per CPL</strong> untuk mengisi persentase bobotnya.</p>
+    </div>
+</div>
+
 <div id="cpmk-list" class="space-y-3 mb-4">
     @foreach($cpmks as $cpmk)
     @include('kurikulum.cpmk._cpmk-card', ['cpmk'=>$cpmk, 'cpls'=>$cpls, 'cpmkCplMap'=>$cpmkCplMap])
@@ -84,10 +97,17 @@
 </div>
 @else
 
-<p class="text-xs text-gray-500 mb-4">
-    Masukkan persentase bobot tiap CPMK terhadap setiap CPL yang didukung.
-    <strong>Total per kolom (CPL)</strong> harus sama dengan nilai <strong>Tabel 5</strong> untuk MK ini.
-</p>
+<div class="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 mb-4 text-xs text-blue-700">
+    <svg class="w-4 h-4 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+    </svg>
+    <div class="space-y-1">
+        <p class="font-semibold text-blue-800">Panduan Pengisian Bobot</p>
+        <p>Isi persentase kontribusi setiap CPMK terhadap CPL yang didukungnya. Kolom yang tidak aktif (—) berarti CPMK tersebut tidak mendukung CPL itu — pilih CPL-nya terlebih dahulu di tab <strong>Input CPMK & Keterkaitan CPL</strong>.</p>
+        <p><strong>Total per kolom (CPL) harus sama dengan nilai baris Acuan Tabel 5</strong> di bagian bawah tabel. Baris <em>Total Isian</em> akan berubah warna menjadi hijau jika sudah sesuai, kuning jika belum, dan merah jika melebihi.</p>
+        <p>Setelah selesai mengisi, tekan tombol <strong>Simpan Bobot</strong> di bawah tabel. <strong>Isian tidak dapat disimpan jika total per kolom CPL belum sesuai dengan Acuan Tabel 5.</strong></p>
+    </div>
+</div>
 
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-auto">
     <table class="text-xs w-full border-collapse">
@@ -119,7 +139,7 @@
                             placeholder="0"
                             data-cpmk="{{ $cpmk->id }}"
                             data-cpl="{{ $cpl->id }}"
-                            onchange="saveBobot(this)"
+                            oninput="onBobotInput(this)"
                             class="bobot-input w-20 border border-gray-200 rounded px-2 py-1 text-center text-xs
                                    focus:ring-gray-400 focus:border-gray-400 focus:outline-none
                                    {{ $bobot > 0 ? 'border-indigo-300 bg-gray-50' : '' }}">
@@ -193,6 +213,21 @@
             </tr>
         </tbody>
     </table>
+</div>{{-- /overflow-auto --}}
+
+{{-- Validasi error --}}
+<div id="bobot-errors" class="hidden mt-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-xs text-red-700 space-y-1">
+    <p class="font-semibold text-red-800">Bobot belum sesuai acuan — perbaiki kolom berikut:</p>
+    <ul id="bobot-error-list" class="list-disc list-inside space-y-0.5 mt-1"></ul>
+</div>
+
+{{-- Tombol Simpan --}}
+<div class="mt-4 flex justify-end">
+    <button id="btn-simpan-bobot" onclick="simpanSemuaBobot()"
+        class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg
+               transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+        Simpan Bobot
+    </button>
 </div>
 @endif
 
@@ -306,7 +341,7 @@ function syncBobotCell(cpmkId, cplId, hasRelation) {
     if (hasRelation) {
         cell.innerHTML =
             `<input type="number" min="0" max="100" step="0.1" value="" placeholder="0"
-                data-cpmk="${cpmkId}" data-cpl="${cplId}" onchange="saveBobot(this)"
+                data-cpmk="${cpmkId}" data-cpl="${cplId}" oninput="onBobotInput(this)"
                 class="bobot-input w-20 border border-gray-200 rounded px-2 py-1 text-center text-xs
                        focus:ring-gray-400 focus:border-gray-400 focus:outline-none">`;
     } else {
@@ -337,7 +372,8 @@ function updateBobotTotal(cpmkId, serverTotal) {
 }
 
 // Hitung ulang baris Total Isian (kolom per CPL) dari DOM
-const TABEL5 = @json($tabel5 ?? []);
+const TABEL5     = @json($tabel5 ?? []);
+const CPL_CODES  = @json($cpls->pluck('kode', 'id')->toArray());
 
 function refreshColTotals() {
     document.querySelectorAll('[id^="col-total-"]').forEach(cell => {
@@ -361,47 +397,90 @@ function refreshColTotals() {
     });
 }
 
-// ── Save bobot ────────────────────────────────────────────────────
-let bobotTimers = {};
-function saveBobot(input) {
+// ── Input bobot (live update totals, tanpa auto-save) ────────────
+function onBobotInput(input) {
     const cpmkId = input.dataset.cpmk;
-    const cplId  = input.dataset.cpl;
     const bobot  = parseFloat(input.value) || 0;
 
     input.classList.toggle('border-indigo-300', bobot > 0);
     input.classList.toggle('bg-gray-50', bobot > 0);
 
-    clearTimeout(bobotTimers[`${cpmkId}-${cplId}`]);
-    bobotTimers[`${cpmkId}-${cplId}`] = setTimeout(async () => {
-        const res = await fetch(`/kurikulum/api/cpmk/${cpmkId}/bobot`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
-            body: JSON.stringify({ cpl_id: cplId, bobot }),
+    // Perbarui kolom Total baris CPMK dari DOM
+    let rowTotal = 0;
+    document.querySelectorAll(`.bobot-input[data-cpmk="${cpmkId}"]`).forEach(inp => {
+        rowTotal += parseFloat(inp.value) || 0;
+    });
+    rowTotal = Math.round(rowTotal * 10) / 10;
+    const totalEl = document.getElementById(`total-${cpmkId}`);
+    if (totalEl) {
+        const span = totalEl.querySelector('span') ?? totalEl;
+        span.className   = 'text-gray-400';
+        span.textContent = rowTotal > 0 ? rowTotal.toFixed(1) + '%' : '—';
+    }
+
+    refreshColTotals();
+}
+
+// ── Simpan semua bobot (dengan validasi) ─────────────────────────
+async function simpanSemuaBobot() {
+    // Validasi: setiap kolom CPL dengan acuan > 0 harus sesuai
+    const errors = [];
+    for (const [cplId, ref] of Object.entries(TABEL5)) {
+        if (ref <= 0) continue;
+        let sum = 0;
+        document.querySelectorAll(`.bobot-input[data-cpl="${cplId}"]`).forEach(inp => {
+            sum += parseFloat(inp.value) || 0;
         });
-        if (res.ok) {
-            const data = await res.json();
-            updateBobotTotal(cpmkId, data.total_bobot);
-            refreshColTotals();
-
-            if (bobot > 0) {
-                // Server set has_relation=true. Sync Tab 1 button if still unchecked.
-                const btn = document.getElementById(`cpl-label-${cpmkId}-${cplId}`);
-                if (btn && btn.dataset.checked !== '1') {
-                    btn.dataset.checked = '1';
-                    setCheckStyle(btn, true);
-                }
-
-                // If the Tab 2 cell lost its input during the debounce window
-                // (e.g. concurrent toggleCpl uncheck), restore it with the saved value.
-                const cell = document.getElementById(`bobot-cell-${cpmkId}-${cplId}`);
-                if (cell && !cell.querySelector('input.bobot-input')) {
-                    syncBobotCell(cpmkId, cplId, true);
-                    const newInp = cell.querySelector('input');
-                    if (newInp) newInp.value = bobot;
-                }
-            }
+        sum = Math.round(sum * 10) / 10;
+        if (Math.abs(sum - ref) >= 0.2) {
+            const kode = CPL_CODES[cplId] ?? `CPL-${cplId}`;
+            errors.push(`${kode}: total isian ${sum.toFixed(1)}% — acuan ${Math.round(ref * 10) / 10}%`);
         }
-    }, 500);
+    }
+
+    const errBox  = document.getElementById('bobot-errors');
+    const errList = document.getElementById('bobot-error-list');
+
+    if (errors.length > 0) {
+        errList.innerHTML = errors.map(e => `<li>${e}</li>`).join('');
+        errBox.classList.remove('hidden');
+        errBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        return;
+    }
+
+    errBox.classList.add('hidden');
+
+    const btn = document.getElementById('btn-simpan-bobot');
+    btn.disabled    = true;
+    btn.textContent = 'Menyimpan…';
+
+    const inputs    = document.querySelectorAll('.bobot-input');
+    const promises  = [];
+    inputs.forEach(inp => {
+        const cpmkId = inp.dataset.cpmk;
+        const cplId  = inp.dataset.cpl;
+        const bobot  = parseFloat(inp.value) || 0;
+        promises.push(
+            fetch(`/kurikulum/api/cpmk/${cpmkId}/bobot`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
+                body: JSON.stringify({ cpl_id: cplId, bobot }),
+            })
+        );
+    });
+
+    try {
+        await Promise.all(promises);
+        const toast = document.getElementById('cpmk-toast');
+        toast.textContent = '✓ Bobot berhasil disimpan';
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 3000);
+    } catch {
+        alert('Gagal menyimpan. Silakan coba lagi.');
+    }
+
+    btn.disabled    = false;
+    btn.textContent = 'Simpan Bobot';
 }
 </script>
 @endsection

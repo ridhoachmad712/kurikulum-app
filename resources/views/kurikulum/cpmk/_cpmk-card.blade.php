@@ -35,7 +35,7 @@
 
             {{-- CPL Badges --}}
             <div class="flex flex-wrap gap-1.5 mt-3">
-                <span class="text-xs text-gray-400 self-center">CPL yang didukung:</span>
+                <span class="text-xs text-gray-500 font-medium self-center">CPL yang didukung <span class="font-normal text-gray-400">(klik untuk pilih):</span></span>
                 @foreach($cpls as $cpl)
                 @php $checked = $cpmkCplMap[$cpmk->id][$cpl->id]['has_relation'] ?? false; @endphp
                 <button type="button"

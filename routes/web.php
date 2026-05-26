@@ -87,9 +87,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get ('sub-cpmk/tabel10',       [SubCpmkController::class, 'tabel10'])->name('sub-cpmk.tabel10');
         Route::get ('sub-cpmk/{cpmk}',        [SubCpmkController::class, 'show'])   ->name('sub-cpmk.show');
         Route::post('sub-cpmk/{cpmk}',        [SubCpmkController::class, 'store'])  ->name('sub-cpmk.store');
-        Route::patch ('api/sub-cpmk/{subCpmk}',      [SubCpmkController::class, 'update'])  ->name('api.sub-cpmk.update');
-        Route::delete('api/sub-cpmk/{subCpmk}',      [SubCpmkController::class, 'destroy']) ->name('api.sub-cpmk.destroy');
-        Route::post  ('api/sub-cpmk/{subCpmk}/clo',  [SubCpmkController::class, 'saveClo']) ->name('api.sub-cpmk.clo');
+        Route::patch ('api/sub-cpmk/{subCpmk}',        [SubCpmkController::class, 'update'])    ->name('api.sub-cpmk.update');
+        Route::delete('api/sub-cpmk/{subCpmk}',        [SubCpmkController::class, 'destroy'])   ->name('api.sub-cpmk.destroy');
+        Route::post  ('api/sub-cpmk/{subCpmk}/clo',   [SubCpmkController::class, 'saveClo'])   ->name('api.sub-cpmk.clo');
+        Route::post  ('api/sub-cpmk/{subCpmk}/bobot', [SubCpmkController::class, 'saveBobot']) ->name('api.sub-cpmk.bobot');
 
         // Asesmen
         Route::get ('asesmen',               [AsesmenController::class, 'index']) ->name('asesmen.index');

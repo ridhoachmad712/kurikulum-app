@@ -21,7 +21,6 @@
     @endhasanyrole
     <div class="flex gap-2 items-center flex-wrap">
         <x-search-input placeholder="Cari kode atau nama MK..." />
-        <a href="{{ route('kurikulum.sub-cpmk.tabel8') }}" class="btn-secondary btn-sm">Tabel 8</a>
     </div>
 </div>
 {{-- Info scope dosen --}}

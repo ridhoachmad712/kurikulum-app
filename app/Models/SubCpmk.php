@@ -11,7 +11,7 @@ class SubCpmk extends Model
 {
     protected $fillable = [
         'cpmk_id','mata_kuliah_id','kode','deskripsi',
-        'kode_clo_tertinggi','urutan',
+        'kode_clo_tertinggi','urutan','bobot',
     ];
 
     public function cpmk(): BelongsTo      { return $this->belongsTo(Cpmk::class); }

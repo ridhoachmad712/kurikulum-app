@@ -54,8 +54,13 @@
                     </td>
                     @foreach($allSubs as $sub)
                     <td class="border border-gray-200 px-2 py-2 text-center">
-                        @if($sub->cpmk_id === $cpmk->id && $cpmk->bobot_per_sub > 0)
-                        <span class="text-blue-700 font-medium">{{ number_format($cpmk->bobot_per_sub, 2) }}%</span>
+                        @if($sub->cpmk_id === $cpmk->id)
+                            @php $bobotSub = $sub->bobot !== null ? (float)$sub->bobot : (float)$cpmk->bobot_per_sub; @endphp
+                            @if($bobotSub > 0)
+                            <span class="text-blue-700 font-medium">{{ number_format($bobotSub, 2) }}%</span>
+                            @else
+                            <span class="text-gray-200">—</span>
+                            @endif
                         @else
                         <span class="text-gray-200">—</span>
                         @endif
@@ -78,7 +83,7 @@
                     @foreach($allSubs as $sub)
                     @php
                         $parentCpmk = $mk->cpmks->firstWhere('id', $sub->cpmk_id);
-                        $val = $parentCpmk?->bobot_per_sub ?? 0;
+                        $val = $sub->bobot !== null ? (float)$sub->bobot : (float)($parentCpmk?->bobot_per_sub ?? 0);
                     @endphp
                     <td class="border border-gray-700 px-2 py-2 text-center text-xs">
                         {{ $val > 0 ? number_format($val, 1).'%' : '—' }}

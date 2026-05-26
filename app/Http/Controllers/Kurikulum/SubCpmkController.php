@@ -180,6 +180,33 @@ class SubCpmkController extends Controller
     }
 
     /* ----------------------------------------------------------------
+     * SAVE BOBOT — simpan bobot manual per Sub-CPMK (AJAX)
+     * ---------------------------------------------------------------- */
+    public function saveBobot(Request $request, SubCpmk $subCpmk): JsonResponse
+    {
+        $subCpmk->loadMissing(['mataKuliah', 'cpmk.cpmkCpls', 'cpmk.subCpmks']);
+        $this->authorizeDosenMk($subCpmk->mataKuliah);
+
+        $data = $request->validate([
+            'bobot' => 'required|numeric|min:0|max:100',
+        ]);
+
+        $subCpmk->update(['bobot' => $data['bobot'] > 0 ? $data['bobot'] : null]);
+
+        // Hitung total bobot semua Sub-CPMK dalam CPMK ini
+        $cpmk           = $subCpmk->cpmk;
+        $totalCpmk      = (float) $cpmk->cpmkCpls->where('has_relation', true)->sum('bobot_persen');
+        $totalSubBobot  = (float) $cpmk->subCpmks->sum(fn($s) => (float) ($s->id === $subCpmk->id ? $data['bobot'] : ($s->bobot ?? 0)));
+
+        return response()->json([
+            'ok'             => true,
+            'total_sub_bobot'=> round($totalSubBobot, 2),
+            'total_cpmk'     => round($totalCpmk, 2),
+            'sisa'           => round($totalCpmk - $totalSubBobot, 2),
+        ]);
+    }
+
+    /* ----------------------------------------------------------------
      * TABEL 9 — Matriks Keterkaitan CPMK × Sub-CPMK (tanda V)
      * ---------------------------------------------------------------- */
     public function tabel9()
