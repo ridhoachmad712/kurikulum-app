@@ -245,14 +245,14 @@
                             @foreach($cpls as $cpl)
                             @php $val = $pctGlobal[$mk->id][$cpl->id] ?? 0; @endphp
                             <td class="px-2 py-1.5 text-center">
-                                @if($val > 0)<span class="text-blue-700 font-medium">{{ number_format($val,2) }}%</span>@else<span class="text-gray-300">—</span>@endif
+                                @if($val > 0)<span class="text-blue-700 font-medium">{{ round($val,1) }}%</span>@else<span class="text-gray-300">—</span>@endif
                             </td>
                             @endforeach
                         </tr>
                         @endforeach
                         <tr class="bg-blue-900 text-white font-bold">
                             <td colspan="2" class="px-3 py-2 text-center">Total per CPL</td>
-                            @foreach($cpls as $cpl)<td class="px-2 py-2 text-center">{{ number_format($pctGlobalColTotals[$cpl->id] ?? 0, 2) }}%</td>@endforeach
+                            @foreach($cpls as $cpl)<td class="px-2 py-2 text-center">{{ round($pctGlobalColTotals[$cpl->id] ?? 0, 1) }}%</td>@endforeach
                         </tr>
                     </tbody>
                 </table>
@@ -281,7 +281,7 @@
                             @foreach($cpls as $cpl)
                             @php $val = $pctPerMk[$mk->id][$cpl->id] ?? 0; @endphp
                             <td class="px-2 py-1.5 text-center">
-                                @if($val > 0)<span class="text-blue-700 font-medium">{{ number_format($val,1) }}%</span>@else<span class="text-gray-300">—</span>@endif
+                                @if($val > 0)<span class="text-blue-700 font-medium">{{ $val }}%</span>@else<span class="text-gray-300">—</span>@endif
                             </td>
                             @endforeach
                             <td class="px-2 py-1.5 text-center font-bold bg-blue-50 text-blue-800">
@@ -367,17 +367,17 @@
                             <td class="px-4 py-2 text-gray-700"><span class="font-semibold text-blue-700 mr-1">{{ $cpmk->kode }}</span>{{ Str::limit($cpmk->deskripsi, 80) }}</td>
                             @foreach($cpls as $cpl)
                             @php $cc = $cpmk->cpmkCpls->firstWhere('cpl_id',$cpl->id); $bobot = $cc ? (float)$cc->bobot_persen : 0; $rowTotal += $bobot; $mkCplTotals[$cpl->id] += $bobot; @endphp
-                            <td class="px-2 py-2 text-center">@if($bobot>0)<span class="text-blue-700 font-medium">{{ number_format($bobot,2) }}%</span>@else<span class="text-gray-200">—</span>@endif</td>
+                            <td class="px-2 py-2 text-center">@if($bobot>0)<span class="text-blue-700 font-medium">{{ round($bobot) }}%</span>@else<span class="text-gray-200">—</span>@endif</td>
                             @endforeach
                             <td class="px-2 py-2 text-center font-bold bg-blue-50 {{ abs($rowTotal-100)<0.1&&$rowTotal>0?'text-green-600':($rowTotal>0?'text-amber-600':'text-gray-300') }}">
-                                {{ $rowTotal>0?number_format($rowTotal,1).'%':'—' }}
+                                {{ $rowTotal>0?round($rowTotal).'%':'—' }}
                             </td>
                         </tr>
                         @endforeach
                         <tr class="bg-blue-900 text-white font-bold">
                             <td class="px-4 py-2">Total per CPL</td>
-                            @foreach($cpls as $cpl)<td class="px-2 py-2 text-center">{{ $mkCplTotals[$cpl->id]>0?number_format($mkCplTotals[$cpl->id],1).'%':'—' }}</td>@endforeach
-                            <td class="px-2 py-2 text-center">{{ number_format(array_sum($mkCplTotals),1) }}%</td>
+                            @foreach($cpls as $cpl)<td class="px-2 py-2 text-center">{{ $mkCplTotals[$cpl->id]>0?round($mkCplTotals[$cpl->id]).'%':'—' }}</td>@endforeach
+                            <td class="px-2 py-2 text-center">{{ round(array_sum($mkCplTotals)) }}%</td>
                         </tr>
                     </tbody>
                 </table>
@@ -584,21 +584,21 @@
                             @foreach($allSubs as $sub)
                             <td class="border border-gray-200 px-2 py-2 text-center">
                                 @php $bobotCell = $cpmkSubBobotMap[$cpmk->id][$sub->id] ?? null; @endphp
-                                @if($bobotCell !== null && $bobotCell > 0)<span class="text-blue-700 font-medium">{{ number_format($bobotCell,2) }}%</span>@else<span class="text-gray-200">—</span>@endif
+                                @if($bobotCell !== null && $bobotCell > 0)<span class="text-blue-700 font-medium">{{ round($bobotCell) }}%</span>@else<span class="text-gray-200">—</span>@endif
                             </td>
                             @endforeach
-                            <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-amber-50 {{ $cpmk->total_bobot>0?'text-amber-700':'text-gray-300' }}">{{ $cpmk->total_bobot>0?number_format($cpmk->total_bobot,2).'%':'—' }}</td>
-                            <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-blue-50 {{ $cpmk->total_bobot>0?'text-blue-800':'text-gray-300' }}">{{ $cpmk->total_bobot>0?number_format($cpmk->total_bobot,2).'%':'—' }}</td>
+                            <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-amber-50 {{ $cpmk->total_bobot>0?'text-amber-700':'text-gray-300' }}">{{ $cpmk->total_bobot>0?round($cpmk->total_bobot).'%':'—' }}</td>
+                            <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-blue-50 {{ $cpmk->total_bobot>0?'text-blue-800':'text-gray-300' }}">{{ $cpmk->total_bobot>0?round($cpmk->total_bobot).'%':'—' }}</td>
                         </tr>
                         @endforeach
                         <tr class="bg-blue-900 text-white font-bold">
                             <td class="border border-blue-800 px-3 py-2">Total</td>
                             @foreach($allSubs as $sub)
                             @php $v = $bobotPerSubMap[$sub->id] ?? 0; @endphp
-                            <td class="border border-blue-800 px-2 py-2 text-center text-xs">{{ $v>0?number_format($v,1).'%':'—' }}</td>
+                            <td class="border border-blue-800 px-2 py-2 text-center text-xs">{{ $v>0?round($v).'%':'—' }}</td>
                             @endforeach
-                            <td class="border border-blue-800 px-2 py-2 text-center bg-amber-900">{{ number_format($mkTotal,1) }}%</td>
-                            <td class="border border-blue-800 px-2 py-2 text-center">{{ number_format($mkTotal,1) }}%</td>
+                            <td class="border border-blue-800 px-2 py-2 text-center bg-amber-900">{{ round($mkTotal) }}%</td>
+                            <td class="border border-blue-800 px-2 py-2 text-center">{{ round($mkTotal) }}%</td>
                         </tr>
                     </tbody>
                 </table>
@@ -648,7 +648,7 @@
                                 <td class="border border-gray-200 px-2 py-1.5 text-center">@if($a->uts > 0)<span class="text-gray-700">{{ $a->uts }}</span>@else<span class="text-gray-300">—</span>@endif</td>
                                 <td class="border border-gray-200 px-2 py-1.5 text-center">@if($a->uas > 0)<span class="text-gray-700">{{ $a->uas }}</span>@else<span class="text-gray-300">—</span>@endif</td>
                                 <td class="border border-gray-200 px-2 py-1.5 text-center font-bold bg-emerald-50 {{ $total > 0 ? 'text-emerald-700' : 'text-gray-300' }}">{{ $total > 0 ? $total : '—' }}</td>
-                                <td class="border border-gray-200 px-2 py-1.5 text-center bg-blue-50 text-blue-800 font-medium">{{ $teoritis > 0 ? number_format($teoritis, 2).'%' : '—' }}</td>
+                                <td class="border border-gray-200 px-2 py-1.5 text-center bg-blue-50 text-blue-800 font-medium">{{ $teoritis > 0 ? round($teoritis).'%' : '—' }}</td>
                                 <td class="border border-gray-200 px-2 py-1.5 text-center">
                                     @if($teoritis <= 0)
                                         <span class="text-gray-300">—</span>
@@ -658,9 +658,9 @@
                                             Selaras
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-semibold text-[10px]" title="Selisih: {{ number_format($selisih, 2) }}">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-semibold text-[10px]" title="Selisih: {{ round($selisih) }}">
                                             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
-                                            {{ $total > $teoritis ? '+' : '' }}{{ number_format($total - $teoritis, 1) }}
+                                            {{ $total > $teoritis ? '+' : '' }}{{ round($total - $teoritis) }}
                                         </span>
                                     @endif
                                 </td>
@@ -705,15 +705,15 @@
                             <td class="px-4 py-2 text-gray-700"><span class="font-semibold text-blue-700 mr-1">{{ $cpmk->kode }}</span>{{ Str::limit($cpmk->deskripsi,80) }}</td>
                             @foreach($cpls as $cpl)
                             @php $cc = $cpmk->cpmkCpls->firstWhere('cpl_id',$cpl->id); $b = $cc?(float)$cc->bobot_persen:0; $rowTotal12+=$b; $cplTotals12[$cpl->id]+=$b; @endphp
-                            <td class="px-2 py-2 text-center">@if($b>0)<span class="text-blue-700 font-medium">{{ number_format($b,2) }}%</span>@else<span class="text-gray-200">—</span>@endif</td>
+                            <td class="px-2 py-2 text-center">@if($b>0)<span class="text-blue-700 font-medium">{{ round($b) }}%</span>@else<span class="text-gray-200">—</span>@endif</td>
                             @endforeach
-                            <td class="px-2 py-2 text-center font-bold bg-blue-50 {{ abs($rowTotal12-100)<0.1&&$rowTotal12>0?'text-green-600':($rowTotal12>0?'text-amber-600':'text-gray-300') }}">{{ $rowTotal12>0?number_format($rowTotal12,1).'%':'—' }}</td>
+                            <td class="px-2 py-2 text-center font-bold bg-blue-50 {{ abs($rowTotal12-100)<0.1&&$rowTotal12>0?'text-green-600':($rowTotal12>0?'text-amber-600':'text-gray-300') }}">{{ $rowTotal12>0?round($rowTotal12).'%':'—' }}</td>
                         </tr>
                         @endforeach
                         <tr class="bg-blue-900 text-white font-bold">
                             <td class="px-4 py-2">Total per CPL</td>
-                            @foreach($cpls as $cpl)<td class="px-2 py-2 text-center">{{ $cplTotals12[$cpl->id]>0?number_format($cplTotals12[$cpl->id],1).'%':'—' }}</td>@endforeach
-                            <td class="px-2 py-2 text-center">{{ number_format(array_sum($cplTotals12),1) }}%</td>
+                            @foreach($cpls as $cpl)<td class="px-2 py-2 text-center">{{ $cplTotals12[$cpl->id]>0?round($cplTotals12[$cpl->id]).'%':'—' }}</td>@endforeach
+                            <td class="px-2 py-2 text-center">{{ round(array_sum($cplTotals12)) }}%</td>
                         </tr>
                     </tbody>
                 </table>

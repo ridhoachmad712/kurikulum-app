@@ -190,8 +190,8 @@ class PublicController extends Controller
         // Tabel 11: hitung bobot_per_sub per CPMK
         foreach ($mataKuliahs as $mk) {
             foreach ($mk->cpmks as $cpmk) {
-                $totalBobot       = $cpmk->cpmkCpls->sum('bobot_persen');
-                $subCount         = $cpmk->subCpmks->count();
+                $totalBobot          = (float) $cpmk->cpmkCpls->where('has_relation', true)->sum('bobot_persen');
+                $subCount            = $cpmk->subCpmks->count();
                 $cpmk->total_bobot   = $totalBobot;
                 $cpmk->bobot_per_sub = $subCount > 0 ? round($totalBobot / $subCount, 2) : 0;
             }
