@@ -18,6 +18,14 @@
         </h1>
         <p class="text-blue-200 text-sm mt-2">{{ $prodi->fakultas }} &middot; {{ $prodi->universitas }}</p>
 
+        {{-- Deskripsi OBE --}}
+        <p class="text-blue-100/80 text-sm mt-4 max-w-2xl leading-relaxed">
+            Kurikulum ini dirancang menggunakan pendekatan <span class="text-white font-semibold">Outcome-Based Education (OBE)</span>
+            yang berorientasi pada capaian nyata mahasiswa. Setiap mata kuliah dipetakan secara eksplisit terhadap
+            <span class="text-white font-semibold">Capaian Pembelajaran Lulusan (CPL)</span> melalui CPMK dan Sub-CPMK,
+            memastikan keselarasan antara tujuan pembelajaran, proses perkuliahan, dan penilaian.
+        </p>
+
         {{-- Stat badges --}}
         <div class="flex flex-wrap gap-8 mt-8 pt-6 border-t border-white/20">
             @foreach([
