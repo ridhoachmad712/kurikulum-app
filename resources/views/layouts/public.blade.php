@@ -150,8 +150,9 @@
                 </ul>
             </div>
         </div>
-        <div class="mt-10 pt-6 border-t border-blue-900 text-xs text-center text-blue-700">
-            © {{ date('Y') }} Program Studi S1 Manajemen · FEB UNM · Sistem Informasi Kurikulum
+        <div class="mt-10 pt-6 border-t border-blue-900 text-xs text-center text-white space-y-1">
+            <p>© {{ date('Y') }} Program Studi S1 Manajemen · FEB UNM · Sistem Informasi Kurikulum</p>
+            <p class="text-blue-300">Developed by @ridhoachmad_</p>
         </div>
     </div>
 </footer>
