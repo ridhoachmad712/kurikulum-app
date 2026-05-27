@@ -32,6 +32,7 @@ class Cpmk extends Model
     {
         return $this->belongsToMany(SubCpmk::class, 'cpmk_sub_cpmk')
             ->withPivot('bobot')
+            ->withTimestamps()
             ->orderBy('sub_cpmks.urutan');
     }
 }

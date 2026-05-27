@@ -18,7 +18,8 @@ class SubCpmk extends Model
     public function cpmks(): BelongsToMany
     {
         return $this->belongsToMany(Cpmk::class, 'cpmk_sub_cpmk')
-            ->withPivot('bobot');
+            ->withPivot('bobot')
+            ->withTimestamps();
     }
 
     public function mataKuliah(): BelongsTo { return $this->belongsTo(MataKuliah::class); }
