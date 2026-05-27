@@ -12,8 +12,12 @@
     </div>
 </div>
 
+@php
+    $firstMkCpmkId = $mataKuliahsWithCpmk->first()?->id ?? 0;
+    $firstMkSubId  = $mataKuliahsWithSub->first()?->id ?? 0;
+@endphp
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
-     x-data="{ tab: 1, search: '' }">
+     x-data="{ tab: 1, mkIdCpmk: {{ $firstMkCpmkId }}, mkIdSub: {{ $firstMkSubId }} }">
 
     {{-- ─── TAB BAR ─────────────────────────────────────────────── --}}
     @php
@@ -49,7 +53,7 @@
             {{-- Pill chips --}}
             <div class="flex flex-wrap gap-1.5">
                 @foreach($groupTabs as $n => $t)
-                <button @click="tab = {{ $n }}; if ({{ $n }} < 6) search = ''"
+                <button @click="tab = {{ $n }}"
                         :class="tab === {{ $n }}
                             ? 'bg-blue-700 text-white shadow-sm border-blue-600'
                             : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-blue-700 hover:bg-blue-50'"
@@ -77,25 +81,42 @@
     @endforeach
     @endforeach
 
-    {{-- Search (hanya Tabel 6–12) --}}
+    {{-- ── Selector Mata Kuliah (Tabel 6–12) ─────────────────────── --}}
     <div x-show="tab >= 6" x-cloak class="mb-5">
-        <div class="relative max-w-sm">
-            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
-                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      d="m21 21-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0Z"/>
-            </svg>
-            <input type="search" x-model.debounce.200ms="search"
-                   placeholder="Cari kode atau nama mata kuliah…"
-                   class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-xl
-                          focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-indigo-100
-                          bg-white transition placeholder-gray-400">
-            <button x-show="search" @click="search = ''"
-                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
-                </svg>
+        <p class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-2">Pilih Mata Kuliah</p>
+
+        {{-- Tabel 6, 7, 12 — filter berdasar CPMK --}}
+        <div x-show="tab === 6 || tab === 7 || tab === 12" x-cloak class="flex flex-wrap gap-1.5">
+            @forelse($mataKuliahsWithCpmk as $mk)
+            <button @click="mkIdCpmk = {{ $mk->id }}"
+                    :class="mkIdCpmk === {{ $mk->id }}
+                        ? 'bg-blue-700 text-white border-blue-600 shadow-sm'
+                        : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-700 hover:bg-blue-50'"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-all whitespace-nowrap">
+                <span :class="mkIdCpmk === {{ $mk->id }} ? 'opacity-60' : 'text-gray-400'"
+                      class="font-mono text-[10px] transition-colors">{{ $mk->kode_rps }}</span>
+                {{ Str::limit($mk->nama, 30) }}
             </button>
+            @empty
+            <p class="text-xs text-gray-400 italic">Belum ada mata kuliah dengan CPMK.</p>
+            @endforelse
+        </div>
+
+        {{-- Tabel 8, 9, 10, 11 — filter berdasar Sub-CPMK --}}
+        <div x-show="tab >= 8 && tab <= 11" x-cloak class="flex flex-wrap gap-1.5">
+            @forelse($mataKuliahsWithSub as $mk)
+            <button @click="mkIdSub = {{ $mk->id }}"
+                    :class="mkIdSub === {{ $mk->id }}
+                        ? 'bg-blue-700 text-white border-blue-600 shadow-sm'
+                        : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-700 hover:bg-blue-50'"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-all whitespace-nowrap">
+                <span :class="mkIdSub === {{ $mk->id }} ? 'opacity-60' : 'text-gray-400'"
+                      class="font-mono text-[10px] transition-colors">{{ $mk->kode_rps }}</span>
+                {{ Str::limit($mk->nama, 30) }}
+            </button>
+            @empty
+            <p class="text-xs text-gray-400 italic">Belum ada mata kuliah dengan Sub-CPMK.</p>
+            @endforelse
         </div>
     </div>
 
@@ -299,8 +320,7 @@
     <div x-show="tab === 6" x-cloak>
         @forelse($mataKuliahsWithCpmk as $mk)
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-             data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
-             x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
+             x-show="mkIdCpmk === {{ $mk->id }}">
             <div class="bg-blue-900 text-white px-4 py-2.5 flex items-center gap-3">
                 <span class="font-mono text-xs text-blue-200">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-sm">{{ $mk->nama }}</span>
@@ -345,8 +365,7 @@
         @forelse($mataKuliahsWithCpmk as $mk)
         @php $mkCplTotals = []; foreach($cpls as $cpl){ $mkCplTotals[$cpl->id] = 0; } @endphp
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-             data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
-             x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
+             x-show="mkIdCpmk === {{ $mk->id }}">
             <div class="bg-blue-900 text-white px-4 py-2.5 flex items-center gap-3">
                 <span class="font-mono text-xs text-blue-200">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-sm">{{ $mk->nama }}</span>
@@ -392,8 +411,7 @@
     <div x-show="tab === 8" x-cloak>
         @forelse($mataKuliahsWithSub as $mk)
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-             data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
-             x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
+             x-show="mkIdSub === {{ $mk->id }}">
             <div class="px-5 py-3 border-b border-gray-100 bg-gray-50">
                 <span class="font-mono text-xs text-blue-700 mr-2">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-gray-800">{{ $mk->nama }}</span>
@@ -443,8 +461,7 @@
         @forelse($mataKuliahsWithSub as $mk)
         @php $allSubs = $mk->cpmks->flatMap->subCpmks->unique('id')->sortBy('urutan')->values(); @endphp
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-             data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
-             x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
+             x-show="mkIdSub === {{ $mk->id }}">
             <div class="bg-blue-900 text-white px-4 py-2.5 flex items-center gap-3">
                 <span class="font-mono text-xs text-blue-200">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-sm">{{ $mk->nama }}</span>
@@ -494,8 +511,7 @@
             $cplTotal = array_fill_keys($cpls->pluck('id')->toArray(), 0);
         @endphp
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-             data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
-             x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
+             x-show="mkIdSub === {{ $mk->id }}">
             <div class="bg-blue-900 text-white px-4 py-2.5 flex items-center gap-3">
                 <span class="font-mono text-xs text-blue-200">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-sm">{{ $mk->nama }}</span>
@@ -560,8 +576,7 @@
             }
         @endphp
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-             data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
-             x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
+             x-show="mkIdSub === {{ $mk->id }}">
             <div class="bg-blue-900 text-white px-4 py-2.5 flex items-center gap-3">
                 <span class="font-mono text-xs text-blue-200">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-sm">{{ $mk->nama }}</span>
@@ -683,8 +698,7 @@
         @forelse($mataKuliahsWithCpmk->filter(fn($mk)=>$mk->cpmks->some(fn($c)=>$c->cpmkCpls->isNotEmpty())) as $mk)
         @php $cplTotals12 = array_fill_keys($cpls->pluck('id')->toArray(), 0); @endphp
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-             data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
-             x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
+             x-show="mkIdCpmk === {{ $mk->id }}">
             <div class="bg-blue-900 text-white px-4 py-2.5 flex items-center gap-3">
                 <span class="font-mono text-xs text-blue-200">{{ $mk->kode_rps }}</span>
                 <span class="font-semibold text-sm">{{ $mk->nama }}</span>
