@@ -8,8 +8,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
 
         {{-- Badge --}}
-        <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-3 py-1 mb-5">
-            <span class="w-1.5 h-1.5 rounded-full bg-blue-300 animate-pulse"></span>
+        <div class="inline-flex items-center bg-white/10 border border-white/20 rounded-full px-3 py-1 mb-5">
             <p class="text-blue-200 text-[11px] font-semibold uppercase tracking-widest">Sistem Informasi Kurikulum OBE</p>
         </div>
 
