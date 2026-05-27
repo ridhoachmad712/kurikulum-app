@@ -5,7 +5,7 @@
 
 {{-- ─── HERO ──────────────────────────────────────────────────── --}}
 <div class="hero-gradient hero-pattern text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 text-center">
 
         {{-- Badge --}}
         <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-3 py-1 mb-5">
@@ -18,7 +18,7 @@
         </h1>
         <p class="text-blue-200 text-sm mt-2">{{ $prodi->fakultas }} &middot; {{ $prodi->universitas }}</p>
 
-        <p class="text-blue-100/80 text-sm mt-4 max-w-2xl leading-relaxed">
+        <p class="text-blue-100/80 text-sm mt-4 max-w-2xl mx-auto leading-relaxed">
             Kurikulum ini dirancang menggunakan pendekatan <span class="text-white font-semibold">Outcome-Based Education (OBE)</span>
             yang berorientasi pada capaian nyata mahasiswa. Setiap mata kuliah dipetakan secara eksplisit terhadap
             <span class="text-white font-semibold">Capaian Pembelajaran Lulusan (CPL)</span> melalui CPMK dan Sub-CPMK,
@@ -26,7 +26,7 @@
         </p>
 
         {{-- CTA --}}
-        <div class="flex flex-wrap items-center gap-3 mt-6">
+        <div class="flex flex-wrap justify-center items-center gap-3 mt-6">
             <a href="{{ route('public.kurikulum') }}"
                class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-blue-900 text-sm font-bold rounded-xl shadow hover:bg-blue-50 transition">
                 Lihat 12 Tabel Kurikulum
@@ -41,7 +41,7 @@
         </div>
 
         {{-- Stat strip --}}
-        <div class="flex flex-wrap gap-8 mt-8 pt-6 border-t border-white/20">
+        <div class="flex flex-wrap justify-center gap-8 mt-8 pt-6 border-t border-white/20">
             @foreach([
                 ['val' => $stats['total_mk'],   'label' => 'Mata Kuliah', 'icon' => 'M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25'],
                 ['val' => $stats['total_cpl'],  'label' => 'CPL',         'icon' => 'M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z'],
