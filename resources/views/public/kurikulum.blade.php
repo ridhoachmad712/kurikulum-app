@@ -3,39 +3,12 @@
 
 @section('content')
 
-{{-- ─── HERO ──────────────────────────────────────────────────── --}}
-<div class="hero-gradient hero-pattern text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-
-        {{-- Badge --}}
-        <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-3 py-1 mb-5">
-            <span class="w-1.5 h-1.5 rounded-full bg-blue-300"></span>
-            <p class="text-blue-200 text-[11px] font-semibold uppercase tracking-widest">Dokumen Kurikulum OBE</p>
-        </div>
-
-        <h1 class="text-2xl sm:text-3xl font-extrabold leading-tight tracking-tight">12 Tabel Kurikulum</h1>
-        <p class="text-blue-200 text-sm mt-2">{{ $prodi->jenjang }} {{ $prodi->nama }} &mdash; {{ $prodi->universitas }}</p>
-        <p class="text-blue-100/75 text-sm mt-3 max-w-2xl leading-relaxed">
-            Dokumentasi lengkap pemetaan kurikulum berbasis OBE — mulai dari matriks keterkaitan
-            <span class="text-white font-semibold">MK–CPL</span>, bobot CPMK, rekap Sub-CPMK,
-            hingga distribusi bobot asesmen per mata kuliah.
-        </p>
-
-        {{-- Stat strip --}}
-        <div class="flex flex-wrap gap-6 mt-7 pt-5 border-t border-white/20">
-            @foreach([
-                ['val' => $mataKuliahs->count(),                                    'label' => 'Mata Kuliah'],
-                ['val' => $cpls->count(),                                           'label' => 'CPL'],
-                ['val' => $mataKuliahsWithCpmk->count(),                            'label' => 'MK dengan CPMK'],
-                ['val' => $mataKuliahsWithSub->count(),                             'label' => 'MK dengan Sub-CPMK'],
-                ['val' => $mataKuliahs->flatMap->cpmks->count(),                    'label' => 'Total CPMK'],
-            ] as $s)
-            <div>
-                <p class="text-xl font-extrabold leading-none">{{ $s['val'] }}</p>
-                <p class="text-blue-300 text-[11px] mt-0.5">{{ $s['label'] }}</p>
-            </div>
-            @endforeach
-        </div>
+{{-- ─── PAGE HEADER ────────────────────────────────────────────── --}}
+<div class="border-b border-gray-200 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <p class="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-1">Dokumen Kurikulum OBE</p>
+        <h1 class="text-xl font-bold text-gray-900">12 Tabel Kurikulum</h1>
+        <p class="text-sm text-gray-500 mt-0.5">{{ $prodi->jenjang }} {{ $prodi->nama }} &mdash; {{ $prodi->universitas }}</p>
     </div>
 </div>
 
