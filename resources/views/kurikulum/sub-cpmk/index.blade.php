@@ -1,8 +1,8 @@
 @extends('layouts.app')
-@section('title','Sub-CPMK – Pilih CPMK')
+@section('title','Sub-CPMK')
 @section('content')
 
-<x-page-header title="Sub-CPMK" subtitle="Kelola sub-capaian dan CLO tertinggi per CPMK"/>
+<x-page-header title="Sub-CPMK" subtitle="Kelola sub-capaian pembelajaran, keterkaitan CPMK, dan CLO tertinggi"/>
 
 <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
     @hasanyrole('admin|kaprodi')
@@ -23,13 +23,13 @@
         <x-search-input placeholder="Cari kode atau nama MK..." />
     </div>
 </div>
-{{-- Info scope dosen --}}
+
 @hasrole('dosen')
 <div class="flex items-center gap-2 bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-2.5 mb-4 text-xs text-indigo-700">
     <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
     </svg>
-    <span>Menampilkan hanya mata kuliah yang ditugaskan kepada Anda. Hubungi Kaprodi jika ada MK yang tidak muncul.</span>
+    <span>Menampilkan hanya mata kuliah yang ditugaskan kepada Anda.</span>
 </div>
 @endhasrole
 
@@ -39,48 +39,43 @@
 
 @forelse($mataKuliahs as $mk)
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-4">
-    <div class="px-5 py-3 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+    <div class="px-5 py-3 bg-gray-50 flex items-center justify-between gap-3">
         <div>
-            <span class="font-mono text-xs text-gray-700 mr-2">{{ $mk->kode_rps }}</span>
+            <span class="font-mono text-xs text-gray-500 mr-2">{{ $mk->kode_rps }}</span>
             <span class="font-semibold text-gray-800">{{ $mk->nama }}</span>
             <span class="ml-2 text-xs text-gray-400">{{ $mk->sks }} SKS · Smt {{ $mk->semester }}</span>
         </div>
+        <div class="flex items-center gap-3 shrink-0">
+            @if($mk->sub_cpmks_count > 0)
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800">
+                {{ $mk->sub_cpmks_count }} Sub-CPMK
+            </span>
+            @else
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+                Belum ada
+            </span>
+            @endif
+            <a href="{{ route('kurikulum.sub-cpmk.show', $mk) }}"
+               class="px-3 py-1.5 text-xs bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition font-medium">
+                Kelola →
+            </a>
+        </div>
     </div>
-    <table class="min-w-full divide-y divide-gray-50 text-sm">
-        <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
-            <tr>
-                <th class="px-4 py-2 text-left w-28">CPMK</th>
-                <th class="px-4 py-2 text-left">Deskripsi</th>
-                <th class="px-4 py-2 text-center w-28">Sub-CPMK</th>
-                <th class="px-4 py-2 text-center w-24">Aksi</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-50">
-            @foreach($mk->cpmks as $cpmk)
-            <tr class="hover:bg-gray-50">
-                <td class="px-4 py-2.5 font-semibold text-gray-700 text-xs">{{ $cpmk->kode }}</td>
-                <td class="px-4 py-2.5 text-gray-700">{{ $cpmk->deskripsi }}</td>
-                <td class="px-4 py-2.5 text-center">
-                    @if($cpmk->sub_cpmks_count > 0)
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            {{ $cpmk->sub_cpmks_count }} Sub-CPMK
-                        </span>
-                    @else
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
-                            Belum ada
-                        </span>
-                    @endif
-                </td>
-                <td class="px-4 py-2.5 text-center">
-                    <a href="{{ route('kurikulum.sub-cpmk.show', $cpmk) }}"
-                       class="text-xs px-3 py-1 bg-gray-700 text-white rounded-lg hover:bg-gray-700">
-                        Kelola
-                    </a>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+
+    {{-- Info ringkas CPMK dan koneksinya --}}
+    @if($mk->cpmks->isNotEmpty())
+    <div class="px-5 py-3 flex flex-wrap gap-1.5 border-t border-gray-50">
+        @foreach($mk->cpmks as $cpmk)
+        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs
+                     {{ $cpmk->sub_cpmks_count > 0 ? 'bg-teal-50 text-teal-700 border border-teal-200' : 'bg-gray-100 text-gray-400 border border-gray-200' }}">
+            {{ $cpmk->kode }}
+            @if($cpmk->sub_cpmks_count > 0)
+            <span class="font-semibold">{{ $cpmk->sub_cpmks_count }}</span>
+            @endif
+        </span>
+        @endforeach
+    </div>
+    @endif
 </div>
 @empty
 @if(auth()->user()->hasRole('dosen'))

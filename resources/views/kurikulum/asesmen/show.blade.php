@@ -11,10 +11,11 @@
 <div class="bg-blue-50 border border-blue-100 rounded-lg px-4 py-2.5 mb-5 text-xs text-blue-700 flex items-start gap-2">
     <svg class="w-4 h-4 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
     <span>
-        Isi distribusi bobot metode asesmen per Sub-CPMK.
-        <strong>Total per Sub-CPMK harus sama dengan bobot teoritis Sub-CPMK</strong>
-        (= total bobot CPMK terhadap CPL ÷ jumlah Sub-CPMK).
-        Acuan ditampilkan di kolom <em>Target</em>. Perubahan disimpan otomatis.
+        Halaman ini memiliki <strong>dua kolom input</strong>:
+        <span class="inline-flex items-center gap-1 mx-1 px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded font-semibold text-[11px]">Bobot Sub-CPMK</span>
+        — isi % porsi bobot Sub-CPMK ini dari total CPMK (kosongkan = dibagi rata otomatis); dan
+        kolom <strong>Tugas / Kuis / dst</strong> — distribusi metode penilaian yang jumlahnya harus sama dengan Bobot Sub-CPMK.
+        Nilai target ditampilkan di kolom <em>Total / Target</em>. Semua perubahan disimpan otomatis.
     </span>
 </div>
 
@@ -105,12 +106,12 @@
                 : ($sisa < 0 ? 'bg-red-50 border-red-200 text-red-600' : 'bg-amber-50 border-amber-200 text-amber-700');
         @endphp
         <span class="px-2 py-0.5 bg-gray-100 border border-gray-200 rounded-full text-xs text-gray-600">
-            Total CPMK: {{ number_format($totalBobot, 1) }}%
+            Total CPMK: {{ round($totalBobot) }}%
         </span>
         <span id="sisa-badge-{{ $cpmk->id }}" class="px-2 py-0.5 border rounded-full text-xs {{ $sisaCls }}">
             @if(abs($sisa) <= 0.01) ✓ Bobot terdistribusi
-            @elseif($sisa < 0) ⚠ Melebihi {{ number_format(abs($sisa), 2) }}%
-            @else Sisa: {{ number_format($sisa, 2) }}%
+            @elseif($sisa < 0) ⚠ Melebihi {{ round(abs($sisa)) }}%
+            @else Sisa: {{ round($sisa) }}%
             @endif
         </span>
         @else
@@ -121,13 +122,13 @@
 
         {{-- Warning: semua Sub-CPMK belum punya CLO --}}
         @if($noClo)
-        <a href="{{ route('kurikulum.sub-cpmk.show', $cpmk) }}"
+        <a href="{{ route('kurikulum.sub-cpmk.show', $mataKuliah) }}"
            class="px-2 py-0.5 bg-orange-50 border border-orange-200 rounded-full text-xs text-orange-600 hover:bg-orange-100 transition-colors">
             ⚠ Sub-CPMK belum memiliki CLO
         </a>
         @endif
 
-        <a href="{{ route('kurikulum.sub-cpmk.show', $cpmk) }}"
+        <a href="{{ route('kurikulum.sub-cpmk.show', $mataKuliah) }}"
            class="ml-auto inline-flex items-center gap-1 text-xs text-gray-400 hover:text-gray-700 hover:underline shrink-0">
             Kelola Sub-CPMK
             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -142,7 +143,18 @@
                 <tr class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
                     <th class="border-b border-gray-100 px-4 py-2.5 text-left w-36">Sub-CPMK</th>
                     <th class="border-b border-gray-100 px-4 py-2.5 text-left">Deskripsi</th>
-                    <th class="border-b border-gray-100 px-3 py-2.5 text-center w-24 bg-indigo-50 text-indigo-600">Bobot (%)</th>
+                    <th class="border-b border-gray-100 px-3 py-2.5 text-center w-28 bg-indigo-50 text-indigo-600">
+                        <div class="flex items-center justify-center gap-1">
+                            <span>Bobot Sub-CPMK</span>
+                            <span title="Porsi bobot (%) yang dimiliki Sub-CPMK ini dari total bobot CPMK. Kosongkan = dibagi rata otomatis. Jumlah metode asesmen di bawah harus sama dengan nilai ini."
+                                  class="cursor-help text-indigo-400 hover:text-indigo-600 normal-case font-normal tracking-normal">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </span>
+                        </div>
+                        <p class="text-[10px] font-normal normal-case tracking-normal text-indigo-400 mt-0.5">kosong = otomatis</p>
+                    </th>
                     <th class="border-b border-gray-100 px-3 py-2.5 text-center w-20">Tugas</th>
                     <th class="border-b border-gray-100 px-3 py-2.5 text-center w-20">Kuis</th>
                     <th class="border-b border-gray-100 px-3 py-2.5 text-center w-24">Kasus/Proyek</th>
@@ -172,9 +184,9 @@
 
                     {{-- Kolom Bobot manual --}}
                     <td class="px-3 py-2 text-center align-middle bg-indigo-50/40">
-                        <input type="number" min="0" max="100" step="0.01"
+                        <input type="number" min="0" max="100" step="1"
                             id="bobot-{{ $sc->id }}"
-                            value="{{ $sc->bobot !== null ? (float)$sc->bobot : '' }}"
+                            value="{{ $sc->pivot->bobot !== null ? round((float)$sc->pivot->bobot) : '' }}"
                             placeholder="0"
                             oninput="debounceBobot({{ $sc->id }}, {{ $cpmk->id }})"
                             class="w-16 text-center border border-indigo-200 rounded-lg px-1.5 py-1 text-xs
@@ -183,9 +195,9 @@
 
                     @foreach(['tugas','quis','kasus_proyek','uts','uas'] as $field)
                     <td class="px-3 py-2 text-center align-middle">
-                        <input type="number" min="0" max="100" step="0.01"
+                        <input type="number" min="0" max="100" step="1"
                             id="{{ $field }}-{{ $sc->id }}"
-                            value="{{ $a ? (float)$a->{$field} : '' }}"
+                            value="{{ $a ? round((float)$a->{$field}) : '' }}"
                             placeholder="0"
                             oninput="debounce({{ $sc->id }})"
                             class="w-16 text-center border border-gray-200 rounded-lg px-1.5 py-1 text-xs
@@ -196,11 +208,11 @@
                     <td class="px-3 py-2 text-center align-middle">
                         <span id="total-{{ $sc->id }}"
                               class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold {{ $badgeCls }}">
-                            {{ $total > 0 ? number_format($total, 1).'%' : '–' }}
+                            {{ $total > 0 ? round($total).'%' : '–' }}
                             @if($over) ⚠ @endif
                         </span>
                         @if($target > 0)
-                        <p class="text-[10px] text-gray-400 mt-0.5">target: {{ number_format($target, 2) }}%</p>
+                        <p class="text-[10px] text-gray-400 mt-0.5">target: {{ round($target) }}%</p>
                         @endif
                     </td>
                 </tr>
@@ -220,6 +232,14 @@
 <div id="save-status" class="fixed bottom-4 right-4 text-xs px-3 py-1.5 rounded-full shadow hidden
     bg-white border border-gray-200 text-gray-600 transition-all"></div>
 
+<style>
+#bobot-form input[type=number]::-webkit-inner-spin-button,
+#bobot-form input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+table input[type=number]::-webkit-inner-spin-button,
+table input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+table input[type=number] { -moz-appearance: textfield; }
+</style>
+
 <script>
 const CSRF        = '{{ csrf_token() }}';
 const timers      = {};
@@ -238,7 +258,7 @@ async function saveBobotSc(scId, cpmkId) {
         const res  = await fetch(`/kurikulum/api/sub-cpmk/${scId}/bobot`, {
             method:  'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
-            body:    JSON.stringify({ bobot }),
+            body:    JSON.stringify({ cpmk_id: cpmkId, bobot }),
         });
         const json = await res.json();
         if (json.ok) {
@@ -271,8 +291,8 @@ function updateSisaBadge(cpmkId, totalCpmk, totalSub) {
     badge.textContent = abs <= 0.01
         ? '✓ Bobot terdistribusi'
         : sisa < 0
-            ? '⚠ Melebihi ' + abs.toFixed(2) + '%'
-            : 'Sisa: ' + sisa.toFixed(2) + '%';
+            ? '⚠ Melebihi ' + Math.round(abs) + '%'
+            : 'Sisa: ' + Math.round(sisa) + '%';
 }
 
 function debounce(id) {
@@ -319,7 +339,7 @@ function updateTotal(id, total) {
          over  ? 'bg-red-100 text-red-700'     :
          total > 0 ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-400');
 
-    el.textContent = (total > 0 ? total.toFixed(1) + '%' : '–') + (over ? ' ⚠' : '');
+    el.textContent = (total > 0 ? Math.round(total) + '%' : '–') + (over ? ' ⚠' : '');
 }
 
 function showStatus(msg) {

@@ -4,7 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasMany; // tetap dipakai untuk cpmkCpls
 
 class Cpmk extends Model
 {
@@ -27,8 +27,11 @@ class Cpmk extends Model
         return $this->hasMany(CpmkCpl::class);
     }
 
-    public function subCpmks(): HasMany
+    /** CPMK dapat terhubung ke banyak Sub-CPMK dalam MK yang sama */
+    public function subCpmks(): BelongsToMany
     {
-        return $this->hasMany(SubCpmk::class)->orderBy('urutan');
+        return $this->belongsToMany(SubCpmk::class, 'cpmk_sub_cpmk')
+            ->withPivot('bobot')
+            ->orderBy('sub_cpmks.urutan');
     }
 }

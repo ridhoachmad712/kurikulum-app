@@ -441,7 +441,7 @@
     {{-- ─── TABEL 9: Keterkaitan CPMK × Sub-CPMK ─────────────── --}}
     <div x-show="tab === 9" x-cloak>
         @forelse($mataKuliahsWithSub as $mk)
-        @php $allSubs = $mk->cpmks->flatMap->subCpmks->sortBy('urutan')->values(); @endphp
+        @php $allSubs = $mk->cpmks->flatMap->subCpmks->unique('id')->sortBy('urutan')->values(); @endphp
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
              data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
              x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
@@ -465,7 +465,7 @@
                             <td class="border border-gray-200 px-3 py-2 text-gray-700"><span class="font-semibold text-blue-700 mr-1">{{ $cpmk->kode }}</span>{{ Str::limit($cpmk->deskripsi, 70) }}</td>
                             @foreach($allSubs as $sub)
                             <td class="border border-gray-200 px-2 py-2 text-center">
-                                @if($sub->cpmk_id===$cpmk->id)<span class="text-green-600 font-bold text-sm">V</span>@else<span class="text-gray-200">—</span>@endif
+                                @if($cpmk->subCpmks->contains('id',$sub->id))<span class="text-green-600 font-bold text-sm">V</span>@else<span class="text-gray-200">—</span>@endif
                             </td>
                             @endforeach
                             <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-blue-50 text-blue-800">{{ $cpmk->subCpmks->count() }}</td>
@@ -544,7 +544,21 @@
     {{-- ─── TABEL 11: % Bobot CPMK & Sub-CPMK ────────────────── --}}
     <div x-show="tab === 11" x-cloak>
         @forelse($mataKuliahsWithSub as $mk)
-        @php $allSubs = $mk->cpmks->flatMap->subCpmks->sortBy('urutan')->values(); $mkTotal = $mk->cpmks->sum('total_bobot'); @endphp
+        @php
+            $allSubs = $mk->cpmks->flatMap->subCpmks->unique('id')->sortBy('urutan')->values();
+            $mkTotal = $mk->cpmks->sum('total_bobot');
+            // Build pivot-based bobot maps
+            $cpmkSubBobotMap = [];
+            $bobotPerSubMap  = [];
+            foreach ($mk->cpmks as $cpmk) {
+                $cpmkSubBobotMap[$cpmk->id] = [];
+                foreach ($cpmk->subCpmks as $s) {
+                    $b = $s->pivot->bobot !== null ? (float)$s->pivot->bobot : (float)$cpmk->bobot_per_sub;
+                    $cpmkSubBobotMap[$cpmk->id][$s->id] = $b;
+                    $bobotPerSubMap[$s->id] = $b;
+                }
+            }
+        @endphp
         <div class="mb-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
              data-mk="{{ strtolower($mk->kode_rps . ' ' . $mk->nama) }}"
              x-show="!search || $el.dataset.mk.includes(search.toLowerCase())">
@@ -569,7 +583,8 @@
                             <td class="border border-gray-200 px-3 py-2 text-gray-700"><span class="font-semibold text-blue-700 mr-1">{{ $cpmk->kode }}</span>{{ Str::limit($cpmk->deskripsi,70) }}</td>
                             @foreach($allSubs as $sub)
                             <td class="border border-gray-200 px-2 py-2 text-center">
-                                @if($sub->cpmk_id===$cpmk->id && $cpmk->bobot_per_sub>0)<span class="text-blue-700 font-medium">{{ number_format($cpmk->bobot_per_sub,2) }}%</span>@else<span class="text-gray-200">—</span>@endif
+                                @php $bobotCell = $cpmkSubBobotMap[$cpmk->id][$sub->id] ?? null; @endphp
+                                @if($bobotCell !== null && $bobotCell > 0)<span class="text-blue-700 font-medium">{{ number_format($bobotCell,2) }}%</span>@else<span class="text-gray-200">—</span>@endif
                             </td>
                             @endforeach
                             <td class="border border-gray-200 px-2 py-2 text-center font-bold bg-amber-50 {{ $cpmk->total_bobot>0?'text-amber-700':'text-gray-300' }}">{{ $cpmk->total_bobot>0?number_format($cpmk->total_bobot,2).'%':'—' }}</td>
@@ -579,7 +594,7 @@
                         <tr class="bg-blue-900 text-white font-bold">
                             <td class="border border-blue-800 px-3 py-2">Total</td>
                             @foreach($allSubs as $sub)
-                            @php $pc = $mk->cpmks->firstWhere('id',$sub->cpmk_id); $v = $pc?->bobot_per_sub ?? 0; @endphp
+                            @php $v = $bobotPerSubMap[$sub->id] ?? 0; @endphp
                             <td class="border border-blue-800 px-2 py-2 text-center text-xs">{{ $v>0?number_format($v,1).'%':'—' }}</td>
                             @endforeach
                             <td class="border border-blue-800 px-2 py-2 text-center bg-amber-900">{{ number_format($mkTotal,1) }}%</td>
@@ -592,13 +607,7 @@
             {{-- Bobot Asesmen per Sub-CPMK + Validasi --}}
             @php
                 $subsWithAsesmen = $allSubs->filter(fn($s) => $s->asesmen);
-                // Buat lookup: sub_cpmk_id => bobot_per_sub dari CPMK induknya
-                $bobotPerSub = [];
-                foreach ($mk->cpmks as $cpmk) {
-                    foreach ($cpmk->subCpmks as $s) {
-                        $bobotPerSub[$s->id] = (float) $cpmk->bobot_per_sub;
-                    }
-                }
+                $bobotPerSub     = $bobotPerSubMap; // already built with pivot-aware bobot above
             @endphp
             @if($subsWithAsesmen->isNotEmpty())
             <div class="border-t border-gray-200">

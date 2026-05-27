@@ -10,13 +10,20 @@
 
 @forelse($mataKuliahs as $mk)
 @php
-    $allSubs         = $mk->cpmks->flatMap->subCpmks->sortBy('urutan')->values();
+    // Sub-CPMK unik di MK ini (MK-level, bukan per-CPMK)
+    $allSubs         = $mk->cpmks->flatMap->subCpmks->unique('id')->sortBy('urutan')->values();
     $mkTotal         = $mk->cpmks->sum('total_bobot');
-    $subsWithAsesmen = $mk->cpmks->flatMap->subCpmks->filter(fn($s) => $s->asesmen)->sortBy('urutan')->values();
-    $bobotPerSubMap  = [];
+    $subsWithAsesmen = $allSubs->filter(fn($s) => $s->asesmen);
+
+    // [cpmk_id][sub_id] => bobot efektif (pivot atau fallback per-sub)
+    $cpmkSubBobotMap = [];
+    $bobotPerSubMap  = [];  // [sub_id] => bobot untuk seksi asesmen
     foreach ($mk->cpmks as $cpmk) {
+        $cpmkSubBobotMap[$cpmk->id] = [];
         foreach ($cpmk->subCpmks as $s) {
-            $bobotPerSubMap[$s->id] = (float) $cpmk->bobot_per_sub;
+            $b = $s->pivot->bobot !== null ? (float)$s->pivot->bobot : (float)$cpmk->bobot_per_sub;
+            $cpmkSubBobotMap[$cpmk->id][$s->id] = $b;
+            $bobotPerSubMap[$s->id] = $b; // terakhir menang (sederhana)
         }
     }
 @endphp
@@ -54,8 +61,8 @@
                     </td>
                     @foreach($allSubs as $sub)
                     <td class="border border-gray-200 px-2 py-2 text-center">
-                        @if($sub->cpmk_id === $cpmk->id)
-                            @php $bobotSub = $sub->bobot !== null ? (float)$sub->bobot : (float)$cpmk->bobot_per_sub; @endphp
+                        @if(isset($cpmkSubBobotMap[$cpmk->id][$sub->id]))
+                            @php $bobotSub = $cpmkSubBobotMap[$cpmk->id][$sub->id]; @endphp
                             @if($bobotSub > 0)
                             <span class="text-blue-700 font-medium">{{ number_format($bobotSub, 2) }}%</span>
                             @else
@@ -82,8 +89,8 @@
                     <td class="border border-gray-700 px-3 py-2">Total</td>
                     @foreach($allSubs as $sub)
                     @php
-                        $parentCpmk = $mk->cpmks->firstWhere('id', $sub->cpmk_id);
-                        $val = $sub->bobot !== null ? (float)$sub->bobot : (float)($parentCpmk?->bobot_per_sub ?? 0);
+                        // Tampilkan bobot efektif sub-CPMK ini (dari CPMK pertama yang menghubungkannya)
+                        $val = $bobotPerSubMap[$sub->id] ?? 0;
                     @endphp
                     <td class="border border-gray-700 px-2 py-2 text-center text-xs">
                         {{ $val > 0 ? number_format($val, 1).'%' : '—' }}

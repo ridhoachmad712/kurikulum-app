@@ -271,15 +271,14 @@ class CpmkController extends Controller
         $this->applyDosenScope($q);
         $mataKuliahs = $q->get()->filter(fn($mk) => $mk->cpmks->flatMap->subCpmks->isNotEmpty());
 
-        // Hitung distribusi bobot: setiap Sub-CPMK mendapat porsi rata dari total bobot CPMK-nya
+        // Hitung distribusi bobot per CPMK
         foreach ($mataKuliahs as $mk) {
-            $maxSubs = $mk->cpmks->max(fn($c) => $c->subCpmks->count()) ?? 0;
-            $mk->max_subs = $mk->cpmks->flatMap->subCpmks->count(); // total subs in MK
+            $mk->max_subs = $mk->cpmks->flatMap->subCpmks->unique('id')->count();
             foreach ($mk->cpmks as $cpmk) {
                 $totalBobot   = $cpmk->cpmkCpls->where('has_relation', true)->sum('bobot_persen');
                 $subCount     = $cpmk->subCpmks->count();
                 $bobotPerSub  = $subCount > 0 ? round($totalBobot / $subCount, 2) : 0;
-                $cpmk->total_bobot  = $totalBobot;
+                $cpmk->total_bobot   = $totalBobot;
                 $cpmk->bobot_per_sub = $bobotPerSub;
             }
         }

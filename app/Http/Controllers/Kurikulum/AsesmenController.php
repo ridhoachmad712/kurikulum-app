@@ -43,7 +43,7 @@ class AsesmenController extends Controller
         $mataKuliahs = $q->get()
             ->filter(fn($mk) => $mk->cpmks->flatMap->subCpmks->isNotEmpty())
             ->map(function ($mk) {
-                $subCpmks        = $mk->cpmks->flatMap->subCpmks;
+                $subCpmks        = $mk->cpmks->flatMap->subCpmks->unique('id');
                 $withClo         = $subCpmks->filter(fn($sc) => $sc->subCpmkClos->isNotEmpty());
                 $mk->all_sub     = $subCpmks->count();   // total sub termasuk yang belum ber-CLO
                 $mk->total_sub   = $withClo->count();    // hanya sub yang sudah ber-CLO
@@ -75,18 +75,18 @@ class AsesmenController extends Controller
             $totalBobot  = (float) $cpmk->cpmkCpls->where('has_relation', true)->sum('bobot_persen');
             $subCount    = $cpmk->subCpmks->count();
             $bobotPerSub = $subCount > 0 ? round($totalBobot / $subCount, 2) : 0;
-            $totalManual = $cpmk->subCpmks->sum(fn($s) => (float) ($s->bobot ?? 0));
+            $totalManual = $cpmk->subCpmks->sum(fn($s) => (float) ($s->pivot->bobot ?? 0));
 
             $cpmkMeta[$cpmk->id] = [
                 'total_bobot'   => $totalBobot,
-                'bobot_per_sub' => $bobotPerSub,   // referensi jika bobot manual belum diisi
+                'bobot_per_sub' => $bobotPerSub,
                 'sub_count'     => $subCount,
                 'total_manual'  => round($totalManual, 2),
             ];
 
             foreach ($cpmk->subCpmks as $sc) {
-                // Gunakan bobot manual jika sudah diisi, fallback ke pembagian rata
-                $subCpmkBobot[$sc->id] = $sc->bobot !== null ? (float) $sc->bobot : $bobotPerSub;
+                // Gunakan bobot pivot jika sudah diisi, fallback ke pembagian rata
+                $subCpmkBobot[$sc->id] = $sc->pivot->bobot !== null ? (float) $sc->pivot->bobot : $bobotPerSub;
             }
         }
 

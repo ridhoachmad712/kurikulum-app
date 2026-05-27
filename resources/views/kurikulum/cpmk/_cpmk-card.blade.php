@@ -54,7 +54,7 @@
                 <span class="text-xs text-gray-400">
                     {{ $cpmk->subCpmks->count() }} Sub-CPMK
                 </span>
-                <a href="{{ route('kurikulum.sub-cpmk.show', $cpmk) }}"
+                <a href="{{ route('kurikulum.sub-cpmk.show', $mataKuliah) }}"
                    class="inline-flex items-center gap-1 text-xs text-gray-600 hover:text-gray-900 font-medium hover:underline">
                     Kelola Sub-CPMK
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">

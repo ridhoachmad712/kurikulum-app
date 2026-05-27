@@ -10,11 +10,17 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class SubCpmk extends Model
 {
     protected $fillable = [
-        'cpmk_id','mata_kuliah_id','kode','deskripsi',
-        'kode_clo_tertinggi','urutan','bobot',
+        'mata_kuliah_id', 'kode', 'deskripsi',
+        'kode_clo_tertinggi', 'urutan',
     ];
 
-    public function cpmk(): BelongsTo      { return $this->belongsTo(Cpmk::class); }
+    /** Sub-CPMK dapat terhubung ke banyak CPMK dalam MK yang sama */
+    public function cpmks(): BelongsToMany
+    {
+        return $this->belongsToMany(Cpmk::class, 'cpmk_sub_cpmk')
+            ->withPivot('bobot');
+    }
+
     public function mataKuliah(): BelongsTo { return $this->belongsTo(MataKuliah::class); }
 
     public function cloTaxonomis(): BelongsToMany

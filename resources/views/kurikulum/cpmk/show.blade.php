@@ -130,7 +130,7 @@
                 @endphp
                 <td id="bobot-cell-{{ $cpmk->id }}-{{ $cpl->id }}" class="px-2 py-2 text-center">
                     @if($hasRel)
-                        <input type="number" min="0" max="100" step="0.1"
+                        <input type="number" min="0" max="100" step="1"
                             value="{{ $bobot > 0 ? $bobot : '' }}"
                             placeholder="0"
                             data-cpmk="{{ $cpmk->id }}"
@@ -151,7 +151,7 @@
                             ->sum('bobot');
                     @endphp
                     <span class="text-gray-400">
-                        {{ $rowTotal > 0 ? number_format($rowTotal, 1).'%' : '—' }}
+                        {{ $rowTotal > 0 ? round($rowTotal).'%' : '—' }}
                     </span>
                 </td>
             </tr>
@@ -188,7 +188,7 @@
                 </td>
                 @foreach($cpls as $cpl)
                 @php
-                    $col    = round($colTotals[$cpl->id] ?? 0, 1);
+                    $col    = round($colTotals[$cpl->id] ?? 0);
                     $ref    = $tabel5[$cpl->id] ?? 0;
                     $match  = $ref > 0 && abs($col - $ref) < 0.2;
                     $over   = $ref > 0 && $col > $ref + 0.2;
@@ -197,14 +197,14 @@
                             : ($col > 0 ? 'text-amber-600 font-semibold' : 'text-gray-300'));
                 @endphp
                 <td id="col-total-{{ $cpl->id }}" class="px-2 py-2 text-center text-xs {{ $colCls }}">
-                    {{ $col > 0 ? number_format($col, 1).'%' : '—' }}
+                    {{ $col > 0 ? $col.'%' : '—' }}
                     @if($over)
                         <span class="block text-[9px] font-normal leading-tight">⚠ melebihi</span>
                     @endif
                 </td>
                 @endforeach
                 <td class="px-2 py-2 text-center text-xs text-gray-400">
-                    {{ number_format(array_sum($colTotals), 1) }}%
+                    {{ round(array_sum($colTotals)) }}%
                 </td>
             </tr>
         </tbody>
@@ -482,7 +482,7 @@ function syncBobotCell(cpmkId, cplId, hasRelation) {
 
     if (hasRelation) {
         cell.innerHTML =
-            `<input type="number" min="0" max="100" step="0.1" value="" placeholder="0"
+            `<input type="number" min="0" max="100" step="1" value="" placeholder="0"
                 data-cpmk="${cpmkId}" data-cpl="${cplId}" oninput="onBobotInput(this)"
                 class="bobot-input w-20 border border-gray-200 rounded px-2 py-1 text-center text-xs
                        focus:ring-gray-400 focus:border-gray-400 focus:outline-none">`;
@@ -507,7 +507,7 @@ function updateBobotTotal(cpmkId, serverTotal) {
 
     const span = totalEl.querySelector('span') ?? totalEl;
     span.className   = 'text-gray-400';
-    span.textContent = t > 0 ? t.toFixed(1) + '%' : '—';
+    span.textContent = t > 0 ? Math.round(t) + '%' : '—';
 
     // Perbarui juga kolom total (bottom rows) untuk setiap CPL yang terpengaruh
     refreshColTotals();
@@ -534,7 +534,7 @@ function refreshColTotals() {
              over  ? 'text-red-600 font-bold'   :
              sum > 0 ? 'text-amber-600 font-semibold' : 'text-gray-300');
 
-        cell.innerHTML = (sum > 0 ? sum.toFixed(1) + '%' : '—') +
+        cell.innerHTML = (sum > 0 ? Math.round(sum) + '%' : '—') +
             (over ? '<span class="block text-[9px] font-normal leading-tight">⚠ melebihi</span>' : '');
     });
 }
@@ -557,7 +557,7 @@ function onBobotInput(input) {
     if (totalEl) {
         const span = totalEl.querySelector('span') ?? totalEl;
         span.className   = 'text-gray-400';
-        span.textContent = rowTotal > 0 ? rowTotal.toFixed(1) + '%' : '—';
+        span.textContent = rowTotal > 0 ? Math.round(rowTotal) + '%' : '—';
     }
 
     refreshColTotals();
@@ -576,7 +576,7 @@ async function simpanSemuaBobot() {
         sum = Math.round(sum * 10) / 10;
         if (Math.abs(sum - ref) >= 0.2) {
             const kode = CPL_CODES[cplId] ?? `CPL-${cplId}`;
-            errors.push(`${kode}: total isian ${sum.toFixed(1)}% — acuan ${Math.round(ref)}%`);
+            errors.push(`${kode}: total isian ${Math.round(sum)}% — acuan ${Math.round(ref)}%`);
         }
     }
 

@@ -8,7 +8,7 @@
 
 @forelse($mataKuliahs as $mk)
 @php
-    $allSubs = $mk->cpmks->flatMap->subCpmks->sortBy('urutan')->values();
+    $allSubs = $mk->cpmks->flatMap->subCpmks->unique('id')->sortBy('urutan')->values();
     $subCount = $allSubs->count();
 @endphp
 <div class="mb-6 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -39,7 +39,7 @@
                     </td>
                     @foreach($allSubs as $sub)
                     <td class="border border-gray-200 px-2 py-2 text-center">
-                        @if($sub->cpmk_id === $cpmk->id)
+                        @if($cpmk->subCpmks->contains('id', $sub->id))
                         <span class="text-green-600 font-bold text-sm">V</span>
                         @else
                         <span class="text-gray-200">—</span>

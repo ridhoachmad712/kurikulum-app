@@ -87,9 +87,7 @@
             'label'  => 'Sub-CPMK',
             'done'   => $mk->sub_cpmks_count > 0,
             'detail' => $mk->sub_cpmks_count > 0 ? $mk->sub_cpmks_count . ' Sub-CPMK' : 'belum ada',
-            'href'   => $firstCpmk
-                            ? route('kurikulum.sub-cpmk.show', $firstCpmk)
-                            : route('kurikulum.cpmk.show', $mk),
+            'href'   => route('kurikulum.sub-cpmk.show', $mk),
         ],
         [
             'label'  => 'CLO Tertinggi',
@@ -97,9 +95,7 @@
             'detail' => $mk->sub_cpmks_count > 0
                             ? $mk->sub_clo_count . '/' . $mk->sub_cpmks_count . ' sub-CPMK terisi'
                             : 'belum ada Sub-CPMK',
-            'href'   => $firstCpmk
-                            ? route('kurikulum.sub-cpmk.show', $firstCpmk)
-                            : route('kurikulum.cpmk.show', $mk),
+            'href'   => route('kurikulum.sub-cpmk.show', $mk),
         ],
         [
             'label'  => 'Bobot Asesmen',
