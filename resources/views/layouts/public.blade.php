@@ -8,7 +8,7 @@
     <style>
         [x-cloak]{display:none!important}
         .hero-gradient { background: linear-gradient(135deg, #0f2557 0%, #1e3a8a 50%, #1e40af 100%); }
-        .hero-pattern  { background-image: radial-gradient(rgba(255,255,255,.08) 1px, transparent 1px); background-size: 20px 20px; }
+        .hero-pattern  { background-image: radial-gradient(rgba(255,255,255,.08) 1px, transparent 1px), linear-gradient(135deg, #0f2557 0%, #1e3a8a 50%, #1e40af 100%); background-size: 20px 20px, auto; }
     </style>
 </head>
 <body class="bg-gray-50 antialiased text-gray-800">
