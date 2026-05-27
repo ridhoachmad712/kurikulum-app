@@ -3,20 +3,19 @@
 
 @section('content')
 
-{{-- ─── PAGE HEADER ─────────────────────────────────────────────── --}}
-<div class="bg-blue-800 text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-        <nav class="flex items-center gap-1 text-xs text-blue-200 mb-2">
-            <a href="{{ route('public.home') }}" class="hover:text-white transition">Beranda</a>
+{{-- ─── PAGE HEADER ────────────────────────────────────────────── --}}
+<div class="border-b border-gray-200 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <nav class="flex items-center gap-1 text-xs text-gray-400 mb-2">
+            <a href="{{ route('public.home') }}" class="hover:text-blue-700 transition">Beranda</a>
             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
             </svg>
-            <span class="text-blue-100">Bahan Kajian</span>
+            <span class="text-gray-600 font-medium">Bahan Kajian</span>
         </nav>
-        <h1 class="text-xl font-bold">Bahan Kajian (BK)</h1>
-        <p class="text-blue-100 text-sm mt-0.5">
-            {{ $prodi->nama }} &middot; {{ $bahanKajians->count() }} Bahan Kajian
-        </p>
+        <p class="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-1">Kurikulum</p>
+        <h1 class="text-xl font-bold text-gray-900">Bahan Kajian (BK)</h1>
+        <p class="text-sm text-gray-500 mt-0.5">{{ $prodi->nama }} &middot; {{ $bahanKajians->count() }} Bahan Kajian</p>
     </div>
 </div>
 

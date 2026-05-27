@@ -3,12 +3,17 @@
 
 @section('content')
 
-{{-- ─── HERO ──────────────────────────────────────────────────── --}}
-<div class="bg-blue-800 text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <p class="text-blue-200 text-xs font-semibold uppercase tracking-widest mb-2">Program Studi</p>
-        <h1 class="text-2xl sm:text-3xl font-extrabold leading-tight">{{ $prodi->jenjang }} {{ $prodi->nama }}</h1>
-        <p class="text-blue-100 text-sm mt-1.5">{{ $prodi->fakultas }} &middot; {{ $prodi->universitas }}</p>
+{{-- ─── PAGE HEADER ────────────────────────────────────────────── --}}
+<div class="border-b border-gray-200 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <nav class="flex items-center gap-1 text-xs text-gray-400 mb-2">
+            <a href="{{ route('public.home') }}" class="hover:text-blue-700 transition">Beranda</a>
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
+            <span class="text-gray-600 font-medium">Profil Prodi</span>
+        </nav>
+        <p class="text-xs font-semibold uppercase tracking-widest text-blue-600 mb-1">Program Studi</p>
+        <h1 class="text-xl font-bold text-gray-900">{{ $prodi->jenjang }} {{ $prodi->nama }}</h1>
+        <p class="text-sm text-gray-500 mt-0.5">{{ $prodi->fakultas }} &middot; {{ $prodi->universitas }}</p>
     </div>
 </div>
 

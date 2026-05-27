@@ -3,10 +3,10 @@
 
 @section('content')
 
-{{-- Page header --}}
-<div class="bg-white border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <nav class="flex items-center gap-1 text-xs text-gray-400 mb-3 flex-wrap">
+{{-- ─── PAGE HEADER ────────────────────────────────────────────── --}}
+<div class="border-b border-gray-200 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <nav class="flex items-center gap-1 text-xs text-gray-400 mb-2 flex-wrap">
             <a href="{{ route('public.home') }}" class="hover:text-blue-700 transition">Beranda</a>
             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
             <a href="{{ route('public.mata-kuliah') }}" class="hover:text-blue-700 transition">Mata Kuliah</a>
