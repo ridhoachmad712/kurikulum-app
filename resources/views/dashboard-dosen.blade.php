@@ -8,7 +8,7 @@
     $salam     = $jam < 11 ? 'Pagi' : ($jam < 15 ? 'Siang' : ($jam < 18 ? 'Sore' : 'Malam'));
     $namaDepan   = auth()->user()->name ?? 'Pengguna';
     $totalScore  = $mataKuliahs->sum('score');
-    $maxScore    = $mataKuliahs->count() * 5;
+    $maxScore    = $mataKuliahs->count() * 4;
     $pct         = $maxScore > 0 ? round($totalScore / $maxScore * 100) : 0;
 
     $quotes = [
@@ -63,8 +63,8 @@
         <p class="text-sm font-semibold text-blue-800">Tentang Aplikasi Ini</p>
         <p class="text-sm text-blue-700 mt-0.5 leading-relaxed">
             Aplikasi ini membantu Anda melengkapi dokumen kurikulum untuk setiap mata kuliah yang diampu.
-            Terdapat <strong>5 langkah</strong> yang perlu diselesaikan per mata kuliah:
-            Matriks MK–CPL, CPMK, Sub-CPMK, CLO Tertinggi, dan Bobot Asesmen.
+            Terdapat <strong>4 langkah</strong> yang perlu diselesaikan per mata kuliah:
+            Matriks MK–CPL, CPMK, Sub-CPMK, dan Bobot Asesmen.
         </p>
     </div>
     <button @click="show = false; localStorage.setItem('dosen_info_dismissed', '1')"
@@ -78,10 +78,10 @@
 {{-- ── RINGKASAN CARD ── --}}
 @if($summary['total_mk'] > 0)
 @php
-    $mkSelesai  = $mataKuliahs->where('score', 5)->count();
-    $mkProgres  = $mataKuliahs->where('score', '>', 0)->where('score', '<', 5)->count();
+    $mkSelesai  = $mataKuliahs->where('score', 4)->count();
+    $mkProgres  = $mataKuliahs->where('score', '>', 0)->where('score', '<', 4)->count();
     $mkBelum    = $mataKuliahs->where('score', 0)->count();
-    $mkTerdekat = $mataKuliahs->where('score', '<', 5)->sortByDesc('score')->first();
+    $mkTerdekat = $mataKuliahs->where('score', '<', 4)->sortByDesc('score')->first();
     $sisaLangkah = $maxScore - $totalScore;
 @endphp
 <div class="card p-5 mb-7">
@@ -135,7 +135,7 @@
             @if($mkTerdekat)
                 <p class="text-sm font-semibold text-gray-800 leading-snug line-clamp-1">{{ $mkTerdekat->nama }}</p>
                 <div class="flex items-center justify-between mt-1.5">
-                    <span class="text-xs text-amber-600">{{ $mkTerdekat->score }}/5 langkah</span>
+                    <span class="text-xs text-amber-600">{{ $mkTerdekat->score }}/4 langkah</span>
                     <a href="{{ route('kurikulum.cpmk.show', $mkTerdekat) }}"
                        class="text-xs font-semibold text-gray-700 hover:text-gray-900 hover:underline">
                         Lanjutkan →
@@ -164,7 +164,6 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 @foreach($mataKuliahs as $mk)
 @php
-    $allClo  = $mk->sub_cpmks_count > 0 && $mk->sub_clo_count  == $mk->sub_cpmks_count;
     $allAses = $mk->sub_cpmks_count > 0 && $mk->sub_asesmen_count == $mk->sub_cpmks_count;
 
     /*
@@ -196,14 +195,6 @@
             'href'   => route('kurikulum.sub-cpmk.show', $mk),
         ],
         [
-            'label'  => 'CLO Tertinggi',
-            'done'   => $allClo,
-            'detail' => $mk->sub_cpmks_count > 0
-                            ? $mk->sub_clo_count . '/' . $mk->sub_cpmks_count . ' sub-CPMK terisi'
-                            : 'belum ada Sub-CPMK',
-            'href'   => route('kurikulum.sub-cpmk.show', $mk),
-        ],
-        [
             'label'  => 'Bobot Asesmen',
             'done'   => $allAses,
             'detail' => $mk->sub_cpmks_count > 0
@@ -216,22 +207,22 @@
     // Langkah berikutnya yang belum selesai
     $nextStep = collect($checks)->first(fn($s) => !$s['done']);
 
-    $barPct   = round($mk->score / 5 * 100);
-    $barColor = $mk->score == 5 ? 'bg-green-500' : 'bg-amber-400';
+    $barPct   = round($mk->score / 4 * 100);
+    $barColor = $mk->score == 4 ? 'bg-green-500' : 'bg-amber-400';
 
     $badgeClass = match(true) {
-        $mk->score == 5 => 'bg-green-100 text-green-700',
+        $mk->score == 4 => 'bg-green-100 text-green-700',
         $mk->score == 0 => 'bg-gray-100 text-gray-400',
         default         => 'bg-amber-100 text-amber-700',
     };
     $badgeLabel = match($mk->score) {
-        5       => '✓ Lengkap',
+        4       => '✓ Lengkap',
         0       => 'Belum mulai',
-        default => ($nextStep ? $nextStep['label'] : "Langkah {$mk->score}/5"),
+        default => ($nextStep ? $nextStep['label'] : "Langkah {$mk->score}/4"),
     };
 
     $borderClass = match(true) {
-        $mk->score == 5 => 'border-l-4 border-l-green-400',
+        $mk->score == 4 => 'border-l-4 border-l-green-400',
         $mk->score == 0 => '',
         default         => 'border-l-4 border-l-amber-400',
     };
@@ -262,7 +253,7 @@
                 <div class="{{ $barColor }} h-2 rounded-full transition-all duration-500"
                      style="width: {{ $barPct }}%"></div>
             </div>
-            <span class="text-xs font-semibold text-gray-500 shrink-0">{{ $mk->score }}/5</span>
+            <span class="text-xs font-semibold text-gray-500 shrink-0">{{ $mk->score }}/4</span>
         </div>
     </div>
 
@@ -298,7 +289,7 @@
 
     {{-- Card footer: quick action --}}
     <div class="px-5 py-3 mt-auto border-t border-gray-50 flex items-center justify-between gap-3">
-        @if($mk->score == 5)
+        @if($mk->score == 4)
             <span class="text-xs text-green-600 font-medium flex items-center gap-1">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>

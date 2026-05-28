@@ -94,6 +94,8 @@
          x-data="{
             current: '{{ $currentTheme }}',
             saving: false,
+            saved: false,
+            failed: false,
             themes: {
                 blue:    { color: '#2563EB', hover: '#1D4ED8' },
                 indigo:  { color: '#4F46E5', hover: '#4338CA' },
@@ -108,34 +110,56 @@
             },
             applyTheme(name) {
                 const t = this.themes[name];
-                const css = `.nav-item-active,.logo-icon,.user-avatar{background-color:${t.color}!important}.btn-primary{background-color:${t.color}!important}.btn-primary:hover{background-color:${t.hover}!important}.user-avatar:hover{background-color:${t.hover}!important}`;
+                const css = `.nav-item-active,.logo-icon,.user-avatar,.stepper-active{background-color:${t.color}!important}.btn-primary{background-color:${t.color}!important}.btn-primary:hover{background-color:${t.hover}!important}.stepper-active:hover{background-color:${t.hover}!important}.user-avatar:hover{background-color:${t.hover}!important}`;
                 document.getElementById('theme-style').textContent = css;
             },
             async select(name) {
+                const prev = this.current;
                 this.current = name;
                 this.applyTheme(name);
                 this.saving = true;
-                await fetch('{{ route('profile.theme') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
-                    },
-                    body: JSON.stringify({ color: name }),
-                });
-                this.saving = false;
+                this.saved = false;
+                this.failed = false;
+                try {
+                    const res = await fetch('{{ route('profile.theme') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                        },
+                        body: JSON.stringify({ color: name }),
+                    });
+                    if (!res.ok) throw new Error('failed');
+                    this.saved = true;
+                    setTimeout(() => this.saved = false, 2500);
+                } catch (e) {
+                    this.current = prev;
+                    this.applyTheme(prev);
+                    this.failed = true;
+                    setTimeout(() => this.failed = false, 3000);
+                } finally {
+                    this.saving = false;
+                }
             }
          }">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-base font-semibold text-gray-700">Tema Warna</h2>
-            <span x-show="saving" x-cloak class="text-xs text-gray-400 flex items-center gap-1">
+            <span x-show="saving" x-cloak class="text-xs text-gray-400 flex items-center gap-1.5">
                 <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
                 </svg>
                 Menyimpan...
             </span>
-            <span x-show="!saving" x-cloak class="text-xs text-gray-400">Klik untuk mengubah</span>
+            <span x-show="saved" x-cloak class="text-xs text-green-600 flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                Tersimpan
+            </span>
+            <span x-show="failed" x-cloak class="text-xs text-red-500 flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                Gagal disimpan — coba lagi
+            </span>
+            <span x-show="!saving && !saved && !failed" x-cloak class="text-xs text-gray-400">Klik untuk mengubah</span>
         </div>
 
         <div class="flex flex-wrap gap-3">

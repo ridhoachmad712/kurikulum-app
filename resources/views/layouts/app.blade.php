@@ -26,9 +26,10 @@
     $tc = $themeMap[auth()->user()->theme_color ?? 'blue'] ?? $themeMap['blue'];
     @endphp
     <style id="theme-style">
-        .nav-item-active,.logo-icon,.user-avatar{background-color:{{ $tc[0] }}!important}
+        .nav-item-active,.logo-icon,.user-avatar,.stepper-active{background-color:{{ $tc[0] }}!important}
         .btn-primary{background-color:{{ $tc[0] }}!important}
         .btn-primary:hover{background-color:{{ $tc[1] }}!important}
+        .stepper-active:hover{background-color:{{ $tc[1] }}!important}
         .user-avatar:hover{background-color:{{ $tc[1] }}!important}
     </style>
     @endauth

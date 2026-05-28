@@ -11,6 +11,8 @@
         backLabel="Sub-CPMK"/>
 </div>
 
+<x-dosen-stepper :step="3" :mataKuliah="$mataKuliah" />
+
 {{-- ── Tab Navigation ── --}}
 <div class="flex items-end gap-0 border-b border-gray-200 mb-5">
 
@@ -706,5 +708,19 @@ function showMsg(el, text, cls) {
     setTimeout(() => el.classList.add('hidden'), 3000);
 }
 </script>
+
+@hasrole('dosen')
+<div class="mt-6 flex items-center justify-between gap-3 pt-4 border-t border-gray-100">
+    <a href="{{ route('kurikulum.sub-cpmk.index') }}" class="btn-secondary text-sm">
+        ← Kembali ke daftar MK
+    </a>
+    <a href="{{ route('kurikulum.asesmen.show', $mataKuliah) }}" class="btn-primary">
+        Lanjut: Bobot Asesmen
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+    </a>
+</div>
+@endhasrole
 
 @endsection

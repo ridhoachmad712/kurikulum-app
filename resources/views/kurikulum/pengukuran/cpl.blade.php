@@ -32,7 +32,7 @@
 
 {{-- Info scope dosen --}}
 @hasrole('dosen')
-<div class="flex items-center gap-2 bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-2.5 mb-4 text-xs text-indigo-700">
+<div class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 mb-4 text-xs text-gray-600">
     <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
     </svg>
@@ -71,7 +71,7 @@
     @else
     <p class="text-sm mt-1">Tidak ada mata kuliah dengan data bobot CPL di Semester {{ $semester }}.</p>
     @endif
-    <a href="{{ route('kurikulum.pengukuran.cpl') }}" class="inline-block mt-3 text-xs text-indigo-600 hover:underline">Reset filter</a>
+    <a href="{{ route('kurikulum.pengukuran.cpl') }}" class="inline-block mt-3 text-xs text-gray-500 hover:underline">Reset filter</a>
 </div>
 @elseif($mataKuliahs->isEmpty())
 {{-- Tidak ada MK yang sudah punya bobot CPMK–CPL --}}

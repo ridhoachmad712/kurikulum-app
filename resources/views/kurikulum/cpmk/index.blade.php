@@ -4,10 +4,12 @@
 
 <x-page-header title="CPMK" subtitle="Capaian Pembelajaran Mata Kuliah — input dan keterkaitan CPL"/>
 
+<x-dosen-stepper :step="2" />
+
 <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
     <div class="flex items-center gap-2">
         <a href="{{ route('kurikulum.matriks.input') }}"
-           class="text-xs text-indigo-500 hover:text-gray-800 hover:underline transition">
+           class="text-xs text-gray-400 hover:text-gray-800 hover:underline transition">
             ← Lihat Tabel 1–12
         </a>
     </div>
@@ -33,7 +35,7 @@
 @endhasanyrole
 {{-- Info scope dosen --}}
 @hasrole('dosen')
-<div class="flex items-center gap-2 bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-2.5 mb-4 text-xs text-indigo-700">
+<div class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 mb-4 text-xs text-gray-600">
     <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
     </svg>
@@ -75,7 +77,7 @@
                 </td>
                 <td class="px-4 py-2.5 text-center">
                     <a href="{{ route('kurikulum.cpmk.show', $mk) }}"
-                       class="inline-flex items-center px-3 py-1 bg-gray-700 text-white text-xs font-medium rounded-lg hover:bg-gray-700">
+                       class="btn-primary btn-sm">
                         {{ $mk->cpmks_count > 0 ? 'Edit CPMK' : 'Isi CPMK' }}
                     </a>
                 </td>

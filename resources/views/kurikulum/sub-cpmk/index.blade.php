@@ -4,16 +4,18 @@
 
 <x-page-header title="Sub-CPMK" subtitle="Kelola sub-capaian pembelajaran, keterkaitan CPMK, dan CLO tertinggi"/>
 
+<x-dosen-stepper :step="3" />
+
 <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
     @hasanyrole('admin|kaprodi')
     <div class="flex gap-2 flex-wrap">
         <a href="{{ route('kurikulum.sub-cpmk.index') }}"
-           class="px-4 py-2 text-sm font-medium rounded-lg {{ !request('semester') ? 'bg-gray-700 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
+           class="px-4 py-2 text-sm font-medium rounded-lg {{ !request('semester') ? 'btn-primary' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
             Semua
         </a>
         @for($s=1;$s<=8;$s++)
         <a href="{{ route('kurikulum.sub-cpmk.index', ['semester'=>$s]) }}"
-           class="px-3 py-2 text-sm font-medium rounded-lg {{ request('semester')==$s ? 'bg-gray-700 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
+           class="px-3 py-2 text-sm font-medium rounded-lg {{ request('semester')==$s ? 'btn-primary' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
             Smt {{ $s }}
         </a>
         @endfor
@@ -25,7 +27,7 @@
 </div>
 
 @hasrole('dosen')
-<div class="flex items-center gap-2 bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-2.5 mb-4 text-xs text-indigo-700">
+<div class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 mb-4 text-xs text-gray-600">
     <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
     </svg>
@@ -56,7 +58,7 @@
             </span>
             @endif
             <a href="{{ route('kurikulum.sub-cpmk.show', $mk) }}"
-               class="px-3 py-1.5 text-xs bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition font-medium">
+               class="btn-primary btn-sm">
                 Kelola →
             </a>
         </div>

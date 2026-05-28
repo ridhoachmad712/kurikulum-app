@@ -8,6 +8,8 @@
     back="{{ route('kurikulum.cpmk.index') }}"
     backLabel="CPMK"/>
 
+<x-dosen-stepper :step="2" :mataKuliah="$mataKuliah" />
+
 @if($cpls->isEmpty())
 <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-700 mb-6">
     ⚠ Mata kuliah ini belum memiliki keterkaitan CPL. Silakan isi
@@ -625,4 +627,19 @@ async function simpanSemuaBobot() {
     btn.textContent = 'Simpan Bobot';
 }
 </script>
+
+@hasrole('dosen')
+<div class="mt-6 flex items-center justify-between gap-3 pt-4 border-t border-gray-100">
+    <a href="{{ route('kurikulum.cpmk.index') }}" class="btn-secondary text-sm">
+        ← Kembali ke daftar MK
+    </a>
+    <a href="{{ route('kurikulum.sub-cpmk.show', $mataKuliah) }}" class="btn-primary">
+        Lanjut: Sub-CPMK
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+    </a>
+</div>
+@endhasrole
+
 @endsection
