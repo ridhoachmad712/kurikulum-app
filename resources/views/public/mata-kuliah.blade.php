@@ -23,10 +23,13 @@
     </div>
 </div>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" x-data="{ tab: {{ $mataKuliahs->keys()->first() ?? 1 }} }">
+@php
+$konsentrasiList = $mataKuliahs->flatten()->pluck('konsentrasi')->filter()->unique()->sort()->values();
+@endphp
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" x-data="{ tab: {{ $mataKuliahs->keys()->first() ?? 1 }}, kon: '' }">
 
     {{-- Semester tabs --}}
-    <div class="flex flex-wrap gap-2 mb-8 border-b border-gray-100 pb-4">
+    <div class="flex flex-wrap gap-2 mb-4 border-b border-gray-100 pb-4">
         @foreach($mataKuliahs as $smt => $mks)
         <button @click="tab = {{ $smt }}"
                 :class="tab === {{ $smt }}
@@ -39,14 +42,52 @@
         @endforeach
     </div>
 
+    {{-- Concentration filter --}}
+    @if($konsentrasiList->isNotEmpty())
+    <div class="flex flex-wrap items-center gap-2 mb-8">
+        <span class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mr-1">Konsentrasi</span>
+        <button @click="kon = ''"
+                :class="kon === ''
+                    ? 'bg-gray-800 text-white border-gray-800'
+                    : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400 hover:text-gray-700'"
+                class="px-3 py-1.5 rounded-full border text-xs font-medium transition-all">
+            Semua
+        </button>
+        @foreach($konsentrasiList as $k)
+        @php
+            $colors = [
+                'Manajemen Keuangan'  => ['active' => 'bg-blue-700 text-white border-blue-700',    'idle' => 'bg-white text-blue-600 border-blue-200 hover:border-blue-400 hover:bg-blue-50'],
+                'Manajemen Pemasaran' => ['active' => 'bg-emerald-700 text-white border-emerald-700', 'idle' => 'bg-white text-emerald-600 border-emerald-200 hover:border-emerald-400 hover:bg-emerald-50'],
+                'Manajemen SDM'       => ['active' => 'bg-violet-700 text-white border-violet-700',  'idle' => 'bg-white text-violet-600 border-violet-200 hover:border-violet-400 hover:bg-violet-50'],
+            ];
+            $c = $colors[$k] ?? ['active' => 'bg-gray-700 text-white border-gray-700', 'idle' => 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'];
+        @endphp
+        <button @click="kon = kon === '{{ $k }}' ? '' : '{{ $k }}'"
+                :class="kon === '{{ $k }}' ? '{{ $c['active'] }}' : '{{ $c['idle'] }}'"
+                class="px-3 py-1.5 rounded-full border text-xs font-medium transition-all">
+            {{ $k }}
+        </button>
+        @endforeach
+
+        {{-- Reset hint when filter active --}}
+        <span x-show="kon !== ''" x-cloak
+              class="ml-1 text-[11px] text-gray-400 italic">
+            · Menampilkan MK Wajib &amp; <span class="font-medium text-gray-600" x-text="kon"></span>
+            <button @click="kon = ''" class="ml-1 text-gray-400 hover:text-gray-600 underline text-[11px]">reset</button>
+        </span>
+    </div>
+    @else
+    <div class="mb-8"></div>
+    @endif
+
     {{-- Panels per semester --}}
     @foreach($mataKuliahs as $smt => $mks)
     <div x-show="tab === {{ $smt }}" x-cloak>
 
         {{-- Summary bar --}}
-        <div class="flex items-center gap-6 mb-5 text-xs text-gray-500">
-            <span>{{ $mks->count() }} mata kuliah</span>
-            <span>{{ $mks->sum('sks') }} SKS</span>
+        <div class="flex items-center gap-4 mb-5 text-xs text-gray-500 flex-wrap">
+            <span>{{ $mks->count() }} mata kuliah total</span>
+            <span>{{ $mks->sum('sks') }} SKS total</span>
             <span>{{ $mks->filter(fn($m) => $m->cpmks_count > 0)->count() }}/{{ $mks->count() }} ber-CPMK</span>
         </div>
 
@@ -67,7 +108,8 @@
                 <tbody class="divide-y divide-gray-50">
                     @foreach($mks as $mk)
                     @php $relatedCpls = $mk->mkCpls->pluck('cpl_id')->toArray(); @endphp
-                    <tr class="hover:bg-blue-50/30 transition-colors duration-100">
+                    <tr x-show="kon === '' || '{{ $mk->konsentrasi ?? '' }}' === '' || kon === '{{ $mk->konsentrasi ?? '' }}'"
+                        class="hover:bg-blue-50/30 transition-colors duration-100">
                         <td class="px-5 py-3">
                             <span class="font-mono text-xs text-blue-700 font-semibold">{{ $mk->kode_rps }}</span>
                         </td>
