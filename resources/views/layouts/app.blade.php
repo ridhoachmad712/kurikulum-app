@@ -240,15 +240,6 @@
 
             {{-- SEKSI 1: INPUT --}}
             <p class="nav-section-label" x-show="!collapsed" x-cloak>Input</p>
-            <x-nav-link href="{{ route('kurikulum.deskripsi.index') }}" :active="request()->routeIs('kurikulum.deskripsi.*')">
-                <x-slot name="icon">
-                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                    </svg>
-                </x-slot>
-                <span x-show="!collapsed" x-cloak>Deskripsi MK</span>
-            </x-nav-link>
-
 
             {{-- Level CPL Mata Kuliah (Tabel 1, hasil otomatis ke Tabel 2–5) --}}
             <x-nav-link href="{{ route('kurikulum.matriks.input') }}" :active="request()->routeIs('kurikulum.matriks.input')">
@@ -296,6 +287,15 @@
                     </svg>
                 </x-slot>
                 <span x-show="!collapsed" x-cloak>Pengukuran</span>
+            </x-nav-link>
+
+            <x-nav-link href="{{ route('kurikulum.deskripsi.index') }}" :active="request()->routeIs('kurikulum.deskripsi.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                </x-slot>
+                <span x-show="!collapsed" x-cloak>Deskripsi MK</span>
             </x-nav-link>
 
             {{-- SEKSI 2: REKAP --}}
