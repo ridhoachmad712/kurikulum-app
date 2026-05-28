@@ -38,25 +38,22 @@
             </a>
         </div>
 
-        {{-- Stat strip --}}
-        <div class="flex flex-wrap gap-8 mt-8 pt-6 border-t border-white/20">
+        {{-- Quick links --}}
+        <div class="flex flex-wrap gap-2 mt-8 pt-6 border-t border-white/20">
             @foreach([
-                ['val' => $stats['total_mk'],   'label' => 'Mata Kuliah', 'icon' => 'M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25'],
-                ['val' => $stats['total_cpl'],  'label' => 'CPL',         'icon' => 'M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z'],
-                ['val' => $stats['total_sks'],  'label' => 'Total SKS',   'icon' => 'M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5m.75-9 3-3 2.148 2.148A12.061 12.061 0 0 1 16.5 7.605'],
-                ['val' => $stats['total_cpmk'], 'label' => 'CPMK',        'icon' => 'M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z'],
-            ] as $s)
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
-                    <svg class="w-4 h-4 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="{{ $s['icon'] }}"/>
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-2xl font-extrabold leading-none">{{ $s['val'] }}</p>
-                    <p class="text-blue-300 text-[11px] mt-0.5">{{ $s['label'] }}</p>
-                </div>
-            </div>
+                ['route' => 'public.profil',      'label' => 'Visi'],
+                ['route' => 'public.profil',      'label' => 'Misi'],
+                ['route' => 'public.cpl',         'label' => 'CPL'],
+                ['route' => 'public.bahan-kajian','label' => 'Bahan Kajian'],
+                ['route' => 'public.mata-kuliah', 'label' => 'Mata Kuliah'],
+            ] as $link)
+            <a href="{{ route($link['route']) }}"
+               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 border border-white/20 rounded-full text-xs font-medium text-blue-100 hover:bg-white/20 hover:text-white transition">
+                <svg class="w-3 h-3 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
+                </svg>
+                {{ $link['label'] }}
+            </a>
             @endforeach
         </div>
     </div>
