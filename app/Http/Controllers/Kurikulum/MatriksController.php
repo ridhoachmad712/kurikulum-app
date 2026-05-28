@@ -26,7 +26,7 @@ class MatriksController extends Controller
         $programStudiId = $this->getProgramStudiId($request);
         $cpls           = Cpl::where('program_studi_id', $programStudiId)->orderBy('urutan')->get();
         $q              = MataKuliah::where('program_studi_id', $programStudiId)
-                            ->where('aktif', true)->orderBy('urutan');
+                            ->where('aktif', true)->orderBy('semester')->orderBy('urutan');
         $this->applyDosenScope($q);
         $mataKuliahs    = $q->get();
         $matriksInput   = $this->service->getMatriksInput($programStudiId);
@@ -40,7 +40,7 @@ class MatriksController extends Controller
         $programStudiId = $this->getProgramStudiId($request);
         $cpls           = Cpl::where('program_studi_id', $programStudiId)->orderBy('urutan')->get();
         $q              = MataKuliah::where('program_studi_id', $programStudiId)
-                            ->where('aktif', true)->orderBy('urutan');
+                            ->where('aktif', true)->orderBy('semester')->orderBy('urutan');
         $this->applyDosenScope($q);
         $mataKuliahs    = $q->get();
         $matriksInput   = $this->service->getMatriksInput($programStudiId);
@@ -125,7 +125,7 @@ class MatriksController extends Controller
     private function loadKalkulasi(int $programStudiId): array
     {
         $cpls        = Cpl::where('program_studi_id', $programStudiId)->orderBy('urutan')->get();
-        $q           = MataKuliah::where('program_studi_id', $programStudiId)->where('aktif', true)->orderBy('urutan');
+        $q           = MataKuliah::where('program_studi_id', $programStudiId)->where('aktif', true)->orderBy('semester')->orderBy('urutan');
         $this->applyDosenScope($q);
         $mataKuliahs = $q->get();
         $input       = $this->service->getMatriksInput($programStudiId);
