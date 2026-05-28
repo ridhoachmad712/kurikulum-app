@@ -285,28 +285,8 @@
 
         </nav>
 
-        {{-- User info + collapse button --}}
+        {{-- Collapse toggle (desktop only) --}}
         <div class="border-t border-gray-100 p-3 shrink-0">
-            <div x-show="!collapsed" x-cloak class="flex items-center gap-2.5 px-2 py-1.5 mb-2">
-                <div class="w-7 h-7 bg-gray-900 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0">
-                    {{ substr(auth()->user()?->name ?? 'U', 0, 1) }}
-                </div>
-                <div class="overflow-hidden flex-1">
-                    <p class="text-gray-800 text-xs font-medium truncate">{{ auth()->user()?->name }}</p>
-                    <p class="text-gray-400 text-xs truncate">{{ auth()->user()?->getRoleNames()->first() }}</p>
-                </div>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" title="Keluar"
-                        class="text-gray-400 hover:text-gray-700 transition-colors p-1">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                        </svg>
-                    </button>
-                </form>
-            </div>
-
-            {{-- Collapse toggle (desktop only) --}}
             <button @click="collapsed = !collapsed"
                 class="hidden lg:flex w-full items-center justify-center gap-2 px-3 py-2 rounded-xl
                        text-gray-400 hover:bg-gray-100 hover:text-gray-600 text-xs transition-all duration-150">
@@ -334,12 +314,28 @@
                 </button>
                 <h1 class="text-sm font-semibold text-gray-700 font-display">@yield('title','Dashboard')</h1>
             </div>
-            <div class="flex items-center gap-2">
-                <span class="hidden sm:inline-block text-xs text-gray-400">{{ auth()->user()?->name }}</span>
+            <div class="flex items-center gap-2.5">
+                {{-- Name + role (desktop) --}}
+                <div class="hidden sm:block text-right leading-tight">
+                    <p class="text-xs font-medium text-gray-700">{{ auth()->user()?->name }}</p>
+                    <p class="text-[10px] text-gray-400 capitalize">{{ auth()->user()?->getRoleNames()->first() }}</p>
+                </div>
+                {{-- Avatar → link ke profil --}}
                 <a href="{{ route('profile.edit') }}"
-                   class="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-white text-xs font-bold hover:bg-gray-600 transition-colors">
-                    {{ substr(auth()->user()?->name ?? 'U', 0, 1) }}
+                   class="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center text-white text-xs font-bold hover:bg-gray-700 transition-colors shrink-0"
+                   title="Profil">
+                    {{ strtoupper(substr(auth()->user()?->name ?? 'U', 0, 1)) }}
                 </a>
+                {{-- Logout --}}
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" title="Keluar"
+                        class="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                    </button>
+                </form>
             </div>
         </header>
 
