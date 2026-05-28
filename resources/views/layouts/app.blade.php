@@ -31,12 +31,12 @@
             sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
             collapsed   ? 'lg:w-16'       : 'lg:w-64',
         ]"
-        class="fixed inset-y-0 left-0 z-50 w-64 bg-gray-900 flex flex-col
+        class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 flex flex-col
                transition-all duration-300 ease-in-out shadow-xl lg:shadow-none">
 
         {{-- Logo --}}
-        <div class="flex items-center h-16 px-4 border-b border-gray-700/60 shrink-0">
-            <div class="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
+        <div class="flex items-center h-16 px-4 border-b border-gray-100 shrink-0">
+            <div class="w-8 h-8 bg-gray-900 rounded-xl flex items-center justify-center shrink-0">
                 <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zm5.99 7.176A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
                 </svg>
@@ -44,7 +44,7 @@
             <div x-show="!collapsed" x-transition:enter="transition-opacity duration-200 delay-75"
                  x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                  class="ml-3 overflow-hidden">
-                <p class="text-white font-display font-bold text-sm leading-tight truncate">Kurikulum Prodi</p>
+                <p class="text-gray-900 font-display font-bold text-sm leading-tight truncate">Kurikulum Prodi</p>
                 <p class="text-gray-400 text-xs truncate">{{ auth()->user()?->programStudi?->nama ?? '–' }}</p>
             </div>
         </div>
@@ -286,19 +286,19 @@
         </nav>
 
         {{-- User info + collapse button --}}
-        <div class="border-t border-gray-700/60 p-3 shrink-0">
+        <div class="border-t border-gray-100 p-3 shrink-0">
             <div x-show="!collapsed" x-cloak class="flex items-center gap-2.5 px-2 py-1.5 mb-2">
-                <div class="w-7 h-7 bg-gray-600 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0">
+                <div class="w-7 h-7 bg-gray-900 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0">
                     {{ substr(auth()->user()?->name ?? 'U', 0, 1) }}
                 </div>
                 <div class="overflow-hidden flex-1">
-                    <p class="text-white text-xs font-medium truncate">{{ auth()->user()?->name }}</p>
+                    <p class="text-gray-800 text-xs font-medium truncate">{{ auth()->user()?->name }}</p>
                     <p class="text-gray-400 text-xs truncate">{{ auth()->user()?->getRoleNames()->first() }}</p>
                 </div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" title="Keluar"
-                        class="text-gray-400 hover:text-white transition-colors p-1">
+                        class="text-gray-400 hover:text-gray-700 transition-colors p-1">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                         </svg>
@@ -309,7 +309,7 @@
             {{-- Collapse toggle (desktop only) --}}
             <button @click="collapsed = !collapsed"
                 class="hidden lg:flex w-full items-center justify-center gap-2 px-3 py-2 rounded-xl
-                       text-gray-400 hover:bg-white/10 hover:text-white text-xs transition-all duration-150">
+                       text-gray-400 hover:bg-gray-100 hover:text-gray-600 text-xs transition-all duration-150">
                 <svg :class="collapsed ? 'rotate-180' : ''" class="w-4 h-4 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
                 </svg>
