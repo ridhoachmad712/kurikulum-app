@@ -42,7 +42,22 @@
                 </tr>
             </thead>
             <tbody>
+                @php $prevSemester = null; @endphp
                 @foreach($mataKuliahs as $mk)
+                @if($mk->semester !== $prevSemester)
+                @php $prevSemester = $mk->semester; @endphp
+                <tr class="bg-gray-800">
+                    <td class="sticky left-0 z-10 bg-gray-800 px-3 py-1.5"></td>
+                    <td class="sticky left-8 z-10 bg-gray-800 px-3 py-1.5 border-r border-gray-700">
+                        <span class="text-xs font-bold text-gray-300 uppercase tracking-wider">
+                            Semester {{ $mk->semester }}
+                        </span>
+                    </td>
+                    @foreach($cpls as $cpl)
+                    <td class="bg-gray-800 border-r border-gray-700"></td>
+                    @endforeach
+                </tr>
+                @endif
                 <tr class="border-b border-gray-100 hover:bg-gray-50/30 group">
                     <td class="sticky left-0 z-10 bg-white group-hover:bg-gray-50/30 px-3 py-1.5 text-gray-400 text-right">{{ $loop->iteration }}</td>
                     <td class="sticky left-8 z-10 bg-white group-hover:bg-gray-50/30 px-3 py-1.5 border-r border-gray-100">
