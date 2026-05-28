@@ -293,7 +293,7 @@
                 <svg :class="collapsed ? 'rotate-180' : ''" class="w-4 h-4 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
                 </svg>
-                <span x-show="!collapsed" x-cloak class="text-xs">Ciutkan</span>
+                <span x-show="!collapsed" x-cloak class="text-xs">Minimize Menu</span>
             </button>
         </div>
     </aside>
