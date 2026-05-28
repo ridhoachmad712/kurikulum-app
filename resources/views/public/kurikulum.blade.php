@@ -146,6 +146,7 @@
                             <td class="px-3 py-1.5 text-gray-400 text-right">{{ $loop->iteration }}</td>
                             <td class="px-3 py-1.5 border-r border-gray-100">
                                 <span class="font-mono text-blue-700 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}
+                                @if($mk->konsentrasi)<span class="ml-1 text-[9px] text-violet-500 font-medium opacity-80">[{{ $mk->konsentrasi }}]</span>@endif
                             </td>
                             @foreach($cpls as $cpl)
                             @php $level = $matriksInput[$mk->id][$cpl->id] ?? null; @endphp
@@ -187,7 +188,7 @@
                         @php $rowTotal = 0; @endphp
                         <tr class="border-b border-gray-100 hover:bg-gray-50">
                             <td class="px-3 py-1.5 text-gray-400 text-right">{{ $loop->iteration }}</td>
-                            <td class="px-3 py-1.5 border-r border-gray-100"><span class="font-mono text-blue-700 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}</td>
+                            <td class="px-3 py-1.5 border-r border-gray-100"><span class="font-mono text-blue-700 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}@if($mk->konsentrasi)<span class="ml-1 text-[9px] text-violet-500 font-medium opacity-80">[{{ $mk->konsentrasi }}]</span>@endif</td>
                             @foreach($cpls as $cpl)
                             @php $val = $binary[$mk->id][$cpl->id] ?? 0; $rowTotal += $val; @endphp
                             <td class="px-2 py-1.5 text-center">
@@ -225,7 +226,7 @@
                         @foreach($mataKuliahs as $mk)
                         <tr class="border-b border-gray-100 hover:bg-gray-50">
                             <td class="px-3 py-1.5 text-gray-400 text-right">{{ $loop->iteration }}</td>
-                            <td class="px-3 py-1.5 border-r border-gray-100"><span class="font-mono text-blue-700 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}</td>
+                            <td class="px-3 py-1.5 border-r border-gray-100"><span class="font-mono text-blue-700 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}@if($mk->konsentrasi)<span class="ml-1 text-[9px] text-violet-500 font-medium opacity-80">[{{ $mk->konsentrasi }}]</span>@endif</td>
                             @foreach($cpls as $cpl)
                             @php $val = $nilaiMatrix[$mk->id][$cpl->id] ?? 0; @endphp
                             <td class="px-2 py-1.5 text-center">
@@ -262,7 +263,7 @@
                         @foreach($mataKuliahs as $mk)
                         <tr class="border-b border-gray-100 hover:bg-gray-50">
                             <td class="px-3 py-1.5 text-gray-400 text-right">{{ $loop->iteration }}</td>
-                            <td class="px-3 py-1.5 border-r border-gray-100"><span class="font-mono text-blue-700 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}</td>
+                            <td class="px-3 py-1.5 border-r border-gray-100"><span class="font-mono text-blue-700 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}@if($mk->konsentrasi)<span class="ml-1 text-[9px] text-violet-500 font-medium opacity-80">[{{ $mk->konsentrasi }}]</span>@endif</td>
                             @foreach($cpls as $cpl)
                             @php $val = $pctGlobal[$mk->id][$cpl->id] ?? 0; @endphp
                             <td class="px-2 py-1.5 text-center">
@@ -298,7 +299,7 @@
                         @foreach($mataKuliahs as $mk)
                         <tr class="border-b border-gray-100 hover:bg-gray-50">
                             <td class="px-3 py-1.5 text-gray-400 text-right">{{ $loop->iteration }}</td>
-                            <td class="px-3 py-1.5 border-r border-gray-100"><span class="font-mono text-blue-700 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}</td>
+                            <td class="px-3 py-1.5 border-r border-gray-100"><span class="font-mono text-blue-700 mr-1">{{ $mk->kode_rps }}</span>{{ $mk->nama }}@if($mk->konsentrasi)<span class="ml-1 text-[9px] text-violet-500 font-medium opacity-80">[{{ $mk->konsentrasi }}]</span>@endif</td>
                             @foreach($cpls as $cpl)
                             @php $val = $pctPerMk[$mk->id][$cpl->id] ?? 0; @endphp
                             <td class="px-2 py-1.5 text-center">
