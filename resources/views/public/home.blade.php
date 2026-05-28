@@ -18,10 +18,9 @@
         <p class="text-blue-200 text-sm mt-2">{{ $prodi->fakultas }} &middot; {{ $prodi->universitas }}</p>
 
         <p class="text-blue-100/80 text-sm mt-4 max-w-2xl leading-relaxed">
-            Kurikulum ini dirancang menggunakan pendekatan <span class="text-white font-semibold">Outcome-Based Education (OBE)</span>
-            yang berorientasi pada capaian nyata mahasiswa. Setiap mata kuliah dipetakan secara eksplisit terhadap
-            <span class="text-white font-semibold">Capaian Pembelajaran Lulusan (CPL)</span> melalui CPMK dan Sub-CPMK,
-            memastikan keselarasan antara tujuan pembelajaran, proses perkuliahan, dan penilaian.
+            Aplikasi ini menyajikan dokumentasi kurikulum <span class="text-white font-semibold">{{ $prodi->jenjang }} {{ $prodi->nama }}</span>
+            secara transparan dan terstruktur — mulai dari pemetaan CPL, daftar mata kuliah, bahan kajian,
+            hingga 12 tabel matriks kurikulum OBE yang dapat diakses oleh seluruh sivitas akademika.
         </p>
 
         {{-- CTA --}}
