@@ -173,6 +173,7 @@ class PublicController extends Controller
                         ->orderBy('urutan'),
                 ])->orderBy('urutan'),
             ])
+            ->orderBy('semester')
             ->orderBy('urutan')
             ->get();
 
