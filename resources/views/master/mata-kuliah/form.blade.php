@@ -58,11 +58,19 @@
                            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
                            placeholder="Keuangan / Pemasaran / SDM / dsb">
                 </div>
-                <div class="flex items-center gap-2">
-                    <input type="checkbox" name="aktif" value="1" id="aktif"
-                           {{ old('aktif', $item->aktif ?? true) ? 'checked' : '' }}
-                           class="rounded border-gray-300 text-gray-700">
-                    <label for="aktif" class="text-sm text-gray-700">Aktif</label>
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" name="aktif" value="1" id="aktif"
+                               {{ old('aktif', $item->aktif ?? true) ? 'checked' : '' }}
+                               class="rounded border-gray-300 text-gray-700">
+                        <label for="aktif" class="text-sm text-gray-700">Aktif</label>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" name="is_pilihan" value="1" id="is_pilihan"
+                               {{ old('is_pilihan', $item->is_pilihan ?? false) ? 'checked' : '' }}
+                               class="rounded border-gray-300 text-amber-600">
+                        <label for="is_pilihan" class="text-sm text-gray-700">MK Pilihan Konsentrasi</label>
+                    </div>
                 </div>
             </div>
 

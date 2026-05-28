@@ -68,7 +68,12 @@
                 </td>
                 <td class="px-4 py-2.5 text-center text-gray-600">{{ $item->sks }}</td>
                 <td class="px-4 py-2.5 text-center text-gray-600">{{ $item->semester }}</td>
-                <td class="px-4 py-2.5 text-gray-400 text-xs">{{ $item->konsentrasi ?? '-' }}</td>
+                <td class="px-4 py-2.5 text-gray-400 text-xs">
+                    {{ $item->konsentrasi ?? '-' }}
+                    @if($item->is_pilihan)
+                    <span class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-700">Pilihan</span>
+                    @endif
+                </td>
                 <td class="px-4 py-2.5 text-center">
                     <span class="px-2 py-0.5 rounded-full text-xs {{ $item->cpmks_count > 0 ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400' }}">
                         {{ $item->cpmks_count }}

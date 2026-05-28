@@ -77,13 +77,13 @@
                         <thead>
                             <tr class="bg-blue-900 text-white text-xs">
                                 <th class="px-5 py-2.5 text-left font-medium">Semester</th>
-                                <th class="px-5 py-2.5 text-center font-medium w-24">Jumlah MK</th>
-                                <th class="px-5 py-2.5 text-center font-medium w-24">SKS</th>
-                                <th class="px-5 py-2.5 text-left font-medium">Proporsi SKS</th>
+                                <th class="px-5 py-2.5 text-center font-medium w-20">MK</th>
+                                <th class="px-5 py-2.5 text-center font-medium w-20">SKS</th>
+                                <th class="px-5 py-2.5 text-left font-medium">Komposisi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @php $maxSks = $bySemester->max('sks'); @endphp
+                            @php $maxSks = $bySemester->max('effective_sks'); @endphp
                             @foreach($bySemester as $smt => $data)
                             <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                                 <td class="px-5 py-2.5">
@@ -92,24 +92,37 @@
                                         <span class="text-gray-600 text-xs">Semester {{ $smt }}</span>
                                     </div>
                                 </td>
-                                <td class="px-5 py-2.5 text-center font-semibold text-gray-800 text-xs">{{ $data['count'] }}</td>
-                                <td class="px-5 py-2.5 text-center font-semibold text-blue-700 text-xs">{{ $data['sks'] }}</td>
+                                <td class="px-5 py-2.5 text-center font-semibold text-gray-800 text-xs">{{ $data['effective_count'] }}</td>
+                                <td class="px-5 py-2.5 text-center font-semibold text-blue-700 text-xs">{{ $data['effective_sks'] }}</td>
                                 <td class="px-5 py-2.5">
-                                    @php $pct = $maxSks > 0 ? round($data['sks'] / $maxSks * 100) : 0; @endphp
+                                    @php $pct = $maxSks > 0 ? round($data['effective_sks'] / $maxSks * 100) : 0; @endphp
                                     <div class="flex items-center gap-2">
-                                        <div class="flex-1 bg-gray-100 rounded-full h-1.5">
+                                        <div class="flex-1 bg-gray-100 rounded-full h-1.5 min-w-[60px]">
                                             <div class="bg-blue-500 h-1.5 rounded-full" style="width: {{ $pct }}%"></div>
                                         </div>
+                                        @if($data['has_kon'])
+                                        <span class="text-[10px] text-gray-400 whitespace-nowrap">
+                                            @if($data['wajib_count'] > 0)
+                                                {{ $data['wajib_count'] }}W
+                                                @if($data['kon_wajib'] > 0) + {{ $data['kon_wajib'] }}K @endif
+                                                @if($data['kon_pilihan'] > 0) + {{ $data['kon_pilihan'] }}P @endif
+                                            @else
+                                                {{ $data['kon_wajib'] }}W
+                                                @if($data['kon_pilihan'] > 0) + {{ $data['kon_pilihan'] }} dari {{ $data['kon_pilihan'] * 2 }}P @endif
+                                            @endif
+                                        </span>
+                                        @else
                                         <span class="text-[11px] text-gray-400 w-8 text-right">{{ $pct }}%</span>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
                             @endforeach
                             <tr class="bg-gray-50 text-xs font-semibold border-t border-gray-200">
-                                <td class="px-5 py-2.5 text-gray-500">Total</td>
+                                <td class="px-5 py-2.5 text-gray-500">Total per jalur</td>
                                 <td class="px-5 py-2.5 text-center text-gray-800">{{ $stats['total_mk'] }}</td>
                                 <td class="px-5 py-2.5 text-center text-blue-700">{{ $stats['total_sks'] }}</td>
-                                <td class="px-5 py-2.5"></td>
+                                <td class="px-5 py-2.5 text-[10px] text-gray-400">W = Wajib · K = Konsentrasi · P = Pilihan</td>
                             </tr>
                         </tbody>
                     </table>

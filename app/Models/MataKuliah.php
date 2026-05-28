@@ -11,10 +11,10 @@ class MataKuliah extends Model
 {
     protected $fillable = [
         'program_studi_id','kode_rps','nama','sks',
-        'semester','konsentrasi','aktif','urutan',
+        'semester','konsentrasi','is_pilihan','aktif','urutan',
     ];
 
-    protected $casts = ['aktif' => 'boolean'];
+    protected $casts = ['aktif' => 'boolean', 'is_pilihan' => 'boolean'];
 
     public function programStudi(): BelongsTo
     {

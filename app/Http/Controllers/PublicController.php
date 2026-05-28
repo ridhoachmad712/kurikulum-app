@@ -35,18 +35,44 @@ class PublicController extends Controller
             ->orderBy('urutan')
             ->get();
 
+        // Hitung jumlah jalur konsentrasi (3: Keuangan, Pemasaran, SDM)
+        $numKon = max(1, $mataKuliahs->pluck('konsentrasi')->filter()->unique()->count());
+
+        // Distribusi per semester — dihitung per 1 mahasiswa per jalur konsentrasi
+        $bySemester = $mataKuliahs->groupBy('semester')->map(function ($g) use ($numKon) {
+            $wajib      = $g->filter(fn($mk) => !$mk->konsentrasi && !$mk->is_pilihan);
+            $konWajib   = $g->filter(fn($mk) =>  $mk->konsentrasi && !$mk->is_pilihan);
+            $konPilihan = $g->filter(fn($mk) =>  $mk->is_pilihan);
+
+            // Per mahasiswa: wajib global + bagian konsentrasi yang diambil
+            $konWajibPerMhs     = $numKon ? (int) round($konWajib->count()   / $numKon) : 0;
+            $konWajibSksPerMhs  = $numKon ? round($konWajib->sum('sks')  / $numKon)     : 0;
+            $pilihanTaken       = $konPilihan->isNotEmpty() ? 3 : 0;           // mahasiswa ambil 3
+            $pilihanAvgSks      = $konPilihan->isNotEmpty() ? $konPilihan->avg('sks') : 0;
+            $pilihanSksPerMhs   = $pilihanTaken * $pilihanAvgSks;
+
+            $effectiveCount = $wajib->count() + $konWajibPerMhs + $pilihanTaken;
+            $effectiveSks   = (int) round($wajib->sum('sks') + $konWajibSksPerMhs + $pilihanSksPerMhs);
+
+            return [
+                'count'          => $g->count(),          // total di DB
+                'effective_count'=> $effectiveCount,       // yang diambil 1 mahasiswa
+                'sks'            => $g->sum('sks'),
+                'effective_sks'  => $effectiveSks,
+                'wajib_count'    => $wajib->count(),
+                'kon_wajib'      => $konWajibPerMhs,
+                'kon_pilihan'    => $pilihanTaken,
+                'has_kon'        => $konWajib->isNotEmpty() || $konPilihan->isNotEmpty(),
+                'has_pilihan'    => $konPilihan->isNotEmpty(),
+            ];
+        });
+
         $stats = [
-            'total_mk'   => $mataKuliahs->count(),
+            'total_mk'   => $bySemester->sum('effective_count'),
             'total_cpl'  => $cpls->count(),
-            'total_sks'  => $mataKuliahs->sum('sks'),
+            'total_sks'  => $bySemester->sum('effective_sks'),
             'total_cpmk' => $mataKuliahs->sum('cpmks_count'),
         ];
-
-        // Distribusi per semester
-        $bySemester = $mataKuliahs->groupBy('semester')->map(fn($g) => [
-            'count' => $g->count(),
-            'sks'   => $g->sum('sks'),
-        ]);
 
         return view('public.home', compact('prodi', 'cpls', 'stats', 'bySemester'));
     }

@@ -51,9 +51,12 @@ class MataKuliahController extends Controller
             'sks'              => 'required|integer|min:1|max:6',
             'semester'         => 'nullable|integer|min:1|max:8',
             'konsentrasi'      => 'nullable|string|max:100',
+            'is_pilihan'       => 'boolean',
             'urutan'           => 'required|integer|min:0',
             'aktif'            => 'boolean',
         ]);
+        $data['is_pilihan'] = $request->boolean('is_pilihan');
+        $data['aktif']      = $request->boolean('aktif', true);
         MataKuliah::create($data);
         return redirect()->route('master.mata-kuliah.index')->with('success', 'Mata Kuliah berhasil ditambahkan.');
     }
@@ -75,9 +78,12 @@ class MataKuliahController extends Controller
             'sks'              => 'required|integer|min:1|max:6',
             'semester'         => 'nullable|integer|min:1|max:8',
             'konsentrasi'      => 'nullable|string|max:100',
+            'is_pilihan'       => 'boolean',
             'urutan'           => 'required|integer|min:0',
             'aktif'            => 'boolean',
         ]);
+        $data['is_pilihan'] = $request->boolean('is_pilihan');
+        $data['aktif']      = $request->boolean('aktif', true);
         $mataKuliah->update($data);
         return redirect()->route('master.mata-kuliah.index')->with('success', 'Mata Kuliah berhasil diperbarui.');
     }
