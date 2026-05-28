@@ -6,8 +6,32 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name') }} – @yield('title','Dashboard')</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css','resources/js/app.js'])
+    @auth
+    @php
+    $themeMap = [
+        'blue'    => ['#2563EB','#1D4ED8'],
+        'indigo'  => ['#4F46E5','#4338CA'],
+        'violet'  => ['#7C3AED','#6D28D9'],
+        'emerald' => ['#059669','#047857'],
+        'teal'    => ['#0D9488','#0F766E'],
+        'rose'    => ['#E11D48','#BE123C'],
+        'orange'  => ['#EA580C','#C2410C'],
+        'pink'    => ['#DB2777','#BE185D'],
+        'yellow'  => ['#CA8A04','#A16207'],
+        'slate'   => ['#475569','#334155'],
+    ];
+    $tc = $themeMap[auth()->user()->theme_color ?? 'blue'] ?? $themeMap['blue'];
+    @endphp
+    <style id="theme-style">
+        .nav-item-active,.logo-icon,.user-avatar{background-color:{{ $tc[0] }}!important}
+        .btn-primary{background-color:{{ $tc[0] }}!important}
+        .btn-primary:hover{background-color:{{ $tc[1] }}!important}
+        .user-avatar:hover{background-color:{{ $tc[1] }}!important}
+    </style>
+    @endauth
 </head>
 <body class="h-full font-sans antialiased text-gray-900">
 
@@ -36,7 +60,7 @@
 
         {{-- Logo --}}
         <div class="flex items-center h-16 px-4 shrink-0">
-            <div class="w-8 h-8 bg-gray-900 rounded-xl flex items-center justify-center shrink-0">
+            <div class="logo-icon w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center shrink-0">
                 <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zm5.99 7.176A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
                 </svg>
@@ -350,7 +374,7 @@
                 </div>
                 {{-- Avatar → link ke profil --}}
                 <a href="{{ route('profile.edit') }}"
-                   class="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center text-white text-xs font-bold hover:bg-gray-700 transition-colors shrink-0"
+                   class="user-avatar w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold hover:bg-blue-700 transition-colors shrink-0"
                    title="Profil">
                     {{ strtoupper(substr(auth()->user()?->name ?? 'U', 0, 1)) }}
                 </a>

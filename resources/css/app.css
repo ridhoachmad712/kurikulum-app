@@ -22,8 +22,8 @@
                disabled:opacity-50 disabled:cursor-not-allowed;
     }
     .btn-primary {
-        @apply btn bg-gray-700 hover:bg-gray-800 active:bg-gray-900
-               text-white px-4 py-2 text-sm focus:ring-gray-500 shadow-sm;
+        @apply btn bg-blue-600 hover:bg-blue-700 active:bg-blue-800
+               text-white px-4 py-2 text-sm focus:ring-blue-500 shadow-sm;
     }
     .btn-secondary {
         @apply btn bg-white hover:bg-gray-50 text-gray-700 border border-gray-300
@@ -108,7 +108,7 @@
         @apply nav-item text-gray-600 hover:bg-gray-100 hover:text-gray-900;
     }
     .nav-item-active {
-        @apply nav-item bg-gray-900 text-white;
+        @apply nav-item bg-blue-600 text-white;
     }
     .nav-section-label {
         @apply px-3 pt-5 pb-1.5 text-xs font-bold text-gray-400 uppercase tracking-widest;

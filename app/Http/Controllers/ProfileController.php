@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +36,17 @@ class ProfileController extends Controller
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+
+    /**
+     * Update the user's theme color.
+     */
+    public function updateTheme(Request $request): JsonResponse
+    {
+        $valid = ['blue','indigo','violet','emerald','teal','rose','orange','pink','yellow','slate'];
+        $request->validate(['color' => 'required|in:' . implode(',', $valid)]);
+        $request->user()->update(['theme_color' => $request->color]);
+        return response()->json(['ok' => true]);
     }
 
     /**

@@ -74,6 +74,88 @@
         </form>
     </div>
 
+    {{-- ── TEMA WARNA ── --}}
+    @php
+    $themes = [
+        'blue'    => ['label' => 'Biru',      'color' => '#2563EB', 'hover' => '#1D4ED8'],
+        'indigo'  => ['label' => 'Indigo',    'color' => '#4F46E5', 'hover' => '#4338CA'],
+        'violet'  => ['label' => 'Violet',    'color' => '#7C3AED', 'hover' => '#6D28D9'],
+        'emerald' => ['label' => 'Hijau',     'color' => '#059669', 'hover' => '#047857'],
+        'teal'    => ['label' => 'Teal',      'color' => '#0D9488', 'hover' => '#0F766E'],
+        'rose'    => ['label' => 'Merah',     'color' => '#E11D48', 'hover' => '#BE123C'],
+        'orange'  => ['label' => 'Oranye',    'color' => '#EA580C', 'hover' => '#C2410C'],
+        'pink'    => ['label' => 'Pink',      'color' => '#DB2777', 'hover' => '#BE185D'],
+        'yellow'  => ['label' => 'Kuning',    'color' => '#CA8A04', 'hover' => '#A16207'],
+        'slate'   => ['label' => 'Abu-abu',   'color' => '#475569', 'hover' => '#334155'],
+    ];
+    $currentTheme = $user->theme_color ?? 'blue';
+    @endphp
+    <div class="card p-6"
+         x-data="{
+            current: '{{ $currentTheme }}',
+            saving: false,
+            themes: {
+                blue:    { color: '#2563EB', hover: '#1D4ED8' },
+                indigo:  { color: '#4F46E5', hover: '#4338CA' },
+                violet:  { color: '#7C3AED', hover: '#6D28D9' },
+                emerald: { color: '#059669', hover: '#047857' },
+                teal:    { color: '#0D9488', hover: '#0F766E' },
+                rose:    { color: '#E11D48', hover: '#BE123C' },
+                orange:  { color: '#EA580C', hover: '#C2410C' },
+                pink:    { color: '#DB2777', hover: '#BE185D' },
+                yellow:  { color: '#CA8A04', hover: '#A16207' },
+                slate:   { color: '#475569', hover: '#334155' },
+            },
+            applyTheme(name) {
+                const t = this.themes[name];
+                const css = `.nav-item-active,.logo-icon,.user-avatar{background-color:${t.color}!important}.btn-primary{background-color:${t.color}!important}.btn-primary:hover{background-color:${t.hover}!important}.user-avatar:hover{background-color:${t.hover}!important}`;
+                document.getElementById('theme-style').textContent = css;
+            },
+            async select(name) {
+                this.current = name;
+                this.applyTheme(name);
+                this.saving = true;
+                await fetch('{{ route('profile.theme') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                    },
+                    body: JSON.stringify({ color: name }),
+                });
+                this.saving = false;
+            }
+         }">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-base font-semibold text-gray-700">Tema Warna</h2>
+            <span x-show="saving" x-cloak class="text-xs text-gray-400 flex items-center gap-1">
+                <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                </svg>
+                Menyimpan...
+            </span>
+            <span x-show="!saving" x-cloak class="text-xs text-gray-400">Klik untuk mengubah</span>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+            @foreach($themes as $name => $t)
+            <button type="button" @click="select('{{ $name }}')"
+                    title="{{ $t['label'] }}"
+                    :style="{ backgroundColor: '{{ $t['color'] }}', outline: current === '{{ $name }}' ? '3px solid {{ $t['color'] }}' : 'none', outlineOffset: '3px' }"
+                    :class="current === '{{ $name }}' ? 'scale-110 shadow-md' : 'hover:scale-105 hover:shadow'"
+                    class="relative w-9 h-9 rounded-full transition-all duration-150 focus:outline-none">
+                <span x-show="current === '{{ $name }}'" class="absolute inset-0 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-white drop-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </span>
+            </button>
+            @endforeach
+        </div>
+        <p class="text-xs text-gray-400 mt-3">Perubahan langsung diterapkan ke seluruh tampilan aplikasi.</p>
+    </div>
+
     {{-- ── GANTI PASSWORD ── --}}
     <div class="card p-6">
         <h2 class="text-base font-semibold text-gray-700 mb-4">Ganti Password</h2>
