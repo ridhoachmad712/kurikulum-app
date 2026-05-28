@@ -5,7 +5,78 @@
 @php
     $tot    = $summary['total_mk'] ?: 1;
     $totSub = $summary['total_sub'] ?: 1;
+
+    $jam        = now()->hour;
+    $salam      = $jam < 11 ? 'Pagi' : ($jam < 15 ? 'Siang' : ($jam < 18 ? 'Sore' : 'Malam'));
+    $namaDepan  = auth()->user()->name ?? 'Pengguna';
+    $pctLengkap = $summary['total_mk'] > 0 ? round($summary['mk_lengkap'] / $summary['total_mk'] * 100) : 0;
+
+    $quotes = [
+        'Menyambungkan CPMK ke CPL tak sesulit memahami isi kepala mahasiswa. Semangat! 🧩',
+        'Asesor akreditasi memantau kolom kosong ini dari kejauhan. 👀',
+        'Skripsi mahasiswa saja sanggup Anda coret-coret berkali-kali, masa isi form kurikulum menyerah? 📑',
+        'Mata kuliah yang kosong rentan diisi oleh harapan-harapan palsu. 🌬️',
+        'Kurikulum ini tidak akan selesai dengan hanya tatapan kosong tanpa makna. 👁️',
+        'Maaf, aplikasi ini belum memiliki fitur auto-kerjain. ⌨️',
+        'Isian yang lengkap menjauhkan Anda dari pesan WhatsApp ketua prodi yang menanyakan progress. 📱',
+        'Ingat, setiap baris kurikulum yang Anda isi hari ini adalah investasi untuk me-time esok hari. 🧘‍♂️',
+        'Deadline itu seperti mantan, makin dihindari makin kepikiran. 😭',
+        'Cukup otak mahasiswamu yang kosong, matriksmu jangan. 😭',
+        'Kurikulum yang rapi adalah bentuk cintamu kepada prodi. 💙',
+        'Gelas kopi sudah kosong, tapi form mata kuliah masih putih bersih. Sungguh sebuah tragedi. 🫗',
+        'Sistem mendeteksi kadar kafein Anda mulai menipis. Segera seduh kopi sebelum lanjut mengetik CPMK. 🪫',
+        'Satu teguk kopi = satu baris deskripsi mata kuliah. Ayo, jangan berhenti ngopi! ⌨️',
+        'Semakin pahit kopi yang Anda minum hari ini, semakin manis masa depan mahasiswa kita. 🎓',
+        'Barang siapa yang mengerjakan dengan ikhlas, niscaya akan dijauhkan dari mahasiswa plenger. 😇',
+    ];
+    $quoteHari = $quotes[array_rand($quotes)];
 @endphp
+
+{{-- ── GREETING ── --}}
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-7 pb-5 border-b border-gray-100">
+    <div>
+        <h1 class="text-3xl font-bold text-gray-800">Selamat {{ $salam }}, {{ $namaDepan }}! 👋</h1>
+        <p class="text-base text-gray-800 mt-1">{{ $quoteHari }}</p>
+        <p class="text-base text-gray-400 mt-1">
+            @if($summary['total_mk'] == 0)
+                Belum ada mata kuliah yang terdaftar di program studi ini.
+            @elseif($pctLengkap == 100)
+                Semua mata kuliah sudah lengkap. 🎉
+            @else
+                Kelengkapan kurikulum saat ini
+                <span class="font-medium text-amber-600">{{ $pctLengkap }}%</span>
+                — {{ $summary['mk_lengkap'] }} dari {{ $summary['total_mk'] }} mata kuliah sudah lengkap.
+            @endif
+        </p>
+    </div>
+    <div class="shrink-0 text-xs text-gray-400 sm:text-right">
+        <p class="font-medium text-gray-500">{{ now()->format('d M Y') }}</p>
+        <p>{{ now()->format('H:i') }} WITA</p>
+    </div>
+</div>
+
+{{-- ── INFO PANEL ── --}}
+<div x-data="{ show: !localStorage.getItem('admin_info_dismissed') }" x-show="show" x-cloak
+     class="mb-6 rounded-xl border border-blue-100 bg-blue-50 px-5 py-4 flex gap-3 items-start">
+    <svg class="shrink-0 w-5 h-5 text-blue-400 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 110 20A10 10 0 0112 2z"/>
+    </svg>
+    <div class="flex-1 min-w-0">
+        <p class="text-sm font-semibold text-blue-800">Tentang Aplikasi Ini</p>
+        <p class="text-sm text-blue-700 mt-0.5 leading-relaxed">
+            Sistem Manajemen Kurikulum S1 Manajemen FEB UNM digunakan untuk memantau kelengkapan dokumen
+            kurikulum seluruh mata kuliah aktif. Setiap mata kuliah memiliki <strong>5 komponen</strong> yang
+            harus diisi oleh dosen: Matriks MK–CPL, CPMK, Sub-CPMK, CLO Tertinggi, dan Bobot Asesmen.
+            Kaprodi dapat memantau progres pengisian dan mengelola penugasan dosen.
+        </p>
+    </div>
+    <button @click="show = false; localStorage.setItem('admin_info_dismissed', '1')"
+            class="shrink-0 text-blue-300 hover:text-blue-500 transition-colors" title="Tutup">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+    </button>
+</div>
 
 {{-- ── STAT CARDS ── --}}
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-7">

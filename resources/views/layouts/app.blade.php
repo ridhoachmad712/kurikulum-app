@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full bg-gray-50">
+<html lang="id" class="h-full bg-white">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,11 +31,11 @@
             sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
             collapsed   ? 'lg:w-16'       : 'lg:w-64',
         ]"
-        class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 flex flex-col
+        class="fixed inset-y-0 left-0 z-50 w-64 bg-white flex flex-col
                transition-all duration-300 ease-in-out shadow-xl lg:shadow-none">
 
         {{-- Logo --}}
-        <div class="flex items-center h-16 px-4 border-b border-gray-100 shrink-0">
+        <div class="flex items-center h-16 px-4 shrink-0">
             <div class="w-8 h-8 bg-gray-900 rounded-xl flex items-center justify-center shrink-0">
                 <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zm5.99 7.176A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
@@ -60,6 +60,16 @@
                     </svg>
                 </x-slot>
                 <span x-show="!collapsed" x-cloak>Dashboard</span>
+            </x-nav-link>
+
+            {{-- Profil --}}
+            <x-nav-link href="{{ route('profile.edit') }}" :active="request()->routeIs('profile.edit')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                </x-slot>
+                <span x-show="!collapsed" x-cloak>Profil Saya</span>
             </x-nav-link>
 
             {{-- ════════════════════════════════════
@@ -151,6 +161,16 @@
                 <span x-show="!collapsed" x-cloak>CLO Taxonomy</span>
             </x-nav-link>
 
+            <p class="nav-section-label" x-show="!collapsed" x-cloak>Kurikulum</p>
+            <x-nav-link href="{{ route('kurikulum.deskripsi.index') }}" :active="request()->routeIs('kurikulum.deskripsi.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                </x-slot>
+                <span x-show="!collapsed" x-cloak>Deskripsi MK</span>
+            </x-nav-link>
+
             <p class="nav-section-label" x-show="!collapsed" x-cloak>Informasi & Laporan</p>
             @php
             $tabelViewActive = request()->routeIs('kurikulum.matriks.tabel*')
@@ -195,6 +215,15 @@
 
             {{-- SEKSI 1: INPUT --}}
             <p class="nav-section-label" x-show="!collapsed" x-cloak>Input</p>
+            <x-nav-link href="{{ route('kurikulum.deskripsi.index') }}" :active="request()->routeIs('kurikulum.deskripsi.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                </x-slot>
+                <span x-show="!collapsed" x-cloak>Deskripsi MK</span>
+            </x-nav-link>
+
 
             {{-- Level CPL Mata Kuliah (Tabel 1, hasil otomatis ke Tabel 2–5) --}}
             <x-nav-link href="{{ route('kurikulum.matriks.input') }}" :active="request()->routeIs('kurikulum.matriks.input')">
@@ -271,22 +300,21 @@
                 <span x-show="!collapsed" x-cloak>Hasil Pengukuran</span>
             </x-nav-link>
 
-            <p class="nav-section-label" x-show="!collapsed" x-cloak>— On Development —</p>
-            <x-nav-link href="{{ route('kurikulum.rps.index') }}" :active="request()->routeIs('kurikulum.rps.*')">
-                <x-slot name="icon">
-                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                </x-slot>
+            <p class="nav-section-label !text-red-300" x-show="!collapsed" x-cloak>On Development</p>
+            <a href="{{ route('kurikulum.rps.index') }}"
+               class="nav-item gap-3 text-red-300 hover:bg-red-50 hover:text-red-400 {{ request()->routeIs('kurikulum.rps.*') ? 'bg-red-50 !text-red-500' : '' }}">
+                <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
                 <span x-show="!collapsed" x-cloak>RPS</span>
-            </x-nav-link>
+            </a>
 
             @endhasrole
 
         </nav>
 
         {{-- Collapse toggle (desktop only) --}}
-        <div class="border-t border-gray-100 p-3 shrink-0">
+        <div class="p-3 shrink-0">
             <button @click="collapsed = !collapsed"
                 class="hidden lg:flex w-full items-center justify-center gap-2 px-3 py-2 rounded-xl
                        text-gray-400 hover:bg-gray-100 hover:text-gray-600 text-xs transition-all duration-150">
@@ -303,7 +331,7 @@
          class="flex-1 flex flex-col min-h-screen transition-all duration-300">
 
         {{-- Top header --}}
-        <header class="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 shrink-0 sticky top-0 z-30">
+        <header class="h-14 bg-white flex items-center justify-between px-4 sm:px-6 shrink-0 sticky top-0 z-30">
             <div class="flex items-center gap-3">
                 {{-- Mobile hamburger --}}
                 <button @click="sidebarOpen = !sidebarOpen"
@@ -362,11 +390,11 @@
         </main>
 
         {{-- Footer --}}
-        <footer class="h-11 bg-white border-t border-gray-200 flex items-center justify-center px-4 sm:px-6 shrink-0 sticky bottom-0 z-30">
+        <footer class="h-11 bg-white flex items-center justify-center px-4 sm:px-6 shrink-0 sticky bottom-0 z-30">
             <p class="text-[13px] text-gray-500">
                 This App made with love and coffee by
                 <a href="https://instagram.com/ridhoachmad_" target="_blank"
-                   class="text-gray-700 hover:text-gray-900 font-medium transition-colors">@ridhoachmad_</a>
+                   class="text-green-600 hover:text-green-700 font-medium transition-colors">@ridhoachmad_</a>
                 &nbsp;&copy; 2026
             </p>
         </footer>

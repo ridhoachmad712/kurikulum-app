@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\PenugasanController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Kurikulum\CpmkController;
+use App\Http\Controllers\Kurikulum\DeskripsiMkController;
 use App\Http\Controllers\Kurikulum\MatriksApiController;
 use App\Http\Controllers\Kurikulum\MatriksController;
 use App\Http\Controllers\Kurikulum\AsesmenController;
@@ -102,6 +103,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('pengukuran-cpmk',              [PengukuranController::class, 'cpmk'])     ->name('pengukuran.cpmk');
         Route::get('pengukuran-cpmk/{mataKuliah}', [PengukuranController::class, 'cpmkShow'])->name('pengukuran.cpmk.show');
         Route::get('pengukuran-cpl',               [PengukuranController::class, 'cpl'])       ->name('pengukuran.cpl');
+
+        // Deskripsi Mata Kuliah
+        Route::get ('deskripsi',                 [DeskripsiMkController::class, 'index']) ->name('deskripsi.index');
+        Route::get ('deskripsi/{mataKuliah}',    [DeskripsiMkController::class, 'edit'])  ->name('deskripsi.edit');
+        Route::patch('deskripsi/{mataKuliah}',   [DeskripsiMkController::class, 'update'])->name('deskripsi.update');
 
         // RPS
         Route::resource('rps', RpsController::class);

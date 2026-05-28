@@ -68,7 +68,7 @@
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/>
                     </svg>
-                    Masuk Admin
+                    Login
                 </a>
                 @endauth
 
@@ -102,7 +102,7 @@
             @auth
             <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-sm font-semibold text-blue-700">Panel Admin →</a>
             @else
-            <a href="{{ route('login') }}"     class="block px-4 py-2.5 text-sm font-semibold text-blue-700">Masuk Admin →</a>
+            <a href="{{ route('login') }}"     class="block px-4 py-2.5 text-sm font-semibold text-blue-700">Login →</a>
             @endauth
         </div>
     </div>
@@ -145,7 +145,7 @@
                     @auth
                     <li><a href="{{ route('dashboard') }}" class="text-blue-300 hover:text-white transition">Panel Admin</a></li>
                     @else
-                    <li><a href="{{ route('login') }}"     class="text-blue-300 hover:text-white transition">Masuk Admin</a></li>
+                    <li><a href="{{ route('login') }}"     class="text-blue-300 hover:text-white transition">Login</a></li>
                     @endauth
                 </ul>
             </div>

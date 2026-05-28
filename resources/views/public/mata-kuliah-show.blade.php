@@ -41,6 +41,10 @@
             @endforeach
         </div>
         @endif
+
+        @if($mataKuliah->deskripsi)
+        <p class="mt-4 text-sm text-gray-600 leading-relaxed max-w-3xl">{{ $mataKuliah->deskripsi }}</p>
+        @endif
     </div>
 </div>
 

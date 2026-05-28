@@ -201,7 +201,7 @@
                 @else
                 <a href="{{ route('login') }}"
                    class="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 hover:text-blue-900 transition">
-                    Masuk Admin →
+                    Login →
                 </a>
                 @endauth
             </div>
