@@ -468,11 +468,18 @@
 
         {{-- Footer --}}
         <footer class="h-11 bg-white flex items-center justify-center px-4 sm:px-6 shrink-0 sticky bottom-0 z-30">
-            <p class="text-[13px] text-gray-500">
-                This App made with love and coffee by
-                <a href="https://instagram.com/ridhoachmad_" target="_blank"
-                   class="text-green-600 hover:text-green-700 font-medium transition-colors">@ridhoachmad_</a>
-                &nbsp;&copy; 2026
+            <p class="text-[13px] text-gray-500 flex items-center gap-2 flex-wrap justify-center">
+                <span>
+                    This App made with love and coffee by
+                    <a href="https://instagram.com/ridhoachmad_" target="_blank"
+                       class="text-green-600 hover:text-green-700 font-medium transition-colors">@ridhoachmad_</a>
+                    &nbsp;&copy; 2026
+                </span>
+                <span class="text-gray-300 hidden sm:inline">|</span>
+                <a href="https://trakteer.id/ridhoachmad_/tip" target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-orange-50 border border-orange-200 text-orange-500 hover:bg-orange-100 hover:text-orange-600 font-medium transition-colors text-xs">
+                    ☕ buy me a coffee!
+                </a>
             </p>
         </footer>
     </div>
