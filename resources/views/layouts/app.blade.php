@@ -560,6 +560,11 @@
         if (!modal) return;
         // Portal: pindahkan ke <body> agar keluar dari semua stacking context
         document.body.appendChild(modal);
+        // Sembunyikan sidebar, header, footer agar overlay benar-benar menutupi seluruh layar
+        document.querySelectorAll('aside, header, footer').forEach(el => {
+            el.dataset.breakVis = el.style.visibility;
+            el.style.visibility = 'hidden';
+        });
         const elapsed = Date.now() - parseInt(sessionStorage.getItem('dosen_work_start') || Date.now());
         document.getElementById('break-duration').textContent = formatDuration(elapsed);
         modal.classList.remove('hidden');
@@ -571,6 +576,10 @@
         if (!modal) return;
         modal.classList.add('hidden');
         modal.classList.remove('flex');
+        // Kembalikan visibilitas elemen yang disembunyikan
+        document.querySelectorAll('aside, header, footer').forEach(el => {
+            el.style.visibility = el.dataset.breakVis || '';
+        });
         sessionStorage.setItem('dosen_next_reminder', Date.now() + HOUR_MS);
     };
 
