@@ -504,35 +504,35 @@
 {{-- ── BREAK REMINDER (dosen only) ─────────────────────────────── --}}
 @hasrole('dosen')
 <div id="break-reminder-modal"
-     class="fixed inset-0 z-[300] hidden items-center justify-center bg-black/50 backdrop-blur-sm px-4">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm text-center p-8 animate-in">
-        {{-- Icon --}}
-        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-        </div>
+     class="fixed inset-0 z-[300] hidden flex-col items-center justify-center bg-white px-6">
 
-        {{-- Text --}}
-        <h3 class="text-lg font-bold text-gray-800 mb-2">Di Mana Kopinya? ☕</h3>
-        <p class="text-sm text-gray-500 leading-relaxed mb-1">
-            Sudah <span id="break-duration" class="font-semibold text-orange-500"></span> — dan kami tidak melihat aktivitas ngopi sama sekali.
-        </p>
-        <p class="text-sm text-gray-400 leading-relaxed mb-7">
-            Tanpa kopi, siapa yang mengisi Bobot Asesmen?<br>
-            Tanpa Bobot Asesmen, bagaimana akreditasi?<br>
-            Jadi sebetulnya, ngopi itu <span class="font-medium text-gray-500">kewajiban akademik</span>.
-        </p>
-
-        {{-- Button --}}
-        <button onclick="dismissBreakReminder()"
-                style="background-color:#dc2626"
-                onmouseover="this.style.backgroundColor='#b91c1c'"
-                onmouseout="this.style.backgroundColor='#dc2626'"
-                class="w-full py-3 text-white font-semibold rounded-xl transition-colors text-sm">
-            ☕ Logikanya masuk, saya ngopi dulu
-        </button>
+    {{-- Icon --}}
+    <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-6">
+        <svg class="w-10 h-10 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
     </div>
+
+    {{-- Text --}}
+    <h3 class="text-2xl font-bold text-gray-800 mb-3 text-center">Di Mana Kopinya? ☕</h3>
+    <p class="text-base text-gray-500 leading-relaxed mb-2 text-center max-w-sm">
+        Sudah <span id="break-duration" class="font-semibold text-red-500"></span> — dan kami tidak melihat aktivitas ngopi sama sekali.
+    </p>
+    <p class="text-sm text-gray-400 leading-relaxed mb-10 text-center max-w-sm">
+        Tanpa kopi, siapa yang mengisi Bobot Asesmen?<br>
+        Tanpa Bobot Asesmen, bagaimana akreditasi?<br>
+        Jadi sebetulnya, ngopi itu <span class="font-medium text-gray-500">kewajiban akademik</span>.
+    </p>
+
+    {{-- Button --}}
+    <button onclick="dismissBreakReminder()"
+            style="background-color:#dc2626"
+            onmouseover="this.style.backgroundColor='#b91c1c'"
+            onmouseout="this.style.backgroundColor='#dc2626'"
+            class="px-8 py-3.5 text-white font-semibold rounded-xl transition-colors text-sm">
+        ☕ Logikanya masuk, saya ngopi dulu
+    </button>
+
 </div>
 
 <script>
