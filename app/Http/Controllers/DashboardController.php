@@ -178,7 +178,8 @@ class DashboardController extends Controller
                 $mk->score       = ($mk->has_matriks ? 1 : 0)
                                  + ($mk->cpmks_count > 0 ? 1 : 0)
                                  + ($mk->sub_cpmks_count > 0 ? 1 : 0)
-                                 + ($mk->sub_cpmks_count > 0 && $mk->sub_asesmen_count == $mk->sub_cpmks_count ? 1 : 0);
+                                 + ($mk->sub_cpmks_count > 0 && $mk->sub_asesmen_count == $mk->sub_cpmks_count ? 1 : 0)
+                                 + ($mk->deskripsi ? 1 : 0);
                 return $mk;
             });
 
@@ -186,8 +187,8 @@ class DashboardController extends Controller
 
         $summary = [
             'total_mk'   => $mataKuliahs->count(),
-            'mk_lengkap' => $mataKuliahs->where('score', 4)->count(),
-            'mk_pending' => $mataKuliahs->where('score', '<', 4)->count(),
+            'mk_lengkap' => $mataKuliahs->where('score', 5)->count(),
+            'mk_pending' => $mataKuliahs->where('score', '<', 5)->count(),
         ];
 
         // CPMK pertama (urutan terendah) per MK — untuk link langsung ke sub-cpmk.show

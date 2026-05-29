@@ -8,7 +8,7 @@
     $salam     = $jam < 11 ? 'Pagi' : ($jam < 15 ? 'Siang' : ($jam < 18 ? 'Sore' : 'Malam'));
     $namaDepan   = auth()->user()->name ?? 'Pengguna';
     $totalScore  = $mataKuliahs->sum('score');
-    $maxScore    = $mataKuliahs->count() * 4;
+    $maxScore    = $mataKuliahs->count() * 5;
     $pct         = $maxScore > 0 ? round($totalScore / $maxScore * 100) : 0;
 
     $quotes = [
@@ -78,10 +78,10 @@
 {{-- ── RINGKASAN CARD ── --}}
 @if($summary['total_mk'] > 0)
 @php
-    $mkSelesai  = $mataKuliahs->where('score', 4)->count();
-    $mkProgres  = $mataKuliahs->where('score', '>', 0)->where('score', '<', 4)->count();
+    $mkSelesai  = $mataKuliahs->where('score', 5)->count();
+    $mkProgres  = $mataKuliahs->where('score', '>', 0)->where('score', '<', 5)->count();
     $mkBelum    = $mataKuliahs->where('score', 0)->count();
-    $mkTerdekat = $mataKuliahs->where('score', '<', 4)->sortByDesc('score')->first();
+    $mkTerdekat = $mataKuliahs->where('score', '<', 5)->sortByDesc('score')->first();
     $sisaLangkah = $maxScore - $totalScore;
 @endphp
 <div class="card p-5 mb-7">
@@ -141,12 +141,13 @@
                     $mkTerdekat->cpmks_count == 0      => route('kurikulum.cpmk.show', $mkTerdekat),
                     $mkTerdekat->sub_cpmks_count == 0  => route('kurikulum.sub-cpmk.show', $mkTerdekat),
                     !$allAsesMkT                       => route('kurikulum.asesmen.show', $mkTerdekat),
+                    !$mkTerdekat->deskripsi            => route('kurikulum.deskripsi.edit', $mkTerdekat),
                     default                            => route('kurikulum.cpmk.show', $mkTerdekat),
                 };
             @endphp
                 <p class="text-sm font-semibold text-gray-800 leading-snug line-clamp-1">{{ $mkTerdekat->nama }}</p>
                 <div class="flex items-center justify-between mt-1.5">
-                    <span class="text-xs text-amber-600">{{ $mkTerdekat->score }}/4 langkah</span>
+                    <span class="text-xs text-amber-600">{{ $mkTerdekat->score }}/5 langkah</span>
                     <a href="{{ $nextHref }}"
                        class="text-xs font-semibold text-gray-700 hover:text-gray-900 hover:underline">
                         Lanjutkan →
@@ -190,50 +191,63 @@
         [
             'label'  => 'Matriks MK–CPL',
             'done'   => $mk->has_matriks,
+            'locked' => false,
             'detail' => $mk->has_matriks ? 'sudah terhubung' : 'belum diisi',
             'href'   => route('kurikulum.matriks.input'),
         ],
         [
             'label'  => 'CPMK',
             'done'   => $mk->cpmks_count > 0,
+            'locked' => false,
             'detail' => $mk->cpmks_count > 0 ? $mk->cpmks_count . ' CPMK' : 'belum ada',
             'href'   => route('kurikulum.cpmk.show', $mk),
         ],
         [
             'label'  => 'Sub-CPMK',
             'done'   => $mk->sub_cpmks_count > 0,
-            'detail' => $mk->sub_cpmks_count > 0 ? $mk->sub_cpmks_count . ' Sub-CPMK' : 'belum ada',
+            'locked' => $mk->cpmks_count == 0,
+            'detail' => $mk->sub_cpmks_count > 0 ? $mk->sub_cpmks_count . ' Sub-CPMK'
+                            : ($mk->cpmks_count == 0 ? 'tunggu CPMK' : 'belum ada'),
             'href'   => route('kurikulum.sub-cpmk.show', $mk),
         ],
         [
             'label'  => 'Bobot Asesmen',
             'done'   => $allAses,
-            'detail' => $mk->sub_cpmks_count > 0
-                            ? $mk->sub_asesmen_count . '/' . $mk->sub_cpmks_count . ' sub-CPMK terisi'
-                            : 'belum ada Sub-CPMK',
+            'locked' => $mk->sub_cpmks_count == 0,
+            'detail' => $allAses ? 'semua terisi'
+                            : ($mk->sub_cpmks_count > 0
+                                ? $mk->sub_asesmen_count . '/' . $mk->sub_cpmks_count . ' sub-CPMK terisi'
+                                : 'tunggu Sub-CPMK'),
             'href'   => route('kurikulum.asesmen.show', $mk),
+        ],
+        [
+            'label'  => 'Deskripsi MK',
+            'done'   => (bool) $mk->deskripsi,
+            'locked' => false,
+            'detail' => $mk->deskripsi ? 'sudah diisi' : 'belum diisi',
+            'href'   => route('kurikulum.deskripsi.edit', $mk),
         ],
     ];
 
-    // Langkah berikutnya yang belum selesai
-    $nextStep = collect($checks)->first(fn($s) => !$s['done']);
+    // Langkah berikutnya: belum selesai dan tidak terkunci
+    $nextStep = collect($checks)->first(fn($s) => !$s['done'] && !$s['locked']);
 
-    $barPct   = round($mk->score / 4 * 100);
-    $barColor = $mk->score == 4 ? 'bg-green-500' : 'bg-amber-400';
+    $barPct   = round($mk->score / 5 * 100);
+    $barColor = $mk->score == 5 ? 'bg-green-500' : 'bg-amber-400';
 
     $badgeClass = match(true) {
-        $mk->score == 4 => 'bg-green-100 text-green-700',
+        $mk->score == 5 => 'bg-green-100 text-green-700',
         $mk->score == 0 => 'bg-gray-100 text-gray-400',
         default         => 'bg-amber-100 text-amber-700',
     };
     $badgeLabel = match($mk->score) {
-        4       => '✓ Lengkap',
+        5       => '✓ Lengkap',
         0       => 'Belum mulai',
-        default => ($nextStep ? $nextStep['label'] : "Langkah {$mk->score}/4"),
+        default => ($nextStep ? $nextStep['label'] : "Langkah {$mk->score}/5"),
     };
 
     $borderClass = match(true) {
-        $mk->score == 4 => 'border-l-4 border-l-green-400',
+        $mk->score == 5 => 'border-l-4 border-l-green-400',
         $mk->score == 0 => '',
         default         => 'border-l-4 border-l-amber-400',
     };
@@ -264,7 +278,7 @@
                 <div class="{{ $barColor }} h-2 rounded-full transition-all duration-500"
                      style="width: {{ $barPct }}%"></div>
             </div>
-            <span class="text-xs font-semibold text-gray-500 shrink-0">{{ $mk->score }}/4</span>
+            <span class="text-xs font-semibold text-gray-500 shrink-0">{{ $mk->score }}/5</span>
         </div>
     </div>
 
@@ -272,8 +286,8 @@
     <div class="px-5 py-3 border-t border-gray-50 space-y-2">
         @php $pendingNo = 0; @endphp
         @foreach($checks as $step)
-        @php if (!$step['done']) $pendingNo++; @endphp
-        <div class="flex items-center justify-between gap-2">
+        @php if (!$step['done'] && !$step['locked']) $pendingNo++; @endphp
+        <div class="flex items-center justify-between gap-2 {{ $step['locked'] ? 'opacity-40' : '' }}">
             <div class="flex items-center gap-2 min-w-0">
                 @if($step['done'])
                     <span class="shrink-0 w-5 h-5 rounded-full bg-green-100 flex items-center justify-center">
@@ -282,6 +296,13 @@
                         </svg>
                     </span>
                     <span class="text-xs text-gray-400">{{ $step['label'] }}</span>
+                @elseif($step['locked'])
+                    <span class="shrink-0 w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center">
+                        <svg class="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                    </span>
+                    <span class="text-xs text-gray-400 truncate">{{ $step['label'] }}</span>
                 @else
                     <span class="shrink-0 w-5 h-5 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center">
                         <span class="text-[9px] font-bold text-amber-500">{{ $pendingNo }}</span>
@@ -292,7 +313,6 @@
                     </a>
                 @endif
             </div>
-            {{-- Detail angka di kanan --}}
             <span class="shrink-0 text-xs {{ $step['done'] ? 'text-green-600 font-medium' : 'text-gray-400' }}">
                 {{ $step['detail'] }}
             </span>
@@ -302,7 +322,7 @@
 
     {{-- Card footer: quick action --}}
     <div class="px-5 py-3 mt-auto border-t border-gray-50 flex items-center justify-between gap-3">
-        @if($mk->score == 4)
+        @if($mk->score == 5)
             <span class="text-xs text-green-600 font-medium flex items-center gap-1">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
