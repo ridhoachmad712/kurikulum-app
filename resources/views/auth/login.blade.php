@@ -107,7 +107,10 @@
         </form>
     </div>
 
-    <p class="text-xs text-gray-400 mt-6">&copy; {{ date('Y') }} FEB — Universitas Negeri Makassar</p>
+    <div class="text-center mt-6">
+        <p class="text-xs text-gray-400">Sistem Informasi Kurikulum</p>
+        <p class="text-xs text-gray-400 mt-0.5">Developed by <a href="https://instagram.com/ridhoachmad_" target="_blank" class="hover:text-gray-600 transition-colors">@ridhoachmad_</a></p>
+    </div>
 </div>
 
 </body>
