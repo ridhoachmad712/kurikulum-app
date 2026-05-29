@@ -182,3 +182,45 @@
 @endif
 
 @endsection
+
+@section('help')
+<div class="space-y-4">
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Apa itu Hasil Pengukuran CPL?</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Halaman ini menampilkan rencana distribusi bobot CPMK terhadap setiap CPL program studi. Nilai pada setiap sel menunjukkan persentase kontribusi CPMK terhadap CPL yang didukungnya.</p>
+    </div>
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Cara Membaca Tabel</h3>
+        <ul class="space-y-2 text-xs text-gray-500">
+            <li class="flex items-start gap-2">
+                <span class="w-2 h-2 rounded-full bg-blue-400 shrink-0 mt-1"></span>
+                <span><strong class="text-gray-700">Sel biru</strong> — CPMK memiliki kontribusi bobot terhadap CPL tersebut. Nilai menunjukkan persentase bobot (%).</span>
+            </li>
+            <li class="flex items-start gap-2">
+                <span class="w-2 h-2 rounded-full bg-gray-300 shrink-0 mt-1"></span>
+                <span><strong class="text-gray-700">Sel —</strong> — CPMK tidak berkontribusi terhadap CPL tersebut.</span>
+            </li>
+            <li class="flex items-start gap-2">
+                <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0 mt-1"></span>
+                <span><strong class="text-gray-700">Baris Total MK</strong> — Jumlah total bobot dari semua CPMK pada MK tersebut untuk setiap CPL.</span>
+            </li>
+        </ul>
+    </div>
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Rekap Total Bobot CPL</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Panel kartu di bagian atas (khusus Admin & Kaprodi) merangkum total akumulasi bobot per CPL dari seluruh mata kuliah. Bar panjang = CPL dengan kontribusi bobot tertinggi secara keseluruhan.</p>
+    </div>
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Cara Mengisi Data</h3>
+        <ol class="list-decimal list-inside space-y-1 text-xs text-gray-500">
+            <li>Buka menu <strong>CPMK</strong> → pilih mata kuliah → klik <strong>Edit CPMK</strong>.</li>
+            <li>Pada detail CPMK, atur keterkaitan dan bobot ke setiap CPL.</li>
+            <li>Data akan otomatis terekap di halaman ini.</li>
+        </ol>
+    </div>
+    <div class="bg-blue-50 rounded-xl px-4 py-3">
+        <p class="text-xs text-blue-700 font-medium">💡 Tips</p>
+        <p class="text-xs text-blue-600 mt-1 leading-relaxed">Pastikan setiap CPMK terhubung ke minimal satu CPL dan memiliki bobot yang terisi agar tabel ini terpopulasi dengan lengkap dan akurat.</p>
+    </div>
+</div>
+@endsection
