@@ -504,7 +504,7 @@
 {{-- ── BREAK REMINDER (dosen only) ─────────────────────────────── --}}
 @hasrole('dosen')
 <div id="break-reminder-modal"
-     class="fixed inset-0 z-[300] hidden flex-col items-center justify-center bg-white px-6">
+     class="fixed inset-0 z-[9999] hidden flex-col items-center justify-center bg-white px-6">
 
     {{-- Icon --}}
     <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-6">
