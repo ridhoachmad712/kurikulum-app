@@ -36,7 +36,7 @@
 </head>
 <body class="h-full font-sans antialiased text-gray-900">
 
-<div class="min-h-screen flex" x-data="{ sidebarOpen: false, collapsed: false }">
+<div class="min-h-screen flex" x-data="{ sidebarOpen: false, collapsed: false, helpOpen: false }">
 
     {{-- ── OVERLAY MOBILE ── --}}
     <div x-show="sidebarOpen"
@@ -363,6 +363,52 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
                 </button>
+
+                {{-- Tombol Petunjuk + card (hanya muncul jika halaman punya @section('help')) --}}
+                @hasSection('help')
+                <div class="relative hidden sm:block" @click.away="helpOpen = false">
+                    <button @click="helpOpen = !helpOpen"
+                            :class="helpOpen ? 'bg-blue-50 text-blue-600 ring-1 ring-blue-200' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'"
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        @yield('help_title', 'Petunjuk Pengisian')
+                    </button>
+
+                    {{-- Popup card --}}
+                    <div x-show="helpOpen" x-cloak
+                         @keydown.escape.window="helpOpen = false"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
+                         style="width:440px" class="absolute top-full left-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 flex flex-col overflow-hidden origin-top-left">
+                        {{-- Header --}}
+                        <div class="flex items-center justify-between px-4 py-3.5 border-b border-gray-100 shrink-0 bg-gray-50">
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-[10px] font-bold shrink-0">?</span>
+                                <div>
+                                    <p class="font-semibold text-gray-800 text-sm leading-tight">@yield('help_title', 'Petunjuk Pengisian')</p>
+                                    <p class="text-[10px] text-gray-400 leading-tight truncate max-w-[200px]">@yield('title')</p>
+                                </div>
+                            </div>
+                            <button @click="helpOpen = false"
+                                    class="p-1.5 rounded-lg text-gray-400 hover:bg-gray-200 hover:text-gray-600 transition-colors">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                        {{-- Content --}}
+                        <div class="overflow-y-auto max-h-[60vh] px-4 py-4 text-sm text-gray-600">
+                            @yield('help')
+                        </div>
+                    </div>
+                </div>
+                @endif
             </div>
             <div class="flex items-center gap-2.5">
                 {{-- Name + role (desktop) --}}
@@ -421,6 +467,7 @@
             </p>
         </footer>
     </div>
+
 
 </div>
 </body>

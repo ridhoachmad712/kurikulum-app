@@ -81,6 +81,74 @@ foreach (array_merge($row1, $row2) as $tab) {
 </p>
 @endif
 
+@section('help_title', 'Informasi Tabel Kurikulum')
+
+@section('help')
+<div class="space-y-4">
+
+    {{-- Tabel aktif saat ini --}}
+    @if($activeInfo)
+    <div class="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3">
+        <p class="text-xs text-blue-700 font-semibold mb-0.5">
+            Tabel {{ $activeInfo['n'] }} — {{ $activeInfo['title'] }}
+        </p>
+        <p class="text-xs text-blue-600 leading-relaxed">{{ $activeInfo['sub'] }}</p>
+    </div>
+    @endif
+
+    {{-- Baris 1: Tabel 1–5 --}}
+    <div>
+        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Tabel 1–5 · Matriks Level MK × CPL</p>
+        <div class="space-y-2">
+            @foreach([
+                [1, 'Input Level',       'Menampilkan tingkat keterkaitan setiap MK terhadap CPL: Tinggi, Sedang, atau Rendah.'],
+                [2, 'Keterkaitan (0/1)', 'Konversi level menjadi matriks biner — ada keterkaitan (1) atau tidak (0).'],
+                [3, 'Nilai Level',       'Konversi level ke nilai numerik: Tinggi = 3, Sedang = 2, Rendah = 1.'],
+                [4, '% Bobot Global',    'Persentase kontribusi bobot setiap MK terhadap CPL secara keseluruhan.'],
+                [5, '% Bobot per MK',   'Bobot keterkaitan yang dinormalisasi per mata kuliah (total per baris = 100%).'],
+            ] as [$n, $title, $desc])
+            <div class="flex items-start gap-2.5 text-xs">
+                <span class="w-5 h-5 rounded bg-gray-700 text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">{{ $n }}</span>
+                <div>
+                    <span class="font-semibold text-gray-700">{{ $title }}</span>
+                    <span class="text-gray-400 ml-1">— {{ $desc }}</span>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+
+    {{-- Baris 2: Tabel 6–12 --}}
+    <div>
+        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Tabel 6–12 · CPMK, Sub-CPMK & Bobot</p>
+        <div class="space-y-2">
+            @foreach([
+                [6,  'CPMK × CPL',         'Keterkaitan setiap CPMK dengan CPL yang dibebankan (V = terkait / — = tidak).'],
+                [7,  'Bobot CPMK × CPL',   'Bobot persentase CPMK terhadap CPL yang didukung (input manual oleh dosen).'],
+                [8,  'Rekap Sub-CPMK',     'Rekapitulasi seluruh Sub-CPMK beserta CLO Taxonomy tertinggi yang dicapai.'],
+                [9,  'CPMK × Sub',         'Matriks keterkaitan antara CPMK dengan Sub-CPMK yang dibebankan di bawahnya.'],
+                [10, 'Sub × CPL',          'Keterkaitan Sub-CPMK dengan CPL yang diwarisi dari CPMK induknya.'],
+                [11, '% Bobot CPMK',       'Distribusi % bobot tiap Sub-CPMK dalam CPMK-nya & perbandingan dengan Tabel 7.'],
+                [12, '% Matriks CPMK×CPL', 'Persentase bobot CPMK terhadap CPL beserta total kontribusi per kolom CPL.'],
+            ] as [$n, $title, $desc])
+            <div class="flex items-start gap-2.5 text-xs">
+                <span class="w-5 h-5 rounded bg-gray-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">{{ $n }}</span>
+                <div>
+                    <span class="font-semibold text-gray-700">{{ $title }}</span>
+                    <span class="text-gray-400 ml-1">— {{ $desc }}</span>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+
+    <div class="bg-amber-50 rounded-xl px-4 py-3">
+        <p class="text-xs text-amber-700 font-medium">💡 Tips</p>
+        <p class="text-xs text-amber-600 mt-1 leading-relaxed">Tabel 1–5 dihasilkan otomatis dari input level di menu <strong>Level CPL Mata Kuliah</strong>. Tabel 6–12 bergantung pada isian CPMK, Sub-CPMK, dan bobot yang diisi oleh dosen.</p>
+    </div>
+</div>
+@endsection
+
 {{-- Banner dosen scope — tampil di semua tabel kecuali halaman input (punya bannernya sendiri) --}}
 @if($activeRoute !== 'kurikulum.matriks.input')
 @hasrole('dosen')
