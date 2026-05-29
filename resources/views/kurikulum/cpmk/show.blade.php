@@ -19,15 +19,15 @@
 
 {{-- TAB --}}
 <div x-data="{ tab: (location.hash === '#bobot') ? 'bobot' : 'cpmk' }">
-<div class="flex gap-1 mb-6 border-b border-gray-200">
+<div class="flex gap-1 mb-6 border-b border-gray-200 overflow-x-auto scrollbar-none">
     <button @click="tab='cpmk'; location.hash='cpmk'"
             :class="tab==='cpmk' ? 'bg-white border border-b-white border-gray-200 text-gray-800 -mb-px' : 'text-gray-500 hover:text-gray-700'"
-            class="px-4 py-2 text-sm font-medium rounded-t-lg transition">
+            class="shrink-0 px-4 py-2 text-sm font-medium rounded-t-lg transition whitespace-nowrap">
         Input CPMK & Keterkaitan CPL
     </button>
     <button @click="tab='bobot'; location.hash='bobot'"
             :class="tab==='bobot' ? 'bg-white border border-b-white border-gray-200 text-gray-800 -mb-px' : 'text-gray-500 hover:text-gray-700'"
-            class="px-4 py-2 text-sm font-medium rounded-t-lg transition">
+            class="shrink-0 px-4 py-2 text-sm font-medium rounded-t-lg transition whitespace-nowrap">
         Bobot % CPMK per CPL
     </button>
 </div>
@@ -642,4 +642,26 @@ async function simpanSemuaBobot() {
 </div>
 @endhasrole
 
+@endsection
+
+@section('help')
+<div class="space-y-4">
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Tab Input CPMK</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Tambahkan CPMK untuk mata kuliah ini dan centang CPL mana saja yang didukung oleh setiap CPMK.</p>
+        <ol class="list-decimal list-inside space-y-1 text-xs text-gray-500 mt-2">
+            <li>Klik <strong>+ Tambah CPMK</strong> untuk menambah capaian baru.</li>
+            <li>Isi kode dan deskripsi CPMK.</li>
+            <li>Centang CPL yang relevan dengan CPMK tersebut.</li>
+        </ol>
+    </div>
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Tab Bobot CPMK–CPL</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Isi persentase bobot kontribusi setiap CPMK terhadap CPL yang telah dicentang. Total bobot per CPL harus 100%.</p>
+    </div>
+    <div class="bg-amber-50 rounded-xl px-4 py-3">
+        <p class="text-xs text-amber-700 font-medium">⚠ Perhatian</p>
+        <p class="text-xs text-amber-600 mt-1 leading-relaxed">Pastikan CPMK sudah terisi sebelum melanjutkan ke langkah Sub-CPMK. CPMK yang tidak punya Sub-CPMK tidak akan terhitung dalam pengukuran.</p>
+    </div>
+</div>
 @endsection

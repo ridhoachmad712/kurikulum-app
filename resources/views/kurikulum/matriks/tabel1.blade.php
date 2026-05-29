@@ -19,7 +19,7 @@
 @endhasrole
 
 {{-- Legend --}}
-<div class="flex items-center gap-4 mb-4 text-xs">
+<div class="flex items-center gap-3 mb-4 text-xs flex-wrap">
     <span class="font-medium text-gray-600">Level keterkaitan:</span>
     <span class="px-2 py-0.5 rounded bg-red-100 text-red-700 font-medium">Tinggi</span>
     <span class="px-2 py-0.5 rounded bg-yellow-100 text-yellow-700 font-medium">Sedang</span>

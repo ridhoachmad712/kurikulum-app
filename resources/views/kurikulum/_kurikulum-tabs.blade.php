@@ -28,7 +28,7 @@ foreach (array_merge($row1, $row2) as $tab) {
 <div class="-mx-4 sm:-mx-6 px-4 sm:px-6 mb-6 space-y-1.5">
 
     {{-- Baris 1: Tabel 1–5 --}}
-    <div class="flex items-center gap-1 bg-gray-100 rounded-2xl p-1">
+    <div class="flex items-center gap-1 bg-gray-100 rounded-2xl p-1 overflow-x-auto scrollbar-none">
         @foreach($row1 as $tab)
         @php $isActive = $tab['route'] === $activeRoute; @endphp
         <a href="{{ route($tab['route']) }}"

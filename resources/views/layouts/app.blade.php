@@ -468,7 +468,7 @@
         </main>
 
         {{-- Footer --}}
-        <footer class="h-11 bg-white flex items-center justify-center px-4 sm:px-6 shrink-0 sticky bottom-0 z-30">
+        <footer class="min-h-[44px] py-2 bg-white flex items-center justify-center px-4 sm:px-6 shrink-0 sticky bottom-0 z-30">
             <p class="text-[13px] text-gray-500 flex items-center gap-2 flex-wrap justify-center">
                 <span>
                     This App made with love and coffee by

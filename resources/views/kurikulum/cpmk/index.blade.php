@@ -6,15 +6,6 @@
 
 <x-dosen-stepper :step="2" />
 
-<div class="flex items-center justify-between mb-4 flex-wrap gap-3">
-    <div class="flex items-center gap-2">
-        <a href="{{ route('kurikulum.matriks.input') }}"
-           class="text-xs text-gray-400 hover:text-gray-800 hover:underline transition">
-            ← Lihat Tabel 1–12
-        </a>
-    </div>
-    <x-search-input placeholder="Cari kode atau nama MK..." />
-</div>
 
 {{-- Info scope dosen --}}
 @hasrole('dosen')
@@ -31,6 +22,7 @@
 @endif
 
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="overflow-x-auto">
     <table class="min-w-full divide-y divide-gray-100 text-sm">
         <thead class="bg-gray-50">
             <tr>
@@ -81,6 +73,28 @@
             @endforelse
         </tbody>
     </table>
+    </div>{{-- /overflow-x-auto --}}
     <div class="px-4 py-3 border-t border-gray-100">{{ $mataKuliahs->withQueryString()->links() }}</div>
+</div>
+@endsection
+
+@section('help')
+<div class="space-y-4">
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Apa itu CPMK?</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">CPMK (Capaian Pembelajaran Mata Kuliah) adalah kemampuan spesifik yang diharapkan dicapai mahasiswa setelah menempuh suatu mata kuliah. CPMK merupakan turunan dari CPL program studi.</p>
+    </div>
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Cara Menggunakan</h3>
+        <ol class="list-decimal list-inside space-y-1 text-xs text-gray-500">
+            <li>Pilih mata kuliah yang ingin diisi CPMK-nya.</li>
+            <li>Klik tombol <strong>Isi CPMK</strong> atau <strong>Edit CPMK</strong>.</li>
+            <li>Pada halaman detail, tambahkan CPMK dan atur keterkaitannya dengan CPL.</li>
+        </ol>
+    </div>
+    <div class="bg-blue-50 rounded-xl px-4 py-3">
+        <p class="text-xs text-blue-700 font-medium">💡 Tips</p>
+        <p class="text-xs text-blue-600 mt-1 leading-relaxed">Setiap MK idealnya memiliki 3–5 CPMK. Pastikan setiap CPMK terhubung ke minimal satu CPL agar tabel kurikulum terisi dengan benar.</p>
+    </div>
 </div>
 @endsection

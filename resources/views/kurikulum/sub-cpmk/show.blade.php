@@ -14,10 +14,10 @@
 <x-dosen-stepper :step="3" :mataKuliah="$mataKuliah" />
 
 {{-- ── Tab Navigation ── --}}
-<div class="flex items-end gap-0 border-b border-gray-200 mb-5">
+<div class="flex items-end gap-0 border-b border-gray-200 mb-5 overflow-x-auto scrollbar-none">
 
     <button id="tab-btn-subcpmk" onclick="switchTab('subcpmk')"
-            class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors
+            class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors shrink-0 whitespace-nowrap
                    border-gray-800 text-gray-800">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -30,7 +30,7 @@
     </button>
 
     <button id="tab-btn-bobot" onclick="switchTab('bobot')"
-            class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors
+            class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors shrink-0 whitespace-nowrap
                    border-transparent text-gray-400 hover:text-gray-600 hover:border-gray-300">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -723,4 +723,25 @@ function showMsg(el, text, cls) {
 </div>
 @endhasrole
 
+@endsection
+
+@section('help')
+<div class="space-y-4">
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Tab Sub-CPMK</h3>
+        <ol class="list-decimal list-inside space-y-1 text-xs text-gray-500">
+            <li>Pilih CPMK induk dari dropdown.</li>
+            <li>Klik <strong>+ Tambah Sub-CPMK</strong> dan isi kode serta deskripsinya.</li>
+            <li>Pilih <strong>CLO Taxonomy tertinggi</strong> yang dicapai Sub-CPMK tersebut (C1–C6).</li>
+        </ol>
+    </div>
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">CLO Taxonomy</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">CLO Taxonomy mengacu pada taksonomi Bloom — mulai dari C1 (Mengingat) hingga C6 (Mencipta). Pilih level tertinggi yang secara realistis diharapkan dicapai mahasiswa.</p>
+    </div>
+    <div class="bg-blue-50 rounded-xl px-4 py-3">
+        <p class="text-xs text-blue-700 font-medium">💡 Tips</p>
+        <p class="text-xs text-blue-600 mt-1 leading-relaxed">Setiap CPMK idealnya memiliki 2–4 Sub-CPMK. Sub-CPMK yang terlalu sedikit akan mengurangi akurasi pengukuran capaian.</p>
+    </div>
+</div>
 @endsection
