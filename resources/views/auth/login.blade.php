@@ -19,9 +19,9 @@
 
     {{-- Logo & Title --}}
     <div class="text-center mb-8">
-        <img src="{{ asset('images/logo.png') }}" alt="Logo UNM" class="w-20 h-20 object-contain mx-auto mb-4">
-        <h1 class="text-xl font-bold text-gray-900">Kurikulum Prodi</h1>
-        <p class="text-sm text-gray-500 mt-1">S1 Manajemen — FEB UNM</p>
+        <img src="{{ asset('images/2logo.png') }}" alt="Logo UNM" class="w-20 h-20 object-contain mx-auto mb-4">
+        <h1 class="text-xl font-bold text-gray-900">Sistem Informasi Kurikulum</h1>
+        <p class="text-sm text-gray-500 mt-1">Prodi Manajemen FEB UNM</p>
     </div>
 
     {{-- Card --}}
