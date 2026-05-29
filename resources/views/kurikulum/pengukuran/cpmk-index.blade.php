@@ -100,3 +100,42 @@
 @endforelse
 
 @endsection
+
+@section('help')
+<div class="space-y-4">
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Apa itu Pengukuran CPMK?</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Pengukuran CPMK adalah proses mendistribusikan bobot instrumen asesmen (Tugas, Kuis, Kasus/Proyek, UTS, UAS) ke setiap Sub-CPMK. Total bobot per Sub-CPMK harus sesuai dengan bobot teoritis Sub-CPMK tersebut.</p>
+    </div>
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Cara Mengisi</h3>
+        <ol class="list-decimal list-inside space-y-1 text-xs text-gray-500">
+            <li>Pilih mata kuliah yang ingin diisi pengukurannya.</li>
+            <li>Klik <strong>Input</strong> untuk membuka halaman detail.</li>
+            <li>Distribusikan bobot setiap instrumen asesmen ke masing-masing Sub-CPMK.</li>
+            <li>Pastikan total bobot per Sub-CPMK selaras dengan bobot yang telah ditetapkan.</li>
+        </ol>
+    </div>
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Indikator Status</h3>
+        <ul class="space-y-1.5 text-xs text-gray-500">
+            <li class="flex items-center gap-2">
+                <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold bg-green-100 text-green-700">Selaras</span>
+                <span>Semua Sub-CPMK sudah terisi dan bobotnya sesuai.</span>
+            </li>
+            <li class="flex items-center gap-2">
+                <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-700">Sebagian</span>
+                <span>Sebagian Sub-CPMK sudah terisi, sebagian belum.</span>
+            </li>
+            <li class="flex items-center gap-2">
+                <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-400">Belum diisi</span>
+                <span>Belum ada instrumen asesmen yang diisi.</span>
+            </li>
+        </ul>
+    </div>
+    <div class="bg-amber-50 rounded-xl px-4 py-3">
+        <p class="text-xs text-amber-700 font-medium">⚠ Prasyarat</p>
+        <p class="text-xs text-amber-600 mt-1 leading-relaxed">Halaman ini memerlukan Sub-CPMK dan bobot CPMK yang sudah diisi terlebih dahulu. MK yang belum memiliki Sub-CPMK tidak akan tampil di daftar ini.</p>
+    </div>
+</div>
+@endsection
