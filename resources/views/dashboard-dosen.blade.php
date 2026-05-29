@@ -133,10 +133,21 @@
         <div class="flex flex-col justify-center sm:border-l sm:border-gray-100 sm:pl-4">
             <p class="text-xs text-gray-400 font-medium mb-1">Prioritaskan berikutnya</p>
             @if($mkTerdekat)
+            @php
+                $allAsesMkT = $mkTerdekat->sub_cpmks_count > 0
+                           && $mkTerdekat->sub_asesmen_count == $mkTerdekat->sub_cpmks_count;
+                $nextHref = match(true) {
+                    !$mkTerdekat->has_matriks          => route('kurikulum.matriks.input'),
+                    $mkTerdekat->cpmks_count == 0      => route('kurikulum.cpmk.show', $mkTerdekat),
+                    $mkTerdekat->sub_cpmks_count == 0  => route('kurikulum.sub-cpmk.show', $mkTerdekat),
+                    !$allAsesMkT                       => route('kurikulum.asesmen.show', $mkTerdekat),
+                    default                            => route('kurikulum.cpmk.show', $mkTerdekat),
+                };
+            @endphp
                 <p class="text-sm font-semibold text-gray-800 leading-snug line-clamp-1">{{ $mkTerdekat->nama }}</p>
                 <div class="flex items-center justify-between mt-1.5">
                     <span class="text-xs text-amber-600">{{ $mkTerdekat->score }}/4 langkah</span>
-                    <a href="{{ route('kurikulum.cpmk.show', $mkTerdekat) }}"
+                    <a href="{{ $nextHref }}"
                        class="text-xs font-semibold text-gray-700 hover:text-gray-900 hover:underline">
                         Lanjutkan →
                     </a>
@@ -259,7 +270,9 @@
 
     {{-- Checklist: 5 langkah dengan detail angka --}}
     <div class="px-5 py-3 border-t border-gray-50 space-y-2">
-        @foreach($checks as $i => $step)
+        @php $pendingNo = 0; @endphp
+        @foreach($checks as $step)
+        @php if (!$step['done']) $pendingNo++; @endphp
         <div class="flex items-center justify-between gap-2">
             <div class="flex items-center gap-2 min-w-0">
                 @if($step['done'])
@@ -271,7 +284,7 @@
                     <span class="text-xs text-gray-400">{{ $step['label'] }}</span>
                 @else
                     <span class="shrink-0 w-5 h-5 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center">
-                        <span class="text-[9px] font-bold text-amber-500">{{ $i + 1 }}</span>
+                        <span class="text-[9px] font-bold text-amber-500">{{ $pendingNo }}</span>
                     </span>
                     <a href="{{ $step['href'] }}"
                        class="text-xs text-gray-700 hover:text-gray-900 font-medium hover:underline truncate">
