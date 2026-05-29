@@ -501,8 +501,17 @@
     {{-- ── BREAK REMINDER (dosen only) ─────────────────────────────── --}}
     @hasrole('dosen')
     <div id="break-reminder-modal"
-         class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/50 backdrop-blur-sm px-4">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm text-center p-8">
+         style="z-index:9999; background-color:rgba(0,0,0,0.75); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px)"
+         class="fixed inset-0 hidden items-center justify-center px-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg text-center p-10 relative">
+
+            {{-- Close button --}}
+            <button onclick="dismissBreakReminder()"
+                    class="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
 
             {{-- Icon --}}
             <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -512,26 +521,43 @@
             </div>
 
             {{-- Text --}}
-            <h3 class="text-lg font-bold text-gray-800 mb-2">Di Mana Kopinya? ☕</h3>
-            <p class="text-sm text-gray-500 leading-relaxed mb-1">
-                Sudah <span id="break-duration" class="font-semibold text-red-500"></span> — dan kami tidak melihat aktivitas ngopi sama sekali.
-            </p>
-            <p class="text-sm text-gray-400 leading-relaxed mb-7">
-                Tanpa kopi, siapa yang mengisi Bobot Asesmen?<br>
-                Tanpa Bobot Asesmen, bagaimana akreditasi?<br>
-                Jadi sebetulnya, ngopi itu <span class="font-medium text-gray-500">kewajiban akademik</span>.
-            </p>
+            <h3 id="break-title" class="text-lg font-bold text-gray-800 mb-3"></h3>
+            <div id="break-body" class="text-sm leading-relaxed mb-7"></div>
 
             {{-- Button --}}
-            <button onclick="dismissBreakReminder()"
-                    style="background-color:#dc2626"
-                    onmouseover="this.style.backgroundColor='#b91c1c'"
-                    onmouseout="this.style.backgroundColor='#dc2626'"
+            <button onclick="playKicauMania()"
+                    style="background-color:#16a34a"
+                    onmouseover="this.style.backgroundColor='#15803d'"
+                    onmouseout="this.style.backgroundColor='#16a34a'"
                     class="w-full py-3 text-white font-semibold rounded-xl transition-colors text-sm">
-                ☕ Logikanya masuk, saya ngopi dulu
+                Tekan Untuk Kicau Mania
             </button>
 
         </div>
+    </div>
+    @endhasrole
+
+    {{-- ── KICAU MANIA floating player (dosen only) ─────────────────── --}}
+    @hasrole('dosen')
+    <div id="kicau-player"
+         style="position:fixed; inset:0; z-index:10000; display:none; pointer-events:none;
+                background-image:url('{{ asset('gif/kicau.gif') }}');
+                background-repeat:repeat;
+                background-size:auto 33.33vh;">
+        {{-- Close button --}}
+        <button onclick="closeKicauPlayer()"
+                style="position:absolute; top:16px; right:16px;
+                       width:36px; height:36px; border-radius:50%;
+                       background:rgba(0,0,0,0.5); color:white; border:none;
+                       cursor:pointer; font-size:20px; line-height:1;
+                       display:flex; align-items:center; justify-content:center;
+                       pointer-events:auto;">
+            ×
+        </button>
+        {{-- Audio --}}
+        <audio id="kicau-audio" preload="none">
+            <source src="{{ asset('sounds/kicaumania.mp3') }}" type="audio/mpeg">
+        </audio>
     </div>
     @endhasrole
 
@@ -539,13 +565,17 @@
 
 <script>
 (function () {
-    const HOUR_MS  = 60 * 60 * 1000;
     const CHECK_MS = 30 * 1000;
+
+    function randomDelay() {
+        // Random antara 20–30 menit (dalam milidetik)
+        return (20 + Math.random() * 10) * 60 * 1000;
+    }
 
     // Init session timer — hanya set sekali per sesi browser (reset saat tab ditutup)
     if (!sessionStorage.getItem('dosen_work_start')) {
         sessionStorage.setItem('dosen_work_start', Date.now());
-        sessionStorage.setItem('dosen_next_reminder', Date.now() + HOUR_MS);
+        sessionStorage.setItem('dosen_next_reminder', Date.now() + randomDelay());
     }
 
     function formatDuration(ms) {
@@ -558,15 +588,13 @@
     function showBreakReminder() {
         const modal = document.getElementById('break-reminder-modal');
         if (!modal) return;
-        // Portal: pindahkan ke <body> agar keluar dari semua stacking context
         document.body.appendChild(modal);
-        // Sembunyikan sidebar, header, footer agar overlay benar-benar menutupi seluruh layar
-        document.querySelectorAll('aside, header, footer').forEach(el => {
-            el.dataset.breakVis = el.style.visibility;
-            el.style.visibility = 'hidden';
-        });
         const elapsed = Date.now() - parseInt(sessionStorage.getItem('dosen_work_start') || Date.now());
-        document.getElementById('break-duration').textContent = formatDuration(elapsed);
+        const dur     = formatDuration(elapsed);
+        // Pilih pesan secara acak
+        const msg = breakMessages[Math.floor(Math.random() * breakMessages.length)];
+        document.getElementById('break-title').innerHTML = msg.title;
+        document.getElementById('break-body').innerHTML  = msg.body(dur);
         modal.classList.remove('hidden');
         modal.classList.add('flex');
     }
@@ -576,15 +604,61 @@
         if (!modal) return;
         modal.classList.add('hidden');
         modal.classList.remove('flex');
-        // Kembalikan visibilitas elemen yang disembunyikan
-        document.querySelectorAll('aside, header, footer').forEach(el => {
-            el.style.visibility = el.dataset.breakVis || '';
-        });
-        sessionStorage.setItem('dosen_next_reminder', Date.now() + HOUR_MS);
+        sessionStorage.setItem('dosen_next_reminder', Date.now() + randomDelay());
     };
 
     // Fungsi test — bisa dipanggil dari browser console kapan saja
     window._testBreakReminder = showBreakReminder;
+
+    // Kumpulan pesan istirahat — dipilih acak setiap muncul
+    const breakMessages = [
+        {
+            title: 'Di Mana Kopinya? ☕',
+            body: (d) => `<p class="text-gray-500 mb-2">Sudah <strong class="text-red-500">${d}</strong> — dan kami tidak melihat aktivitas ngopi sama sekali.</p><p class="text-gray-400">Tanpa kopi, siapa yang mengisi Bobot Asesmen?<br>Tanpa Bobot Asesmen, bagaimana akreditasi?<br>Jadi sebetulnya, ngopi itu <span class="font-medium text-gray-500">kewajiban akademik</span>.</p>`
+        },
+        {
+            title: 'SURAT EDARAN NO. 001/ISTIRAHAT/2026 📄',
+            body: (d) => `<p class="text-gray-500 mb-2">Diberitahukan bahwa Yth. Bapak/Ibu Dosen telah bekerja selama <strong class="text-red-500">${d}</strong> tanpa istirahat.</p><p class="text-gray-400">Sehubungan dengan hal tersebut, kami mengimbau untuk segera meninggalkan meja kerja.<br><br>Atas perhatiannya, kami ucapkan terima kasih.</p>`
+        },
+        {
+            title: 'Peringatan Sistem Terdeteksi 🖥️',
+            body: (d) => `<p class="text-gray-500 mb-2"><code class="bg-gray-100 px-1.5 py-0.5 rounded text-xs">UPTIME: ${d}</code> &nbsp; <code class="bg-red-50 text-red-500 px-1.5 py-0.5 rounded text-xs">STATUS: Overheating</code></p><p class="text-gray-400">Lanjut kerja tanpa istirahat berisiko <em>typo</em> pada nama Sub-CPMK.<br>Harap lakukan <em>coffee break</em> sebelum data kurikulum ikut error.</p>`
+        },
+        {
+            title: 'Jujur Saja... 😔',
+            body: (d) => `<p class="text-gray-500 mb-2">Kami sudah memantau Anda selama <strong class="text-red-500">${d}</strong>. Tidak ada tanda-tanda istirahat. Tidak ada kopi. Tidak ada peregangan.</p><p class="text-gray-400">Kami khawatir. Bukan soal akreditasinya —<br>tapi soal Anda.</p>`
+        },
+        {
+            title: 'Sebuah Pertanyaan Mendalam 🤔',
+            body: (d) => `<p class="text-gray-500 mb-2">Jika seorang dosen bekerja <strong class="text-red-500">${d}</strong> nonstop tapi tidak ada yang melihatnya —<br>apakah CPMK-nya tetap selaras?</p><p class="text-gray-400">Istirahat dulu. Jawab pertanyaan ini sambil ngopi.</p>`
+        },
+        {
+            title: 'Sistem Kurikulum 📱 ✓✓',
+            body: (d) => `<p class="text-gray-500 mb-2">Halo Pak/Bu, selamat ya sudah kerja <strong class="text-red-500">${d}</strong> 👏</p><p class="text-gray-400">Btw... kapan istirahatnya? 😅<br>Jangan sampai sakit ya, masih banyak kolom yang nunggu 🙏</p>`
+        },
+    ];
+
+    // Kicau Mania — GIF + Audio
+    window.playKicauMania = function () {
+        const player = document.getElementById('kicau-player');
+        const audio  = document.getElementById('kicau-audio');
+        if (!player || !audio) return;
+        document.body.appendChild(player);
+        player.style.display = 'block';
+        audio.load();
+        audio.play();
+        // Auto-hide saat audio selesai
+        audio.onended = function () { closeKicauPlayer(); };
+    };
+
+    window.closeKicauPlayer = function () {
+        const player = document.getElementById('kicau-player');
+        const audio  = document.getElementById('kicau-audio');
+        if (!player || !audio) return;
+        audio.pause();
+        audio.currentTime = 0;
+        player.style.display = 'none';
+    };
 
     function checkReminder() {
         const modal = document.getElementById('break-reminder-modal');
