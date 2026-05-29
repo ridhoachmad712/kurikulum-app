@@ -22,81 +22,80 @@
 </div>
 @endhasrole
 
-{{-- Legend --}}
-<div class="flex items-center gap-4 mb-4 text-xs">
-    <span class="font-medium text-gray-600">Level keterkaitan:</span>
-    <span class="px-2 py-0.5 rounded bg-red-100 text-red-700 font-medium">Tinggi</span>
-    <span class="px-2 py-0.5 rounded bg-yellow-100 text-yellow-700 font-medium">Sedang</span>
-    <span class="px-2 py-0.5 rounded bg-green-100 text-green-700 font-medium">Rendah</span>
-    <span class="text-gray-400">— = Tidak terkait</span>
-    <span id="save-indicator" class="ml-auto text-gray-400 hidden">Menyimpan...</span>
-    <span id="save-ok" class="ml-auto text-green-600 hidden">✓ Tersimpan</span>
+{{-- Legend & save status --}}
+<div class="flex items-center flex-wrap gap-2.5 mb-4">
+    <span class="text-xs font-medium text-gray-500">Level:</span>
+    <span class="px-2.5 py-0.5 rounded-full bg-red-50 text-red-600 text-[11px] font-bold ring-1 ring-inset ring-red-200">T · Tinggi</span>
+    <span class="px-2.5 py-0.5 rounded-full bg-yellow-50 text-yellow-600 text-[11px] font-bold ring-1 ring-inset ring-yellow-200">S · Sedang</span>
+    <span class="px-2.5 py-0.5 rounded-full bg-green-50 text-green-600 text-[11px] font-bold ring-1 ring-inset ring-green-200">R · Rendah</span>
+    <span class="text-xs text-gray-300 mx-1">|</span>
+    <span class="text-[11px] text-gray-400">Klik sel untuk mengubah level</span>
+    <div class="ml-auto flex items-center gap-1.5">
+        <span id="save-indicator" class="hidden text-[11px] text-gray-400 flex items-center gap-1">
+            <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+            </svg>
+            Menyimpan...
+        </span>
+        <span id="save-ok" class="hidden text-[11px] text-green-600 flex items-center gap-1">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+            Tersimpan
+        </span>
+    </div>
 </div>
 
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="overflow-auto max-h-[70vh]">
         <table class="text-xs border-collapse w-full">
-            {{-- Header CPL --}}
             <thead>
-                <tr class="bg-gray-800 text-white">
-                    <th class="sticky left-0 top-0 z-20 bg-gray-800 px-3 py-2 text-left w-8 font-normal">#</th>
-                    <th class="sticky left-8 top-0 z-20 bg-gray-800 px-3 py-2 text-left min-w-[220px] font-semibold">Mata Kuliah</th>
+                <tr class="bg-gray-900 text-white">
+                    <th class="sticky left-0 top-0 z-20 bg-gray-900 px-3 py-3 w-8 text-right font-normal text-gray-500">#</th>
+                    <th class="sticky left-8 top-0 z-20 bg-gray-900 px-4 py-3 text-left min-w-[260px] font-semibold text-gray-100">Mata Kuliah</th>
                     @foreach($cpls as $cpl)
-                    <th class="sticky top-0 z-10 bg-gray-800 px-2 py-2 text-center w-24">
-                        <span class="font-bold">{{ $cpl->kode }}</span>
+                    <th class="sticky top-0 z-10 bg-gray-900 px-2 py-3 text-center w-[108px]" title="{{ $cpl->deskripsi ?? $cpl->kode }}">
+                        <span class="text-[11px] font-bold tracking-wide text-gray-200">{{ $cpl->kode }}</span>
                     </th>
                     @endforeach
                 </tr>
             </thead>
             <tbody>
-                @php $prevSemester = null; @endphp
                 @foreach($mataKuliahs as $mk)
-                @php
-                    $canEdit = true;
-                @endphp
-                @if($mk->semester !== $prevSemester)
-                @php $prevSemester = $mk->semester; @endphp
-                <tr class="bg-gray-800">
-                    <td class="sticky left-0 z-10 bg-gray-800 px-3 py-1.5"></td>
-                    <td class="sticky left-8 z-10 bg-gray-800 px-3 py-1.5 border-r border-gray-700" colspan="1">
-                        <span class="text-xs font-bold text-gray-300 uppercase tracking-wider">
-                            Semester {{ $mk->semester }}
-                        </span>
+                <tr class="border-b border-gray-50 hover:bg-slate-50/70 transition-colors duration-100 group">
+                    <td class="sticky left-0 z-10 bg-white group-hover:bg-slate-50/70 px-3 py-3 text-[11px] text-gray-300 text-right transition-colors">{{ $loop->iteration }}</td>
+                    <td class="sticky left-8 z-10 bg-white group-hover:bg-slate-50/70 px-4 py-3 border-r border-gray-100 transition-colors">
+                        <div class="flex flex-col gap-1">
+                            <span class="font-semibold text-gray-800 text-[13px] leading-tight">{{ $mk->nama }}</span>
+                            <div class="flex items-center gap-1.5">
+                                <span class="font-mono text-[10px] text-gray-400">{{ $mk->kode_rps }}</span>
+                                <span class="text-gray-200">·</span>
+                                <span class="px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-400 text-[10px] font-medium">Smt {{ $mk->semester }}</span>
+                                <span class="px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-400 text-[10px] font-medium">{{ $mk->sks }} SKS</span>
+                            </div>
+                        </div>
                     </td>
                     @foreach($cpls as $cpl)
-                    <td class="bg-gray-800 border-r border-gray-700"></td>
-                    @endforeach
-                </tr>
-                @endif
-                <tr class="border-b border-gray-100 {{ $canEdit ? 'hover:bg-gray-50/30' : 'opacity-50' }} group">
-                    <td class="sticky left-0 z-10 bg-white group-hover:bg-gray-50/30 px-3 py-1.5 text-gray-400 text-right">{{ $loop->iteration }}</td>
-                    <td class="sticky left-8 z-10 bg-white group-hover:bg-gray-50/30 px-3 py-1.5 border-r border-gray-100">
-                        <span class="font-mono text-gray-700 mr-1">{{ $mk->kode_rps }}</span>
-                        <span class="text-gray-800">{{ $mk->nama }}</span>
-                        <span class="text-gray-400 ml-1">({{ $mk->sks }} SKS)</span>
-                        @if(!$canEdit)
-                        <span class="ml-1 text-[10px] text-gray-300 italic">— read only</span>
-                        @endif
-                    </td>
-                    @foreach($cpls as $cpl)
-                    @php $currentLevel = $matriksInput[$mk->id][$cpl->id] ?? ''; @endphp
-                    <td class="px-1 py-1 text-center border-r border-gray-50">
-                        <select
+                    @php $lv = $matriksInput[$mk->id][$cpl->id] ?? ''; @endphp
+                    <td class="px-1.5 py-2.5 text-center border-r border-gray-50">
+                        <button
+                            type="button"
                             data-mk="{{ $mk->id }}"
                             data-cpl="{{ $cpl->id }}"
-                            onchange="saveCell(this)"
-                            {{ $canEdit ? '' : 'disabled' }}
-                            class="cell-select w-full rounded px-1 py-0.5 text-xs border
-                                   {{ $canEdit ? 'cursor-pointer focus:outline-none focus:ring-1 focus:ring-gray-400' : 'cursor-not-allowed opacity-60' }}
-                                   {{ $currentLevel === 'Tinggi' ? 'bg-red-50 border-red-200 text-red-700' :
-                                      ($currentLevel === 'Sedang' ? 'bg-yellow-50 border-yellow-200 text-yellow-700' :
-                                      ($currentLevel === 'Rendah' ? 'bg-green-50 border-green-200 text-green-700' :
-                                      'bg-gray-50 border-gray-200 text-gray-400')) }}">
-                            <option value="" {{ $currentLevel === '' ? 'selected' : '' }}>—</option>
-                            <option value="Tinggi" {{ $currentLevel === 'Tinggi' ? 'selected' : '' }}>Tinggi</option>
-                            <option value="Sedang" {{ $currentLevel === 'Sedang' ? 'selected' : '' }}>Sedang</option>
-                            <option value="Rendah" {{ $currentLevel === 'Rendah' ? 'selected' : '' }}>Rendah</option>
-                        </select>
+                            data-level="{{ $lv }}"
+                            onclick="openDropdown(event, this)"
+                            title="{{ $cpl->kode }} — klik untuk mengubah level"
+                            class="cell-btn inline-flex items-center justify-center gap-1 w-full px-2 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-300
+                                   {{ $lv === 'Tinggi' ? 'bg-red-100 text-red-600 ring-1 ring-red-200 hover:bg-red-200' :
+                                     ($lv === 'Sedang' ? 'bg-yellow-100 text-yellow-600 ring-1 ring-yellow-200 hover:bg-yellow-200' :
+                                     ($lv === 'Rendah' ? 'bg-green-100 text-green-600 ring-1 ring-green-200 hover:bg-green-200' :
+                                     'text-gray-300 hover:bg-gray-100 hover:text-gray-400')) }}">
+                            <span class="level-text">{{ $lv ?: '—' }}</span>
+                            <svg class="w-2.5 h-2.5 shrink-0 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
                     </td>
                     @endforeach
                 </tr>
@@ -106,29 +105,79 @@
     </div>
 </div>
 
+{{-- Shared dropdown panel --}}
+<div id="cell-dropdown"
+     class="hidden fixed z-[200] bg-white rounded-xl shadow-xl border border-gray-100 py-1.5 w-36 overflow-hidden">
+    @foreach(['' => ['—', 'text-gray-400', 'hover:bg-gray-50', ''], 'Tinggi' => ['Tinggi', 'text-red-600', 'hover:bg-red-50', 'bg-red-400'], 'Sedang' => ['Sedang', 'text-yellow-600', 'hover:bg-yellow-50', 'bg-yellow-400'], 'Rendah' => ['Rendah', 'text-green-600', 'hover:bg-green-50', 'bg-green-400']] as $val => [$label, $textCls, $hoverCls, $dotCls])
+    <button type="button"
+            data-val="{{ $val }}"
+            onclick="selectLevel('{{ $val }}')"
+            class="dropdown-opt w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium {{ $textCls }} {{ $hoverCls }} transition-colors">
+        <span class="w-2 h-2 rounded-full shrink-0 {{ $dotCls ?: 'bg-gray-200' }}"></span>
+        <span class="flex-1 text-left">{{ $label }}</span>
+        <svg class="check-icon w-3 h-3 invisible shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+        </svg>
+    </button>
+    @endforeach
+</div>
+
 <script>
-const CSRF = '{{ csrf_token() }}';
+const CSRF     = '{{ csrf_token() }}';
 const SAVE_URL = '{{ route("kurikulum.api.matriks.save-cell") }}';
 
-const colorMap = {
-    'Tinggi': 'bg-red-50 border-red-200 text-red-700',
-    'Sedang': 'bg-yellow-50 border-yellow-200 text-yellow-700',
-    'Rendah': 'bg-green-50 border-green-200 text-green-700',
-    '':       'bg-gray-50 border-gray-200 text-gray-400',
+const btnColors = {
+    'Tinggi': ['bg-red-100',    'text-red-600',    'ring-1', 'ring-red-200',    'hover:bg-red-200'],
+    'Sedang': ['bg-yellow-100', 'text-yellow-600', 'ring-1', 'ring-yellow-200', 'hover:bg-yellow-200'],
+    'Rendah': ['bg-green-100',  'text-green-600',  'ring-1', 'ring-green-200',  'hover:bg-green-200'],
+    '':       ['text-gray-300', 'hover:bg-gray-100', 'hover:text-gray-400'],
 };
+const allColorClasses = Object.values(btnColors).flat();
 
+let activeBtn  = null;
 let saveTimer;
+const dropdown  = document.getElementById('cell-dropdown');
 const indicator = document.getElementById('save-indicator');
 const saveOk    = document.getElementById('save-ok');
 
-function saveCell(select) {
-    const mkId  = select.dataset.mk;
-    const cplId = select.dataset.cpl;
-    const level = select.value;
+function openDropdown(e, btn) {
+    e.stopPropagation();
+    if (activeBtn === btn) { closeDropdown(); return; }
 
-    // Update warna dropdown langsung
-    select.className = select.className.replace(/bg-\S+ border-\S+ text-\S+/g, '').trim();
-    select.className += ' ' + (colorMap[level] || colorMap['']);
+    activeBtn = btn;
+    const current = btn.dataset.level;
+
+    // Update checkmarks
+    dropdown.querySelectorAll('.dropdown-opt').forEach(opt => {
+        opt.querySelector('.check-icon').classList.toggle('invisible', opt.dataset.val !== current);
+    });
+
+    // Position: below the button, aligned left
+    const rect = btn.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    if (spaceBelow >= 140) {
+        dropdown.style.top  = (rect.bottom + 4) + 'px';
+    } else {
+        dropdown.style.top  = (rect.top - 4 - dropdown.offsetHeight) + 'px';
+    }
+    dropdown.style.left = rect.left + 'px';
+    dropdown.classList.remove('hidden');
+}
+
+function closeDropdown() {
+    dropdown.classList.add('hidden');
+    activeBtn = null;
+}
+
+function selectLevel(val) {
+    if (!activeBtn) return;
+    const btn = activeBtn;
+    closeDropdown();
+
+    btn.dataset.level = val;
+    btn.querySelector('.level-text').textContent = val || '—';
+    allColorClasses.forEach(c => btn.classList.remove(c));
+    btnColors[val].forEach(c => btn.classList.add(c));
 
     indicator.classList.remove('hidden');
     saveOk.classList.add('hidden');
@@ -143,17 +192,24 @@ function saveCell(select) {
                     'X-CSRF-TOKEN': CSRF,
                     'Accept': 'application/json',
                 },
-                body: JSON.stringify({ mata_kuliah_id: mkId, cpl_id: cplId, level: level || null }),
+                body: JSON.stringify({
+                    mata_kuliah_id: btn.dataset.mk,
+                    cpl_id:         btn.dataset.cpl,
+                    level:          val || null,
+                }),
             });
             if (res.ok) {
                 indicator.classList.add('hidden');
                 saveOk.classList.remove('hidden');
                 setTimeout(() => saveOk.classList.add('hidden'), 2000);
             }
-        } catch (e) {
-            console.error(e);
-        }
+        } catch (e) { console.error(e); }
     }, 400);
 }
+
+// Close on outside click
+document.addEventListener('click', e => {
+    if (!dropdown.contains(e.target) && !e.target.closest('.cell-btn')) closeDropdown();
+});
 </script>
 @endsection

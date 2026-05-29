@@ -7,20 +7,6 @@
 <x-dosen-stepper :step="4" />
 
 <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
-    @hasanyrole('admin|kaprodi')
-    <div class="flex gap-2 flex-wrap">
-        <a href="{{ route('kurikulum.asesmen.index') }}"
-           class="px-4 py-2 text-sm font-medium rounded-lg {{ !request('semester') ? 'btn-primary' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
-            Semua
-        </a>
-        @for($s=1;$s<=8;$s++)
-        <a href="{{ route('kurikulum.asesmen.index', ['semester'=>$s]) }}"
-           class="px-3 py-2 text-sm font-medium rounded-lg {{ request('semester')==$s ? 'btn-primary' : 'bg-white border text-gray-600 hover:bg-gray-50' }}">
-            Smt {{ $s }}
-        </a>
-        @endfor
-    </div>
-    @endhasanyrole
     <x-search-input placeholder="Cari kode atau nama MK..." />
 </div>
 {{-- Info scope dosen --}}

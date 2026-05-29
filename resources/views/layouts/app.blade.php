@@ -61,11 +61,9 @@
 
         {{-- Logo --}}
         <div class="flex items-center h-16 px-4 shrink-0">
-            <div class="logo-icon w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center shrink-0">
-                <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zm5.99 7.176A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
-                </svg>
-            </div>
+            <img src="{{ asset('images/logo.png') }}"
+                 class="logo-icon w-8 h-8 rounded-xl object-cover shrink-0"
+                 alt="Logo">
             <div x-show="!collapsed" x-transition:enter="transition-opacity duration-200 delay-75"
                  x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                  class="ml-3 overflow-hidden">
@@ -295,7 +293,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                     </svg>
                 </x-slot>
-                <span x-show="!collapsed" x-cloak>Deskripsi MK</span>
+                <span x-show="!collapsed" x-cloak>Deskripsi Mata Kuliah</span>
             </x-nav-link>
 
             {{-- SEKSI 2: REKAP --}}
@@ -365,7 +363,6 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
                 </button>
-                <h1 class="text-sm font-semibold text-gray-700 font-display">@yield('title','Dashboard')</h1>
             </div>
             <div class="flex items-center gap-2.5">
                 {{-- Name + role (desktop) --}}

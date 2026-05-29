@@ -16,23 +16,6 @@
     <x-search-input placeholder="Cari kode atau nama MK..." />
 </div>
 
-{{-- Filter semester (admin/kaprodi only) --}}
-@hasanyrole('admin|kaprodi')
-<div class="inline-flex items-center bg-gray-100 rounded-xl p-1 gap-0.5 mb-5 flex-wrap">
-    <a href="{{ route('kurikulum.cpmk.index') }}"
-       class="px-4 py-1.5 text-sm font-medium rounded-lg transition-colors
-              {{ !request('semester') ? 'bg-white text-gray-800 font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">
-        Semua
-    </a>
-    @for($s=1;$s<=8;$s++)
-    <a href="{{ route('kurikulum.cpmk.index', ['semester'=>$s]) }}"
-       class="px-3 py-1.5 text-sm font-medium rounded-lg transition-colors
-              {{ request('semester')==$s ? 'bg-white text-gray-800 font-semibold shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">
-        Smt {{ $s }}
-    </a>
-    @endfor
-</div>
-@endhasanyrole
 {{-- Info scope dosen --}}
 @hasrole('dosen')
 <div class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 mb-4 text-xs text-gray-600">

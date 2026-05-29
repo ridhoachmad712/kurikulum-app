@@ -35,25 +35,8 @@
         </span>
     </div>
 
-    {{-- Semester tabs --}}
-    <div x-data="{ tab: 'all' }" class="mb-6">
-        <div class="flex flex-wrap gap-2 mb-6">
-            <button @click="tab='all'"
-                    :class="tab==='all' ? 'bg-blue-700 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-indigo-300'"
-                    class="px-4 py-2 text-sm font-medium rounded-xl transition">
-                Semua
-            </button>
-            @foreach($mataKuliahsBySmt as $smt => $mks)
-            <button @click="tab='{{ $smt }}'"
-                    :class="tab==='{{ $smt }}' ? 'bg-blue-700 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-indigo-300'"
-                    class="px-4 py-2 text-sm font-medium rounded-xl transition">
-                Semester {{ $smt }}
-                <span class="ml-1 opacity-60 text-xs">({{ $mks->count() }})</span>
-            </button>
-            @endforeach
-        </div>
-
-        {{-- Matriks table --}}
+    {{-- Matriks table --}}
+    <div class="mb-6">
         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-auto">
             <table class="text-xs w-full border-collapse">
                 <thead class="bg-blue-900 text-white">
@@ -72,8 +55,7 @@
                     @foreach($mataKuliahsBySmt as $smt => $smtMks)
                     @foreach($smtMks as $i => $mk)
                     @php $rowTotal = $rowTotals[$mk->id] ?? 0; @endphp
-                    <tr class="border-b border-gray-50 hover:bg-blue-50/30 transition-colors"
-                        x-show="tab==='all' || tab==='{{ $smt }}'" x-cloak>
+                    <tr class="border-b border-gray-50 hover:bg-blue-50/30 transition-colors">
                         {{-- Semester label (rowspan-like: show only on first row of semester) --}}
                         <td class="sticky left-0 bg-white px-3 py-2.5 border-r border-gray-100 text-center font-semibold text-indigo-500">
                             @if($i === 0)
