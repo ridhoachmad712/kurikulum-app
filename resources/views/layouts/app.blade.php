@@ -558,6 +558,8 @@
     function showBreakReminder() {
         const modal = document.getElementById('break-reminder-modal');
         if (!modal) return;
+        // Portal: pindahkan ke <body> agar keluar dari semua stacking context
+        document.body.appendChild(modal);
         const elapsed = Date.now() - parseInt(sessionStorage.getItem('dosen_work_start') || Date.now());
         document.getElementById('break-duration').textContent = formatDuration(elapsed);
         modal.classList.remove('hidden');
