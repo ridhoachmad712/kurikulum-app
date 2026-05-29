@@ -514,22 +514,25 @@
         </div>
 
         {{-- Text --}}
-        <h3 class="text-lg font-bold text-gray-800 mb-2">Waktunya Istirahat! ☕</h3>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Di Mana Kopinya? ☕</h3>
         <p class="text-sm text-gray-500 leading-relaxed mb-1">
-            Anda sudah bekerja selama
-            <span id="break-duration" class="font-semibold text-orange-500"></span>.
+            Sudah <span id="break-duration" class="font-semibold text-orange-500"></span> — dan kami tidak melihat aktivitas ngopi sama sekali.
         </p>
         <p class="text-sm text-gray-400 leading-relaxed mb-7">
-            Regangkan badan, minum air, dan istirahat sejenak.<br>
-            Produktivitas Anda lebih penting dari kolom yang belum terisi. 🧘‍♂️
+            Tanpa kopi, siapa yang mengisi Bobot Asesmen?<br>
+            Tanpa Bobot Asesmen, bagaimana akreditasi?<br>
+            Jadi sebetulnya, ngopi itu <span class="font-medium text-gray-500">kewajiban akademik</span>.
         </p>
 
         {{-- Button --}}
         <button onclick="dismissBreakReminder()"
-                class="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors text-sm">
-            Baik, saya istirahat dulu!
+                class="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors text-sm flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            Logikanya masuk, saya ngopi dulu
         </button>
-        <p class="text-[11px] text-gray-300 mt-3">Pengingat berikutnya dalam 1 jam lagi</p>
+        <p class="text-[11px] text-gray-300 mt-3">Investigasi berikutnya dalam 1 jam.</p>
     </div>
 </div>
 
