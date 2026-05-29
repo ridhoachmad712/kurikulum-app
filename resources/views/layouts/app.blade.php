@@ -498,13 +498,10 @@
         </footer>
     </div>
 
-
-</div>
-
-{{-- ── BREAK REMINDER (dosen only) ─────────────────────────────── --}}
-@hasrole('dosen')
-<div id="break-reminder-modal"
-     class="fixed inset-0 z-[9999] hidden flex-col items-center justify-center bg-white px-6">
+    {{-- ── BREAK REMINDER (dosen only) ─────────────────────────────── --}}
+    @hasrole('dosen')
+    <div id="break-reminder-modal"
+         class="fixed inset-0 z-[9999] hidden flex-col items-center justify-center bg-white px-6">
 
     {{-- Icon --}}
     <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-6">
@@ -533,7 +530,10 @@
         ☕ Logikanya masuk, saya ngopi dulu
     </button>
 
-</div>
+    </div>
+    @endhasrole
+
+</div>{{-- /min-h-screen x-data --}}
 
 <script>
 (function () {
@@ -589,7 +589,6 @@
     }, 1500);
 })();
 </script>
-@endhasrole
 
 </body>
 </html>
