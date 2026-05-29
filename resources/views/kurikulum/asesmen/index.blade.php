@@ -6,9 +6,6 @@
 
 <x-dosen-stepper :step="4" />
 
-<div class="flex items-center justify-between mb-6 flex-wrap gap-3">
-    <x-search-input placeholder="Cari kode atau nama MK..." />
-</div>
 {{-- Info scope dosen --}}
 @hasrole('dosen')
 <div class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 mb-4 text-xs text-gray-600">
@@ -18,10 +15,6 @@
     <span>Menampilkan hanya mata kuliah yang ditugaskan kepada Anda. Hubungi Kaprodi jika ada MK yang tidak muncul.</span>
 </div>
 @endhasrole
-
-@if(request('search'))
-<p class="text-xs text-gray-500 mb-3">Hasil untuk <strong>"{{ request('search') }}"</strong> — {{ $mataKuliahs->count() }} ditemukan</p>
-@endif
 
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
     <table class="min-w-full divide-y divide-gray-100 text-sm">
@@ -86,4 +79,25 @@
     </table>
 </div>
 
+@endsection
+
+@section('help')
+<div class="space-y-4">
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Apa itu Bobot Asesmen?</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Bobot asesmen mendefinisikan bagaimana nilai mahasiswa didistribusikan ke setiap Sub-CPMK melalui metode penilaian (Tugas, Kuis, UTS, UAS, dll.).</p>
+    </div>
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Cara Menggunakan</h3>
+        <ol class="list-decimal list-inside space-y-1 text-xs text-gray-500">
+            <li>Pilih mata kuliah yang ingin diisi bobotnya.</li>
+            <li>Klik <strong>Input</strong> untuk membuka halaman detail.</li>
+            <li>Isi bobot per Sub-CPMK dan distribusikan ke metode asesmen.</li>
+        </ol>
+    </div>
+    <div class="bg-amber-50 rounded-xl px-4 py-3">
+        <p class="text-xs text-amber-700 font-medium">⚠ Prasyarat</p>
+        <p class="text-xs text-amber-600 mt-1 leading-relaxed">Halaman ini hanya bisa diisi jika Sub-CPMK sudah diisi terlebih dahulu. MK yang belum punya Sub-CPMK akan menampilkan peringatan <em>Belum ada CLO</em>.</p>
+    </div>
+</div>
 @endsection

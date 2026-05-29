@@ -6,12 +6,6 @@
 
 <x-dosen-stepper :step="3" />
 
-<div class="flex items-center justify-between mb-6 flex-wrap gap-3">
-    <div class="flex gap-2 items-center flex-wrap">
-        <x-search-input placeholder="Cari kode atau nama MK..." />
-    </div>
-</div>
-
 @hasrole('dosen')
 <div class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 mb-4 text-xs text-gray-600">
     <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -20,10 +14,6 @@
     <span>Menampilkan hanya mata kuliah yang ditugaskan kepada Anda.</span>
 </div>
 @endhasrole
-
-@if(request('search'))
-<p class="text-xs text-gray-500 mb-3">Hasil untuk <strong>"{{ request('search') }}"</strong></p>
-@endif
 
 @forelse($mataKuliahs as $mk)
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-4">
@@ -78,4 +68,25 @@
 @endif
 @endforelse
 
+@endsection
+
+@section('help')
+<div class="space-y-4">
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Apa itu Sub-CPMK?</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Sub-CPMK adalah rincian lebih spesifik dari CPMK — kemampuan kecil yang diukur dalam satu pertemuan atau topik. Sub-CPMK menjadi dasar perhitungan bobot asesmen.</p>
+    </div>
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Cara Menggunakan</h3>
+        <ol class="list-decimal list-inside space-y-1 text-xs text-gray-500">
+            <li>Pilih mata kuliah yang ingin dikelola Sub-CPMK-nya.</li>
+            <li>Klik <strong>Kelola →</strong> untuk membuka halaman detail.</li>
+            <li>Tambahkan Sub-CPMK di bawah setiap CPMK dan pilih CLO Taxonomy tertingginya.</li>
+        </ol>
+    </div>
+    <div class="bg-blue-50 rounded-xl px-4 py-3">
+        <p class="text-xs text-blue-700 font-medium">💡 Tips</p>
+        <p class="text-xs text-blue-600 mt-1 leading-relaxed">Sub-CPMK harus diisi sebelum dapat mengatur Bobot Asesmen di langkah berikutnya.</p>
+    </div>
+</div>
 @endsection

@@ -2,33 +2,7 @@
 @section('title','Pengukuran CPL')
 @section('content')
 
-{{-- Filter bar --}}
-<div class="flex items-center gap-2 mb-6 flex-wrap">
-    @hasanyrole('admin|kaprodi')
-    <form method="GET" class="flex items-center gap-2">
-        @if(request('search'))
-        <input type="hidden" name="search" value="{{ request('search') }}">
-        @endif
-        <select name="semester"
-                onchange="this.form.submit()"
-                class="form-input w-36 py-2 text-sm">
-            <option value="">Semua Semester</option>
-            @foreach(range(1,8) as $s)
-            <option value="{{ $s }}" {{ $semester == $s ? 'selected' : '' }}>Semester {{ $s }}</option>
-            @endforeach
-        </select>
-        @if($semester)
-        <a href="{{ route('kurikulum.pengukuran.cpl') }}" class="text-xs text-gray-400 hover:text-gray-600">Reset</a>
-        @endif
-    </form>
-    @endhasanyrole
-    <x-search-input placeholder="Cari kode atau nama MK..."/>
-    <p class="ml-auto text-xs text-gray-400">{{ $mataKuliahs->count() }} Mata Kuliah</p>
-</div>
-
-@if($search ?? null)
-<p class="text-xs text-gray-500 mb-3">Hasil untuk <strong>"{{ $search }}"</strong> — {{ $mataKuliahs->count() }} ditemukan</p>
-@endif
+<x-page-header title="Pengukuran CPL" subtitle="Rekap nilai capaian CPL program studi berdasarkan kontribusi seluruh mata kuliah"/>
 
 {{-- Info scope dosen --}}
 @hasrole('dosen')

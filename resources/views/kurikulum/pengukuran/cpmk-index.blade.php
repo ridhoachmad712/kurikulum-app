@@ -2,34 +2,7 @@
 @section('title','Pengukuran CPMK')
 @section('content')
 
-{{-- Filter bar --}}
-<div class="flex items-center gap-2 mb-6 flex-wrap">
-    @hasanyrole('admin|kaprodi')
-    <form method="GET" class="flex items-center gap-2">
-        {{-- Preserve search saat ganti semester --}}
-        @if(request('search'))
-        <input type="hidden" name="search" value="{{ request('search') }}">
-        @endif
-        <select name="semester"
-                onchange="this.form.submit()"
-                class="form-input w-36 py-2 text-sm">
-            <option value="">Semua Semester</option>
-            @foreach(range(1,8) as $s)
-            <option value="{{ $s }}" {{ $semester == $s ? 'selected' : '' }}>Semester {{ $s }}</option>
-            @endforeach
-        </select>
-        @if($semester)
-        <a href="{{ route('kurikulum.pengukuran.cpmk') }}" class="text-xs text-gray-400 hover:text-gray-600">Reset</a>
-        @endif
-    </form>
-    @endhasanyrole
-    <x-search-input placeholder="Cari kode atau nama MK..."/>
-    <p class="ml-auto text-xs text-gray-400">{{ $mataKuliahs->count() }} Mata Kuliah</p>
-</div>
-
-@if($search ?? null)
-<p class="text-xs text-gray-500 mb-3">Hasil untuk <strong>"{{ $search }}"</strong> — {{ $mataKuliahs->count() }} ditemukan</p>
-@endif
+<x-page-header title="Pengukuran CPMK" subtitle="Rekap nilai capaian CPMK per mata kuliah berdasarkan hasil asesmen mahasiswa"/>
 
 {{-- Info scope dosen --}}
 @hasrole('dosen')
