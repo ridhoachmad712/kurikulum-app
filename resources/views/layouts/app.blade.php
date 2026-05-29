@@ -421,6 +421,19 @@
                 @endif
             </div>
             <div class="flex items-center gap-2.5">
+                {{-- [DEV] Tombol test break reminder — hanya muncul saat APP_DEBUG=true --}}
+                @if(config('app.debug'))
+                @hasrole('dosen')
+                <button onclick="window._testBreakReminder()" title="Test: Break Reminder"
+                        class="hidden sm:flex items-center gap-1 px-2 py-1 rounded-lg bg-orange-50 border border-orange-200 text-orange-400 hover:bg-orange-100 text-[10px] font-medium transition-colors">
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Test Break
+                </button>
+                @endhasrole
+                @endif
+
                 {{-- Name + role (desktop) --}}
                 <div class="hidden sm:block text-right leading-tight">
                     <p class="text-xs font-medium text-gray-700">{{ auth()->user()?->name }}</p>
@@ -487,5 +500,94 @@
 
 
 </div>
+
+{{-- ── BREAK REMINDER (dosen only) ─────────────────────────────── --}}
+@hasrole('dosen')
+<div id="break-reminder-modal"
+     class="fixed inset-0 z-[300] hidden items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm text-center p-8 animate-in">
+        {{-- Icon --}}
+        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+        </div>
+
+        {{-- Text --}}
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Waktunya Istirahat! ☕</h3>
+        <p class="text-sm text-gray-500 leading-relaxed mb-1">
+            Anda sudah bekerja selama
+            <span id="break-duration" class="font-semibold text-orange-500"></span>.
+        </p>
+        <p class="text-sm text-gray-400 leading-relaxed mb-7">
+            Regangkan badan, minum air, dan istirahat sejenak.<br>
+            Produktivitas Anda lebih penting dari kolom yang belum terisi. 🧘‍♂️
+        </p>
+
+        {{-- Button --}}
+        <button onclick="dismissBreakReminder()"
+                class="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition-colors text-sm">
+            Baik, saya istirahat dulu!
+        </button>
+        <p class="text-[11px] text-gray-300 mt-3">Pengingat berikutnya dalam 1 jam lagi</p>
+    </div>
+</div>
+
+<script>
+(function () {
+    const HOUR_MS  = 60 * 60 * 1000;
+    const CHECK_MS = 30 * 1000;
+
+    // Init session timer — hanya set sekali per sesi browser (reset saat tab ditutup)
+    if (!sessionStorage.getItem('dosen_work_start')) {
+        sessionStorage.setItem('dosen_work_start', Date.now());
+        sessionStorage.setItem('dosen_next_reminder', Date.now() + HOUR_MS);
+    }
+
+    function formatDuration(ms) {
+        const h = Math.floor(ms / 3600000);
+        const m = Math.floor((ms % 3600000) / 60000);
+        if (h > 0) return h + ' jam ' + m + ' menit';
+        return m + ' menit';
+    }
+
+    function showBreakReminder() {
+        const modal = document.getElementById('break-reminder-modal');
+        if (!modal) return;
+        const elapsed = Date.now() - parseInt(sessionStorage.getItem('dosen_work_start') || Date.now());
+        document.getElementById('break-duration').textContent = formatDuration(elapsed);
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    window.dismissBreakReminder = function () {
+        const modal = document.getElementById('break-reminder-modal');
+        if (!modal) return;
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        sessionStorage.setItem('dosen_next_reminder', Date.now() + HOUR_MS);
+    };
+
+    // Fungsi test — bisa dipanggil dari browser console kapan saja
+    window._testBreakReminder = showBreakReminder;
+
+    function checkReminder() {
+        const modal = document.getElementById('break-reminder-modal');
+        if (!modal || modal.classList.contains('flex')) return; // sudah terbuka
+        const next = parseInt(sessionStorage.getItem('dosen_next_reminder') || 0);
+        if (Date.now() >= next) {
+            showBreakReminder();
+        }
+    }
+
+    // Mulai check setelah halaman settle, lalu setiap 30 detik
+    setTimeout(function () {
+        checkReminder();
+        setInterval(checkReminder, CHECK_MS);
+    }, 1500);
+})();
+</script>
+@endhasrole
+
 </body>
 </html>
