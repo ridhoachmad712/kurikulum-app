@@ -183,6 +183,8 @@
 
 @endsection
 
+@section('help_title', 'Informasi Tabel')
+
 @section('help')
 <div class="space-y-4">
     <div>
