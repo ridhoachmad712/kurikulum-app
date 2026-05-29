@@ -526,13 +526,12 @@
 
         {{-- Button --}}
         <button onclick="dismissBreakReminder()"
-                style="background-color:#f97316"
-                onmouseover="this.style.backgroundColor='#ea580c'"
-                onmouseout="this.style.backgroundColor='#f97316'"
+                style="background-color:#dc2626"
+                onmouseover="this.style.backgroundColor='#b91c1c'"
+                onmouseout="this.style.backgroundColor='#dc2626'"
                 class="w-full py-3 text-white font-semibold rounded-xl transition-colors text-sm">
             ☕ Logikanya masuk, saya ngopi dulu
         </button>
-        <p class="text-[11px] text-gray-300 mt-3">Investigasi berikutnya dalam 1 jam.</p>
     </div>
 </div>
 
