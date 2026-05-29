@@ -318,4 +318,14 @@
 
 @endif
 
+{{-- Version badge --}}
+<div class="mt-8 flex justify-center">
+    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-gray-400 text-[11px] font-medium">
+        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>
+        </svg>
+        Sistem Informasi Kurikulum versi 1.2.7
+    </span>
+</div>
+
 @endsection
