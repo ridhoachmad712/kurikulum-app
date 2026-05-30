@@ -38,16 +38,15 @@
             </a>
         </div>
 
-        {{-- Quick links --}}
-        <div class="flex flex-wrap gap-2 mt-8 pt-6 border-t border-white/20">
+        {{-- Quick links — loncat ke bagian Profil Prodi --}}
+        <div class="flex flex-wrap items-center gap-2 mt-8 pt-6 border-t border-white/20">
+            <span class="text-[11px] text-blue-200/70 uppercase tracking-wider mr-1">Profil Prodi:</span>
             @foreach([
-                ['route' => 'public.profil',      'label' => 'Visi'],
-                ['route' => 'public.profil',      'label' => 'Misi'],
-                ['route' => 'public.cpl',         'label' => 'CPL'],
-                ['route' => 'public.bahan-kajian','label' => 'Bahan Kajian'],
-                ['route' => 'public.mata-kuliah', 'label' => 'Mata Kuliah'],
+                ['url' => route('public.profil').'#visi',   'label' => 'Visi'],
+                ['url' => route('public.profil').'#misi',   'label' => 'Misi'],
+                ['url' => route('public.profil').'#tujuan', 'label' => 'Tujuan'],
             ] as $link)
-            <a href="{{ route($link['route']) }}"
+            <a href="{{ $link['url'] }}"
                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 border border-white/20 rounded-full text-xs font-medium text-blue-100 hover:bg-white/20 hover:text-white transition">
                 <svg class="w-3 h-3 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
@@ -73,7 +72,8 @@
                     <a href="{{ route('public.mata-kuliah') }}" class="text-xs text-blue-600 hover:text-blue-800 font-medium transition">Lihat semua →</a>
                 </div>
                 <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-                    <table class="w-full text-sm">
+                    <div class="overflow-x-auto">
+                    <table class="w-full text-sm min-w-[480px]">
                         <thead>
                             <tr class="bg-blue-900 text-white text-xs">
                                 <th class="px-5 py-2.5 text-left font-medium">Semester</th>
@@ -126,6 +126,7 @@
                             </tr>
                         </tbody>
                     </table>
+                    </div>{{-- /overflow-x-auto --}}
                 </div>
             </section>
 
@@ -136,7 +137,8 @@
                     <a href="{{ route('public.cpl') }}" class="text-xs text-blue-600 hover:text-blue-800 font-medium transition">Lihat detail →</a>
                 </div>
                 <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-                    <table class="w-full text-xs">
+                    <div class="overflow-x-auto">
+                    <table class="w-full text-xs min-w-[420px]">
                         <thead>
                             <tr class="bg-gray-50 border-b border-gray-200 text-gray-500 font-medium">
                                 <th class="px-4 py-2.5 text-left w-20">Kode</th>
@@ -158,6 +160,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    </div>{{-- /overflow-x-auto --}}
                 </div>
             </section>
 

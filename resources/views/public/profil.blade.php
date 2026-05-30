@@ -22,7 +22,7 @@
 
     {{-- ─── VISI ─────────────────────────────────────────────── --}}
     @if($prodi->visi)
-    <section>
+    <section id="visi" class="scroll-mt-24">
         <div class="flex items-center gap-2 mb-4">
             <span class="w-1 h-6 rounded-full bg-blue-700 inline-block"></span>
             <h2 class="text-base font-bold text-gray-900 uppercase tracking-wide">Visi</h2>
@@ -42,7 +42,7 @@
         {{-- Misi --}}
         @if($prodi->misi)
         @php $misiLines = array_values(array_filter(array_map('trim', explode("\n", $prodi->misi)))); @endphp
-        <section>
+        <section id="misi" class="scroll-mt-24">
             <div class="flex items-center gap-2 mb-4">
                 <span class="w-1 h-6 rounded-full bg-emerald-500 inline-block"></span>
                 <h2 class="text-base font-bold text-gray-900 uppercase tracking-wide">Misi</h2>
@@ -63,7 +63,7 @@
         {{-- Tujuan --}}
         @if($prodi->tujuan)
         @php $tujuanLines = array_values(array_filter(array_map('trim', explode("\n", $prodi->tujuan)))); @endphp
-        <section>
+        <section id="tujuan" class="scroll-mt-24">
             <div class="flex items-center gap-2 mb-4">
                 <span class="w-1 h-6 rounded-full bg-amber-500 inline-block"></span>
                 <h2 class="text-base font-bold text-gray-900 uppercase tracking-wide">Tujuan</h2>
