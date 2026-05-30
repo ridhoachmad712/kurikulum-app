@@ -25,7 +25,7 @@
         </div>
         <div class="flex items-center gap-3 shrink-0">
             @if($mk->sub_cpmks_count > 0)
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
                 {{ $mk->sub_cpmks_count }} Sub-CPMK
             </span>
             @else

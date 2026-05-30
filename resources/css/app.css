@@ -34,7 +34,7 @@
                hover:border-red-400 px-4 py-2 text-sm focus:ring-red-400;
     }
     .btn-sm {
-        @apply px-3 py-1.5 text-xs rounded-lg;
+        @apply px-3 py-1.5 text-xs rounded-lg min-h-[36px];
     }
     .btn-icon {
         @apply btn p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg;
