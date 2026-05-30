@@ -13,6 +13,10 @@
         [x-cloak]{display:none!important}
         .hero-gradient { background: linear-gradient(135deg, #0f2557 0%, #1e3a8a 50%, #1e40af 100%); }
         .hero-pattern  { background-image: radial-gradient(rgba(255,255,255,.08) 1px, transparent 1px), linear-gradient(135deg, #0f2557 0%, #1e3a8a 50%, #1e40af 100%); background-size: 20px 20px, auto; }
+        /* Reveal-on-scroll */
+        .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s cubic-bezier(.2,.7,.2,1), transform .6s cubic-bezier(.2,.7,.2,1); }
+        .reveal.is-visible { opacity: 1; transform: none; }
+        @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1 !important; transform: none !important; transition: none; } }
     </style>
 </head>
 <body class="bg-gray-50 antialiased text-gray-800">
@@ -161,6 +165,26 @@
     </div>
 </footer>
 
+<script>
+    // Reveal-on-scroll
+    (function () {
+        const els = document.querySelectorAll('.reveal');
+        if (!els.length) return;
+        if (!('IntersectionObserver' in window)) {
+            els.forEach(el => el.classList.add('is-visible'));
+            return;
+        }
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('is-visible');
+                    io.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.12 });
+        els.forEach(el => io.observe(el));
+    })();
+</script>
 
 </body>
 </html>
