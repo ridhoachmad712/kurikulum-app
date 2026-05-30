@@ -45,7 +45,7 @@
             </div>
 
             <div class="flex gap-3 mt-6">
-                <button type="submit" class="px-5 py-2 bg-gray-700 text-white text-sm font-medium rounded-lg hover:bg-gray-700">
+                <button type="submit" class="btn-primary">
                     {{ $item->exists ? 'Perbarui' : 'Simpan' }}
                 </button>
                 <a href="{{ route('master.bahan-kajian.index') }}"

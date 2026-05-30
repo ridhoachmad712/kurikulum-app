@@ -60,8 +60,7 @@
 {{-- Tombol buka modal --}}
 @if($cpls->isNotEmpty())
 <div class="flex justify-end">
-    <button onclick="openAddModal()"
-        class="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-800 text-white text-sm font-medium rounded-xl transition">
+    <button onclick="openAddModal()" class="btn-primary">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
         </svg>
@@ -221,9 +220,7 @@
 
 {{-- Tombol Simpan --}}
 <div class="mt-4 flex justify-end">
-    <button id="btn-simpan-bobot" onclick="simpanSemuaBobot()"
-        class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg
-               transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+    <button id="btn-simpan-bobot" onclick="simpanSemuaBobot()" class="btn-primary">
         Simpan Bobot
     </button>
 </div>
@@ -302,9 +299,7 @@
             <div class="flex gap-2 shrink-0">
                 <button onclick="closeAddModal()"
                     class="px-4 py-2 text-sm text-gray-500 hover:text-gray-800 font-medium transition">Batal</button>
-                <button id="btn-modal-add" onclick="submitAddCpmk()" disabled
-                    class="px-5 py-2 bg-gray-700 hover:bg-gray-800 text-white text-sm font-semibold rounded-lg transition
-                           disabled:opacity-40 disabled:cursor-not-allowed">
+                <button id="btn-modal-add" onclick="submitAddCpmk()" disabled class="btn-primary">
                     Simpan CPMK
                 </button>
             </div>

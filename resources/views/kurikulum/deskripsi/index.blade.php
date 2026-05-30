@@ -78,3 +78,24 @@
 </div>
 
 @endsection
+
+@section('help')
+<div class="space-y-4">
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Deskripsi Mata Kuliah</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Deskripsi singkat menjelaskan isi, tujuan, dan ruang lingkup mata kuliah. Informasi ini ditampilkan di halaman publik kurikulum program studi.</p>
+    </div>
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Cara Mengisi</h3>
+        <ol class="list-decimal list-inside space-y-1 text-xs text-gray-500">
+            <li>Klik tombol <strong>Isi</strong> atau <strong>Edit</strong> pada baris mata kuliah.</li>
+            <li>Tulis deskripsi singkat (2–4 kalimat) yang menjelaskan MK tersebut.</li>
+            <li>Klik <strong>Simpan</strong> untuk menyimpan.</li>
+        </ol>
+    </div>
+    <div class="bg-blue-50 rounded-xl px-4 py-3">
+        <p class="text-xs text-blue-700 font-medium">💡 Tips</p>
+        <p class="text-xs text-blue-600 mt-1 leading-relaxed">Deskripsi yang baik mencakup: topik utama, metode pembelajaran, dan relevansi MK terhadap profil lulusan.</p>
+    </div>
+</div>
+@endsection

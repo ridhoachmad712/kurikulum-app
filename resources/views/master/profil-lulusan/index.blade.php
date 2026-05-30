@@ -11,7 +11,7 @@
     </div>
     @hasanyrole('admin|kaprodi')
     <a href="{{ route('master.profil-lulusan.create') }}"
-       class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-700 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition">
+       class="btn-primary">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
         </svg>

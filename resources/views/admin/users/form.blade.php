@@ -53,8 +53,7 @@
             </div>
 
             <div class="mt-6 flex gap-3">
-                <button type="submit"
-                        class="px-5 py-2 bg-gray-700 text-white text-sm font-medium rounded-lg hover:bg-gray-700">
+                <button type="submit" class="btn-primary">
                     {{ $user ? 'Simpan Perubahan' : 'Buat Akun' }}
                 </button>
                 <a href="{{ route('admin.users.index') }}"

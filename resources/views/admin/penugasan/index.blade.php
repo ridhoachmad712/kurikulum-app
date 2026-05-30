@@ -70,8 +70,7 @@
                             <option value="{{ $d->id }}">{{ $d->name }}{{ $d->nip ? ' ('.$d->nip.')' : '' }}</option>
                             @endforeach
                         </select>
-                        <button onclick="addDosen({{ $mk->id }})"
-                            class="px-2.5 py-1 bg-gray-700 text-white text-xs rounded-lg hover:bg-gray-700">
+                        <button onclick="addDosen({{ $mk->id }})" class="btn-primary btn-sm">
                             Tugaskan
                         </button>
                     </div>

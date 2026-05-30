@@ -83,3 +83,25 @@
 </div>
 
 @endsection
+
+@section('help')
+<div class="space-y-4">
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Menulis Deskripsi yang Baik</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Deskripsi mata kuliah sebaiknya mencakup 3 hal utama:</p>
+        <ul class="list-disc list-inside space-y-1 text-xs text-gray-500 mt-2">
+            <li><strong>Topik</strong> — apa yang dipelajari dalam MK ini</li>
+            <li><strong>Metode</strong> — bagaimana MK ini diajarkan</li>
+            <li><strong>Relevansi</strong> — kaitannya dengan profil lulusan</li>
+        </ul>
+    </div>
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Contoh</h3>
+        <p class="text-xs text-gray-400 italic leading-relaxed">"Mata kuliah ini membahas konsep dasar manajemen keuangan perusahaan, meliputi analisis laporan keuangan, penganggaran modal, dan manajemen risiko. Menggunakan pendekatan studi kasus nyata untuk mempersiapkan mahasiswa dalam pengambilan keputusan keuangan di dunia kerja."</p>
+    </div>
+    <div class="bg-blue-50 rounded-xl px-4 py-3">
+        <p class="text-xs text-blue-700 font-medium">💡 Tips</p>
+        <p class="text-xs text-blue-600 mt-1 leading-relaxed">Panjang ideal 2–4 kalimat. Hindari terlalu teknis — deskripsi ini juga dibaca oleh calon mahasiswa di halaman publik.</p>
+    </div>
+</div>
+@endsection

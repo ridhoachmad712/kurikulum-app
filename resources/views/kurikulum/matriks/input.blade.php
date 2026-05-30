@@ -2,6 +2,10 @@
 @section('title', auth()->user()?->hasRole('dosen') ? 'Level CPL Mata Kuliah' : 'Matriks Keterkaitan MK & CPL')
 @section('content')
 
+<x-page-header
+    :title="auth()->user()?->hasRole('dosen') ? 'Level CPL Mata Kuliah' : 'Input Level Keterkaitan'"
+    :subtitle="auth()->user()?->hasRole('dosen') ? 'Isi tingkat keterkaitan setiap mata kuliah Anda terhadap CPL (Tinggi / Sedang / Rendah)' : 'Tentukan level keterkaitan setiap MK terhadap CPL'"/>
+
 @hasanyrole('admin|kaprodi')
 @include('kurikulum.matriks._tabs')
 @endhasanyrole
@@ -71,7 +75,7 @@
                             <div class="flex items-center gap-1.5">
                                 <span class="font-mono text-[10px] text-gray-400">{{ $mk->kode_rps }}</span>
                                 <span class="text-gray-200">·</span>
-                                <span class="px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-400 text-[10px] font-medium">Smt {{ $mk->semester }}</span>
+                                <span class="px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-400 text-[10px] font-medium">Semester {{ $mk->semester }}</span>
                                 <span class="px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-400 text-[10px] font-medium">{{ $mk->sks }} SKS</span>
                             </div>
                         </div>
@@ -212,4 +216,46 @@ document.addEventListener('click', e => {
     if (!dropdown.contains(e.target) && !e.target.closest('.cell-btn')) closeDropdown();
 });
 </script>
+@endsection
+
+@section('help')
+<div class="space-y-4">
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Apa itu Level Keterkaitan?</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Level keterkaitan menunjukkan seberapa besar sebuah mata kuliah berkontribusi terhadap pencapaian suatu CPL.</p>
+    </div>
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-2">Pilihan Level</h3>
+        <div class="space-y-2">
+            <div class="flex items-start gap-2.5">
+                <span class="mt-0.5 px-2 py-0.5 rounded-full bg-red-100 text-red-600 text-[11px] font-bold shrink-0">Tinggi</span>
+                <p class="text-xs text-gray-500">MK ini secara dominan mendukung CPL tersebut. Biasanya MK inti atau prasyarat langsung.</p>
+            </div>
+            <div class="flex items-start gap-2.5">
+                <span class="mt-0.5 px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-600 text-[11px] font-bold shrink-0">Sedang</span>
+                <p class="text-xs text-gray-500">MK ini mendukung CPL secara parsial, sebagai bagian dari topik yang lebih luas.</p>
+            </div>
+            <div class="flex items-start gap-2.5">
+                <span class="mt-0.5 px-2 py-0.5 rounded-full bg-green-100 text-green-600 text-[11px] font-bold shrink-0">Rendah</span>
+                <p class="text-xs text-gray-500">MK ini menyinggung CPL secara ringan, bukan fokus utama.</p>
+            </div>
+            <div class="flex items-start gap-2.5">
+                <span class="mt-0.5 px-2 py-0.5 rounded-full bg-gray-100 text-gray-400 text-[11px] font-bold shrink-0">—</span>
+                <p class="text-xs text-gray-500">Tidak ada keterkaitan antara MK dan CPL ini.</p>
+            </div>
+        </div>
+    </div>
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Cara Mengisi</h3>
+        <ol class="list-decimal list-inside space-y-1 text-xs text-gray-500">
+            <li>Klik tombol pada baris MK dan kolom CPL yang ingin diisi.</li>
+            <li>Pilih level dari dropdown yang muncul.</li>
+            <li>Data tersimpan otomatis, tidak perlu klik Simpan.</li>
+        </ol>
+    </div>
+    <div class="bg-blue-50 rounded-xl px-4 py-3">
+        <p class="text-xs text-blue-700 font-medium">💡 Tips</p>
+        <p class="text-xs text-blue-600 mt-1 leading-relaxed">Isian di halaman ini otomatis mengisi <strong>Tabel 1–5</strong> pada Tabel Kurikulum. Pastikan semua MK sudah terisi sebelum batas waktu yang ditentukan.</p>
+    </div>
+</div>
 @endsection

@@ -94,8 +94,7 @@
 
             {{-- Actions --}}
             <div class="flex items-center gap-3">
-                <button type="submit"
-                        class="px-5 py-2 bg-gray-700 hover:bg-gray-700 text-white text-sm font-medium rounded-xl transition-colors shadow-sm">
+                <button type="submit" class="btn-primary">
                     {{ isset($rps->id) ? 'Simpan Perubahan' : 'Buat RPS' }}
                 </button>
                 <a href="{{ route('kurikulum.rps.index') }}"

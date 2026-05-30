@@ -95,7 +95,7 @@
 
             {{-- Submit --}}
             <button type="submit"
-                    class="w-full bg-gray-700 hover:bg-gray-700 text-white text-sm font-semibold
+                    class="w-full bg-gray-700 hover:bg-gray-800 text-white text-sm font-semibold
                            py-2.5 rounded-lg transition focus:outline-none focus:ring-2
                            focus:ring-gray-500 focus:ring-offset-2">
                 Masuk

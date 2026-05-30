@@ -25,7 +25,7 @@
                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
             </div>
             <div class="flex gap-3 mt-5">
-                <button type="submit" class="px-5 py-2 bg-gray-700 text-white text-sm font-medium rounded-lg hover:bg-gray-700">Simpan</button>
+                <button type="submit" class="btn-primary">Simpan</button>
                 <a href="{{ route('master.clo-taxonomi.index') }}" class="px-5 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200">Batal</a>
             </div>
         </form>
