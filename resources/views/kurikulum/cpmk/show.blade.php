@@ -541,8 +541,19 @@ function refreshColTotals() {
     });
 }
 
+// ── Unsaved changes warning ───────────────────────────────────────
+let hasUnsavedChanges = false;
+
+window.addEventListener('beforeunload', function (e) {
+    if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = 'Ada perubahan bobot yang belum disimpan. Yakin ingin meninggalkan halaman?';
+    }
+});
+
 // ── Input bobot (live update totals, tanpa auto-save) ────────────
 function onBobotInput(input) {
+    hasUnsavedChanges = true;
     const cpmkId = input.dataset.cpmk;
     const bobot  = parseFloat(input.value) || 0;
 
@@ -614,13 +625,20 @@ async function simpanSemuaBobot() {
     });
 
     try {
-        await Promise.all(promises);
-        const toast = document.getElementById('cpmk-toast');
-        toast.textContent = '✓ Bobot berhasil disimpan';
-        toast.classList.remove('hidden');
-        setTimeout(() => toast.classList.add('hidden'), 3000);
+        const results = await Promise.all(promises);
+        const failed  = results.filter(r => !r.ok);
+        if (failed.length > 0) {
+            const err = await failed[0].json().catch(() => ({}));
+            alert('Gagal menyimpan: ' + (err.message || 'Error ' + failed[0].status + ' — coba refresh dan simpan ulang.'));
+        } else {
+            hasUnsavedChanges = false;
+            const toast = document.getElementById('cpmk-toast');
+            toast.textContent = '✓ Bobot berhasil disimpan';
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
     } catch {
-        alert('Gagal menyimpan. Silakan coba lagi.');
+        alert('Tidak dapat terhubung ke server. Periksa koneksi internet lalu coba lagi.');
     }
 
     btn.disabled    = false;

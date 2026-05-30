@@ -189,10 +189,11 @@
                         <input type="number" min="0" max="100" step="1"
                             id="bobot-{{ $sc->id }}"
                             value="{{ $sc->pivot->bobot !== null ? round((float)$sc->pivot->bobot) : '' }}"
-                            placeholder="0"
+                            placeholder="auto"
                             oninput="debounceBobot({{ $sc->id }}, {{ $cpmk->id }})"
                             class="w-16 text-center border border-indigo-200 rounded-lg px-1.5 py-1 text-xs
                                    focus:outline-none focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 bg-white">
+                        <p id="bobot-hint-{{ $sc->id }}" class="text-[9px] text-indigo-300 mt-0.5 hidden">0 = auto</p>
                     </td>
 
                     @foreach(['tugas','quis','kasus_proyek','uts','uas'] as $field)
@@ -250,32 +251,41 @@ const bobotTimers = {};
 // ── Auto-save Bobot Sub-CPMK ──────────────────────────────────────
 function debounceBobot(scId, cpmkId) {
     clearTimeout(bobotTimers[scId]);
+    // Tampilkan hint jika user ketik 0
+    const inp  = document.getElementById('bobot-' + scId);
+    const hint = document.getElementById('bobot-hint-' + scId);
+    if (hint) hint.classList.toggle('hidden', inp?.value !== '0');
     showStatus('Menyimpan bobot...');
     bobotTimers[scId] = setTimeout(() => saveBobotSc(scId, cpmkId), 500);
 }
 
 async function saveBobotSc(scId, cpmkId) {
-    const bobot = parseFloat(document.getElementById('bobot-' + scId)?.value || 0) || 0;
+    const rawVal = document.getElementById('bobot-' + scId)?.value;
+    const bobot  = rawVal === '' ? 0 : (parseFloat(rawVal) || 0);
     try {
         const res  = await fetch(`/kurikulum/api/sub-cpmk/${scId}/bobot`, {
             method:  'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
             body:    JSON.stringify({ cpmk_id: cpmkId, bobot }),
         });
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            showStatus('⚠ ' + (err.message || 'Gagal menyimpan (error ' + res.status + ')'));
+            setTimeout(() => hideStatus(), 4000);
+            return;
+        }
         const json = await res.json();
         if (json.ok) {
-            // Update target di baris asesmen
             const row = document.getElementById('row-' + scId);
             if (row) row.dataset.target = bobot;
             updateTotal(scId, parseFloat(document.getElementById('total-' + scId)?.textContent) || 0);
-
-            // Update badge sisa di header CPMK
             updateSisaBadge(cpmkId, json.total_cpmk, json.total_sub_bobot);
             showStatus('✓ Tersimpan');
             setTimeout(() => hideStatus(), 2000);
         }
     } catch {
-        showStatus('⚠ Gagal menyimpan');
+        showStatus('⚠ Tidak dapat terhubung ke server — coba refresh halaman');
+        setTimeout(() => hideStatus(), 4000);
     }
 }
 
@@ -317,6 +327,12 @@ async function saveRow(id) {
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
             body:    JSON.stringify(body),
         });
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            showStatus('⚠ ' + (err.message || 'Gagal menyimpan (error ' + res.status + ')'));
+            setTimeout(() => hideStatus(), 4000);
+            return;
+        }
         const json = await res.json();
         if (json.ok) {
             updateTotal(id, json.total);
@@ -324,7 +340,8 @@ async function saveRow(id) {
             setTimeout(() => hideStatus(), 2000);
         }
     } catch {
-        showStatus('⚠ Gagal menyimpan');
+        showStatus('⚠ Tidak dapat terhubung ke server — coba refresh halaman');
+        setTimeout(() => hideStatus(), 4000);
     }
 }
 
@@ -368,4 +385,25 @@ function hideStatus() {
 </div>
 @endhasrole
 
+@endsection
+
+@section('help')
+<div class="space-y-4">
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Kolom Bobot Sub-CPMK</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Isi persentase porsi bobot Sub-CPMK ini dari total bobot CPMK induknya. Jika dikosongkan, bobot dibagi rata otomatis ke semua Sub-CPMK dalam satu CPMK.</p>
+    </div>
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Kolom Metode Asesmen</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Distribusikan bobot Sub-CPMK ke metode penilaian (Tugas, Kuis, UTS, UAS, dll.). Jumlah total metode harus sama dengan nilai di kolom Bobot Sub-CPMK.</p>
+    </div>
+    <div>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Indikator Selaras</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Kolom <strong>Total / Target</strong> menampilkan jumlah bobot yang telah diisi. Baris berwarna hijau berarti sudah selaras; kuning berarti belum pas.</p>
+    </div>
+    <div class="bg-blue-50 rounded-xl px-4 py-3">
+        <p class="text-xs text-blue-700 font-medium">💡 Tips</p>
+        <p class="text-xs text-blue-600 mt-1 leading-relaxed">Semua perubahan tersimpan otomatis — tidak perlu klik tombol Simpan.</p>
+    </div>
+</div>
 @endsection
