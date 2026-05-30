@@ -3,6 +3,8 @@
 @section('content')
 
 <div class="max-w-3xl">
+    <x-page-header title="{{ $item->exists ? 'Edit Program Studi' : 'Tambah Program Studi' }}"
+                   back="{{ route('master.program-studi.index') }}" backLabel="Program Studi"/>
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <form method="POST" action="{{ $item->exists ? route('master.program-studi.update', $item) : route('master.program-studi.store') }}">
             @csrf

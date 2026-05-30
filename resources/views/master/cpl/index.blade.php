@@ -2,6 +2,8 @@
 @section('title','CPL (Capaian Pembelajaran Lulusan)')
 @section('content')
 
+<x-page-header title="CPL" subtitle="Capaian Pembelajaran Lulusan program studi"/>
+
 <div class="flex justify-between items-center mb-6 gap-3 flex-wrap">
     <div class="flex items-center gap-2 flex-wrap">
         <form method="GET" class="flex items-center gap-2">

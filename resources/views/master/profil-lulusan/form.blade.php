@@ -3,6 +3,8 @@
 @section('content')
 
 <div class="max-w-2xl">
+    <x-page-header title="{{ $item->exists ? 'Edit Profil Lulusan' : 'Tambah Profil Lulusan' }}"
+                   back="{{ route('master.profil-lulusan.index') }}" backLabel="Profil Lulusan"/>
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <form method="POST" action="{{ $item->exists ? route('master.profil-lulusan.update', $item) : route('master.profil-lulusan.store') }}">
             @csrf

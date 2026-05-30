@@ -2,6 +2,8 @@
 @section('title','Edit CLO Taxonomy')
 @section('content')
 <div class="max-w-lg">
+    <x-page-header title="Edit CLO Taxonomy"
+                   back="{{ route('master.clo-taxonomi.index') }}" backLabel="CLO Taxonomy"/>
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <div class="mb-4 grid grid-cols-3 gap-4 text-sm">
             <div class="bg-gray-50 rounded-lg p-3 text-center">

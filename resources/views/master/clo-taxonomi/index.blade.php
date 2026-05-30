@@ -2,6 +2,8 @@
 @section('title','CLO Taxonomy (Taksonomi Bloom)')
 @section('content')
 
+<x-page-header title="CLO Taxonomy" subtitle="Taksonomi Bloom sebagai dasar pengukuran capaian pembelajaran"/>
+
 @if($items->isEmpty())
 <x-empty-state icon="book" title="Belum ada data CLO Taxonomy"
     subtitle="Tambahkan entri taksonomi Bloom sebagai dasar pengukuran capaian pembelajaran."/>

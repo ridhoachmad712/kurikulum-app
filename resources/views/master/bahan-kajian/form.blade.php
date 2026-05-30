@@ -3,9 +3,8 @@
 @section('content')
 
 <div class="max-w-2xl">
-    <div class="mb-4">
-        <a href="{{ route('master.bahan-kajian.index') }}" class="text-sm text-gray-700 hover:underline">← Kembali ke daftar</a>
-    </div>
+    <x-page-header title="{{ $item->exists ? 'Edit Bahan Kajian' : 'Tambah Bahan Kajian' }}"
+                   back="{{ route('master.bahan-kajian.index') }}" backLabel="Bahan Kajian"/>
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <form method="POST" action="{{ $item->exists ? route('master.bahan-kajian.update', $item) : route('master.bahan-kajian.store') }}">

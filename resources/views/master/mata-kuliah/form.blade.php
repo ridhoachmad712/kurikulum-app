@@ -2,6 +2,8 @@
 @section('title', $item->exists ? 'Edit Mata Kuliah' : 'Tambah Mata Kuliah')
 @section('content')
 <div class="max-w-2xl">
+    <x-page-header title="{{ $item->exists ? 'Edit Mata Kuliah' : 'Tambah Mata Kuliah' }}"
+                   back="{{ route('master.mata-kuliah.index') }}" backLabel="Mata Kuliah"/>
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <form method="POST" action="{{ $item->exists ? route('master.mata-kuliah.update', $item) : route('master.mata-kuliah.store') }}">
             @csrf

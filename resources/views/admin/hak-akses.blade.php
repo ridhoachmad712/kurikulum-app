@@ -2,9 +2,7 @@
 @section('title','Hak Akses Role')
 @section('content')
 
-<div class="mb-6">
-    <p class="text-sm text-gray-500">Referensi hak akses setiap role pengguna dalam sistem kurikulum.</p>
-</div>
+<x-page-header title="Hak Akses Role" subtitle="Referensi hak akses setiap role pengguna dalam sistem kurikulum"/>
 
 @php
 $check  = '<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100"><svg class="w-3.5 h-3.5 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg></span>';

@@ -3,7 +3,8 @@
 @section('content')
 
 <div class="max-w-lg">
-    <a href="{{ route('admin.users.index') }}" class="text-sm text-gray-700 hover:underline mb-5 inline-block">&larr; Kembali</a>
+    <x-page-header title="{{ $user ? 'Edit Akun: '.$user->name : 'Tambah Akun Baru' }}"
+                   back="{{ route('admin.users.index') }}" backLabel="Kelola Akun"/>
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <form method="POST"

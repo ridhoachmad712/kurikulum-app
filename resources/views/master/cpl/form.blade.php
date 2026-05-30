@@ -2,6 +2,8 @@
 @section('title', $item->exists ? 'Edit CPL' : 'Tambah CPL')
 @section('content')
 <div class="max-w-2xl">
+    <x-page-header title="{{ $item->exists ? 'Edit CPL' : 'Tambah CPL' }}"
+                   back="{{ route('master.cpl.index') }}" backLabel="CPL"/>
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <form method="POST" action="{{ $item->exists ? route('master.cpl.update', $item) : route('master.cpl.store') }}">
             @csrf

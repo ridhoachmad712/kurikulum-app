@@ -2,13 +2,13 @@
 @section('title','Program Studi')
 @section('content')
 
-<div class="flex justify-between items-center mb-6">
-    <div></div>
-    <a href="{{ route('master.program-studi.create') }}"
-       class="btn-primary">
-        + Tambah Program Studi
-    </a>
-</div>
+<x-page-header title="Program Studi" subtitle="Kelola data program studi">
+    <x-slot name="actions">
+        <a href="{{ route('master.program-studi.create') }}" class="btn-primary">
+            + Tambah Program Studi
+        </a>
+    </x-slot>
+</x-page-header>
 
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
     <table class="min-w-full divide-y divide-gray-200 text-sm">

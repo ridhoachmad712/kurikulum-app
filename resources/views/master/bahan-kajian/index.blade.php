@@ -2,12 +2,13 @@
 @section('title','Bahan Kajian')
 @section('content')
 
+<x-page-header title="Bahan Kajian" subtitle="Kelola bahan kajian dan keterkaitannya dengan CPL & MK"/>
+
 <div class="flex justify-between items-center mb-6 gap-3 flex-wrap">
     <p class="text-xs text-gray-500">{{ $items->count() }} Bahan Kajian terdaftar</p>
     @hasanyrole('admin|kaprodi')
     <div class="flex items-center gap-2">
-        <a href="{{ route('master.bahan-kajian.matriks') }}"
-           class="px-4 py-2 bg-gray-50 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-100 border border-gray-200 transition">
+        <a href="{{ route('master.bahan-kajian.matriks') }}" class="btn-secondary">
             Edit Matriks CPL &amp; MK
         </a>
         <a href="{{ route('master.bahan-kajian.create') }}" class="btn-primary">+ Tambah BK</a>

@@ -2,23 +2,18 @@
 @section('title', 'Profil Lulusan')
 @section('content')
 
-<div class="flex items-center justify-between mb-5">
-    <div>
-        <h2 class="text-base font-semibold text-gray-800">Profil Lulusan</h2>
-        @if($prodi)
-        <p class="text-xs text-gray-400 mt-0.5">{{ $prodi->nama }} &mdash; {{ $prodi->universitas }}</p>
-        @endif
-    </div>
+<x-page-header title="Profil Lulusan" subtitle="{{ $prodi ? $prodi->nama.' — '.$prodi->universitas : 'Kelola profil lulusan program studi' }}">
     @hasanyrole('admin|kaprodi')
-    <a href="{{ route('master.profil-lulusan.create') }}"
-       class="btn-primary">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-        </svg>
-        Tambah Profil Lulusan
-    </a>
+    <x-slot name="actions">
+        <a href="{{ route('master.profil-lulusan.create') }}" class="btn-primary">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+            </svg>
+            Tambah Profil Lulusan
+        </a>
+    </x-slot>
     @endhasanyrole
-</div>
+</x-page-header>
 
 @if($items->isEmpty())
 <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-10 text-center text-gray-400 text-sm">
