@@ -571,7 +571,8 @@
 
     {{-- ── MARS MBG floating player (dosen only) ────────────────────── --}}
     <div id="mbg-player"
-         style="position:fixed; inset:0; z-index:10000; display:none; pointer-events:none;">
+         style="position:fixed; inset:0; z-index:10000; display:none; pointer-events:none;
+                align-items:center; justify-content:center;">
         <button onclick="closeMBG()"
                 style="position:absolute; top:16px; right:16px;
                        width:36px; height:36px; border-radius:50%;
@@ -585,7 +586,7 @@
                src="{{ asset('videos/mbg.mp4') }}"
                preload="none"
                playsinline
-               style="width:100%; height:100%; object-fit:cover; display:block;">
+               style="max-width:100%; max-height:100%; display:block;">
         </video>
     </div>
     @endhasrole
@@ -695,7 +696,7 @@
         const video  = document.getElementById('mbg-video');
         if (!player || !video) return;
         document.body.appendChild(player);
-        player.style.display = 'block';
+        player.style.display = 'flex';
         video.load();
         video.play();
         video.onended = function () { closeMBG(); };
