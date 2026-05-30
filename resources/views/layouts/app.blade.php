@@ -524,14 +524,23 @@
             <h3 id="break-title" class="text-lg font-bold text-gray-800 mb-3"></h3>
             <div id="break-body" class="text-sm leading-relaxed mb-7"></div>
 
-            {{-- Button --}}
-            <button onclick="playKicauMania()"
-                    style="background-color:#16a34a"
-                    onmouseover="this.style.backgroundColor='#15803d'"
-                    onmouseout="this.style.backgroundColor='#16a34a'"
-                    class="w-full py-3 text-white font-semibold rounded-xl transition-colors text-sm">
-                Tekan Untuk Kicau Mania
-            </button>
+            {{-- Buttons --}}
+            <div class="flex gap-3">
+                <button onclick="playKicauMania()"
+                        style="background-color:#16a34a"
+                        onmouseover="this.style.backgroundColor='#15803d'"
+                        onmouseout="this.style.backgroundColor='#16a34a'"
+                        class="flex-1 py-3 text-white font-semibold rounded-xl transition-colors text-sm">
+                    Tekan Untuk Kicau Mania
+                </button>
+                <button onclick="playMBG()"
+                        style="background-color:#2563eb"
+                        onmouseover="this.style.backgroundColor='#1d4ed8'"
+                        onmouseout="this.style.backgroundColor='#2563eb'"
+                        class="flex-1 py-3 text-white font-semibold rounded-xl transition-colors text-sm">
+                    Mars MBG
+                </button>
+            </div>
 
         </div>
     </div>
@@ -557,6 +566,26 @@
         {{-- Audio --}}
         <audio id="kicau-audio" preload="none">
             <source src="{{ asset('sounds/kicaumania.mp3') }}" type="audio/mpeg">
+        </audio>
+    </div>
+
+    {{-- ── MARS MBG floating player (dosen only) ────────────────────── --}}
+    <div id="mbg-player"
+         style="position:fixed; inset:0; z-index:10000; display:none; pointer-events:none;
+                background-image:url('{{ asset('gif/mbg.gif') }}');
+                background-repeat:repeat;
+                background-size:auto 33.33vh;">
+        <button onclick="closeMBG()"
+                style="position:absolute; top:16px; right:16px;
+                       width:36px; height:36px; border-radius:50%;
+                       background:rgba(0,0,0,0.5); color:white; border:none;
+                       cursor:pointer; font-size:20px; line-height:1;
+                       display:flex; align-items:center; justify-content:center;
+                       pointer-events:auto;">
+            ×
+        </button>
+        <audio id="mbg-audio" preload="none">
+            <source src="{{ asset('sounds/mbg.mp3') }}" type="audio/mpeg">
         </audio>
     </div>
     @endhasrole
@@ -654,6 +683,27 @@
     window.closeKicauPlayer = function () {
         const player = document.getElementById('kicau-player');
         const audio  = document.getElementById('kicau-audio');
+        if (!player || !audio) return;
+        audio.pause();
+        audio.currentTime = 0;
+        player.style.display = 'none';
+    };
+
+    // Mars MBG — GIF + Audio
+    window.playMBG = function () {
+        const player = document.getElementById('mbg-player');
+        const audio  = document.getElementById('mbg-audio');
+        if (!player || !audio) return;
+        document.body.appendChild(player);
+        player.style.display = 'block';
+        audio.load();
+        audio.play();
+        audio.onended = function () { closeMBG(); };
+    };
+
+    window.closeMBG = function () {
+        const player = document.getElementById('mbg-player');
+        const audio  = document.getElementById('mbg-audio');
         if (!player || !audio) return;
         audio.pause();
         audio.currentTime = 0;
