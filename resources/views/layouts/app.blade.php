@@ -531,7 +531,7 @@
                         onmouseover="this.style.backgroundColor='#15803d'"
                         onmouseout="this.style.backgroundColor='#16a34a'"
                         class="flex-1 py-3 text-white font-semibold rounded-xl transition-colors text-sm">
-                    Tekan Untuk Kicau Mania
+                    Kicau Mania
                 </button>
                 <button onclick="playMBG()"
                         style="background-color:#2563eb"
