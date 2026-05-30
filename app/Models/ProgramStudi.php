@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProgramStudi extends Model
 {
-    protected $fillable = ['kode','nama','jenjang','fakultas','universitas','aktif','visi','misi','tujuan'];
+    protected $fillable = ['kode','nama','jenjang','fakultas','universitas','aktif','visi','misi','tujuan','alamat','email','telepon','website'];
 
     protected $casts = ['aktif' => 'boolean'];
 

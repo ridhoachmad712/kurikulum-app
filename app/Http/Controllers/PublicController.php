@@ -7,6 +7,7 @@ use App\Models\Cpl;
 use App\Models\MataKuliah;
 use App\Models\ProfilLulusan;
 use App\Models\ProgramStudi;
+use App\Models\User;
 use App\Services\MatriksService;
 
 class PublicController extends Controller
@@ -68,10 +69,11 @@ class PublicController extends Controller
         });
 
         $stats = [
-            'total_mk'   => $bySemester->sum('effective_count'),
-            'total_cpl'  => $cpls->count(),
-            'total_sks'  => $bySemester->sum('effective_sks'),
-            'total_cpmk' => $mataKuliahs->sum('cpmks_count'),
+            'total_mk'    => $bySemester->sum('effective_count'),
+            'total_cpl'   => $cpls->count(),
+            'total_sks'   => $bySemester->sum('effective_sks'),
+            'total_cpmk'  => $mataKuliahs->sum('cpmks_count'),
+            'total_dosen' => User::role('dosen')->where('program_studi_id', $prodi->id)->count(),
         ];
 
         return view('public.home', compact('prodi', 'cpls', 'stats', 'bySemester'));

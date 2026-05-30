@@ -78,6 +78,35 @@
                 </div>
             </div>
 
+            {{-- Kontak & Lokasi --}}
+            <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mt-7 mb-3">Kontak &amp; Lokasi</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
+                    <input type="text" name="alamat" value="{{ old('alamat', $item->alamat) }}"
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-gray-500 focus:border-indigo-500"
+                           placeholder="Jl. A. P. Pettarani, Makassar, Sulawesi Selatan">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" name="email" value="{{ old('email', $item->email) }}"
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-gray-500 focus:border-indigo-500"
+                           placeholder="manajemen@unm.ac.id">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Telepon</label>
+                    <input type="text" name="telepon" value="{{ old('telepon', $item->telepon) }}"
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-gray-500 focus:border-indigo-500"
+                           placeholder="(0411) 123456">
+                </div>
+                <div class="col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Website</label>
+                    <input type="text" name="website" value="{{ old('website', $item->website) }}"
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-gray-500 focus:border-indigo-500"
+                           placeholder="manajemen.feb.unm.ac.id">
+                </div>
+            </div>
+
             <div class="flex gap-3 mt-6">
                 <button type="submit" class="px-5 py-2 bg-gray-700 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition">
                     {{ $item->exists ? 'Perbarui' : 'Simpan' }}

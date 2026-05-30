@@ -30,6 +30,10 @@ class ProgramStudiController extends Controller
             'visi'        => 'nullable|string',
             'misi'        => 'nullable|string',
             'tujuan'      => 'nullable|string',
+            'alamat'      => 'nullable|string|max:255',
+            'email'       => 'nullable|email|max:255',
+            'telepon'     => 'nullable|string|max:50',
+            'website'     => 'nullable|string|max:255',
         ]);
         ProgramStudi::create($data);
         return redirect()->route('master.program-studi.index')->with('success', 'Program Studi berhasil ditambahkan.');
@@ -52,6 +56,10 @@ class ProgramStudiController extends Controller
             'visi'        => 'nullable|string',
             'misi'        => 'nullable|string',
             'tujuan'      => 'nullable|string',
+            'alamat'      => 'nullable|string|max:255',
+            'email'       => 'nullable|email|max:255',
+            'telepon'     => 'nullable|string|max:50',
+            'website'     => 'nullable|string|max:255',
         ]);
         $programStudi->update($data);
         return redirect()->route('master.program-studi.index')->with('success', 'Program Studi berhasil diperbarui.');
