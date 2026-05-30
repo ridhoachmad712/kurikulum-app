@@ -43,7 +43,7 @@
                 <button type="submit" class="btn-primary">
                     {{ $item->exists ? 'Perbarui' : 'Simpan' }}
                 </button>
-                <a href="{{ route('master.profil-lulusan.index') }}" class="px-5 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition">
+                <a href="{{ route('master.profil-lulusan.index') }}" class="btn-secondary">
                     Batal
                 </a>
             </div>

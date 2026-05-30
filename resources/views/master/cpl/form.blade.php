@@ -50,7 +50,7 @@
                 <button type="submit" class="btn-primary">
                     {{ $item->exists ? 'Perbarui' : 'Simpan' }}
                 </button>
-                <a href="{{ route('master.cpl.index') }}" class="px-5 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200">Batal</a>
+                <a href="{{ route('master.cpl.index') }}" class="btn-secondary">Batal</a>
             </div>
         </form>
     </div>

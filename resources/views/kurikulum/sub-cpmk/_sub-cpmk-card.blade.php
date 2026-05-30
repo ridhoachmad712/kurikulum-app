@@ -33,10 +33,8 @@
                     class="w-full border border-indigo-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-gray-400 resize-none"
                     id="desc-input-{{ $sc->id }}">{{ $sc->deskripsi }}</textarea>
                 <div class="flex gap-2 mt-1">
-                    <button onclick="saveEdit({{ $sc->id }})"
-                            class="px-3 py-1 bg-gray-700 text-white text-xs rounded-lg hover:bg-gray-800">Simpan</button>
-                    <button onclick="cancelEdit({{ $sc->id }})"
-                            class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-lg hover:bg-gray-200">Batal</button>
+                    <button onclick="saveEdit({{ $sc->id }})" class="btn-primary btn-sm">Simpan</button>
+                    <button onclick="cancelEdit({{ $sc->id }})" class="btn-secondary btn-sm">Batal</button>
                 </div>
             </div>
 

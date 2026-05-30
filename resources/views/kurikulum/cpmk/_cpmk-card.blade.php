@@ -27,8 +27,7 @@
                     id="desc-input-{{ $cpmk->id }}">{{ $cpmk->deskripsi }}</textarea>
                 <div class="flex gap-2 mt-1">
                     <button onclick="saveEdit({{ $cpmk->id }})" class="btn-primary btn-sm">Simpan</button>
-                    <button onclick="cancelEdit({{ $cpmk->id }})"
-                        class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-lg hover:bg-gray-200">Batal</button>
+                    <button onclick="cancelEdit({{ $cpmk->id }})" class="btn-secondary btn-sm">Batal</button>
                 </div>
             </div>
 
