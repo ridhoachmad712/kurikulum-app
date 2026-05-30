@@ -258,22 +258,14 @@
             </div>
             @endif
 
-            {{-- Akses Admin --}}
-            <div class="mt-4 bg-gray-50 border border-gray-200 rounded-2xl p-4">
-                <p class="text-xs font-semibold text-gray-700 mb-1">Panel Admin</p>
-                <p class="text-xs text-gray-400 mb-3">Pengelolaan data kurikulum, CPMK, dan asesmen.</p>
+            {{-- Akses dosen/admin — tautan halus, tombol utama ada di navbar --}}
+            <p class="mt-4 text-center text-[11px] text-gray-400">
                 @auth
-                <a href="{{ route('dashboard') }}"
-                   class="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 hover:text-blue-900 transition">
-                    Buka Dashboard →
-                </a>
+                Dosen &amp; pengelola: <a href="{{ route('dashboard') }}" class="text-blue-600 hover:text-blue-800 font-medium transition">buka Dashboard →</a>
                 @else
-                <a href="{{ route('login') }}"
-                   class="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 hover:text-blue-900 transition">
-                    Login →
-                </a>
+                Dosen &amp; pengelola: <a href="{{ route('login') }}" class="text-blue-600 hover:text-blue-800 font-medium transition">login di sini →</a>
                 @endauth
-            </div>
+            </p>
 
         </div>
     </div>
