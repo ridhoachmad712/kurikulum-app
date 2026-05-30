@@ -484,7 +484,7 @@
         <footer class="min-h-[44px] py-2 bg-white flex items-center justify-center px-4 sm:px-6 shrink-0 sticky bottom-0 z-30">
             <p class="text-[13px] text-gray-500 flex items-center gap-2 flex-wrap justify-center">
                 <span>
-                    This App made with love and coffee by
+                    This App developed with love and coffee by
                     <a href="https://instagram.com/ridhoachmad_" target="_blank"
                        class="text-green-600 hover:text-green-700 font-medium transition-colors">@ridhoachmad_</a>
                     &nbsp;&copy; 2026
