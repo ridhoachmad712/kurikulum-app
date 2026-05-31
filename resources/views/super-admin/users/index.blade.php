@@ -74,6 +74,18 @@ $roleMeta = [
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
                             </svg>
                         </a>
+                        @if($u->id !== auth()->id() && !$u->roles->pluck('name')->contains('super_admin'))
+                        <form method="POST" action="{{ route('super-admin.users.impersonate', $u) }}"
+                              onsubmit="return confirm('Masuk sebagai {{ $u->name }}? Anda akan melihat aplikasi dari sudut pandang akun ini.')">
+                            @csrf
+                            <button type="submit" class="p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition" title="Masuk sebagai pengguna ini">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                            </button>
+                        </form>
+                        @endif
                         <form method="POST" action="{{ route('super-admin.users.reset-password', $u) }}"
                               onsubmit="return confirm('Reset password {{ $u->name }} ke default (password)?')">
                             @csrf

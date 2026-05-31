@@ -131,6 +131,7 @@ Route::middleware(['auth'])->group(function () {
 
         // Kelola Akun & Role
         Route::post('users/{user}/reset-password', [\App\Http\Controllers\SuperAdmin\UserController::class, 'resetPassword'])->name('users.reset-password');
+        Route::post('users/{user}/impersonate',    [\App\Http\Controllers\SuperAdmin\ImpersonationController::class, 'start'])->name('users.impersonate');
         Route::resource('users', \App\Http\Controllers\SuperAdmin\UserController::class)->except(['show']);
 
         // Log Aktivitas
@@ -145,6 +146,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('settings',  [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'index'])->name('settings.index');
         Route::patch('settings', [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'update'])->name('settings.update');
     });
+
+    // Hentikan impersonate — dapat diakses meski sedang jadi user lain
+    Route::post('/stop-impersonate', [\App\Http\Controllers\SuperAdmin\ImpersonationController::class, 'stop'])->name('stop-impersonate');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
