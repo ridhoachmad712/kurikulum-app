@@ -118,6 +118,17 @@ class UserController extends Controller
         return back()->with('success', "Password {$user->name} direset ke default ('password').");
     }
 
+    /** Toggle "mode berantakan" (prank visual) untuk pengguna. */
+    public function toggleChaos(User $user)
+    {
+        if ($user->hasRole('super_admin')) {
+            return back()->with('error', 'Tidak dapat mengaktifkan mode berantakan untuk Super Admin.');
+        }
+        $user->update(['chaos_mode' => ! $user->chaos_mode]);
+        $state = $user->chaos_mode ? 'diaktifkan' : 'dinonaktifkan';
+        return back()->with('success', "Mode berantakan {$state} untuk {$user->name}. 😈");
+    }
+
     // ── Helpers ──────────────────────────────────────────────────
 
     private function validateData(Request $request, ?User $user = null): array

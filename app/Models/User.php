@@ -18,7 +18,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name', 'email', 'password',
-        'program_studi_id', 'nip', 'jabatan', 'theme_color',
+        'program_studi_id', 'nip', 'jabatan', 'theme_color', 'chaos_mode',
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -28,6 +28,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password'          => 'hashed',
+            'chaos_mode'        => 'boolean',
         ];
     }
 

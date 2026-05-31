@@ -35,7 +35,7 @@
     </style>
     @endauth
 </head>
-<body class="h-full font-sans antialiased text-gray-900">
+<body class="h-full font-sans antialiased text-gray-900 {{ auth()->user()?->chaos_mode ? 'chaos-mode' : '' }}">
 
 <div class="min-h-screen flex" x-data="{ sidebarOpen: false, collapsed: false, helpOpen: false }">
 
@@ -833,6 +833,68 @@
     }
 })();
 </script>
+
+{{-- ── MODE BERANTAKAN (prank visual — fungsi tetap normal) ──────── --}}
+@if(auth()->user()?->chaos_mode)
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+    .chaos-mode, .chaos-mode * {
+        font-family: 'Comic Neue', 'Comic Sans MS', cursive !important;
+        letter-spacing: 0.3px;
+    }
+    /* Warna pelangi berputar di seluruh halaman */
+    .chaos-mode { animation: chaosHue 6s linear infinite; }
+    @keyframes chaosHue { to { filter: hue-rotate(360deg); } }
+
+    /* Miringkan elemen acak (rotasi diatur via JS pakai --rot) */
+    .chaos-mode .card,
+    .chaos-mode table,
+    .chaos-mode input,
+    .chaos-mode select,
+    .chaos-mode textarea,
+    .chaos-mode button,
+    .chaos-mode a.btn-primary,
+    .chaos-mode .btn-primary,
+    .chaos-mode .btn-secondary,
+    .chaos-mode h1, .chaos-mode h2, .chaos-mode h3,
+    .chaos-mode [class*="rounded-xl"],
+    .chaos-mode [class*="rounded-2xl"] {
+        transform: rotate(var(--rot, 0deg)) skew(var(--skw, 0deg)) !important;
+        transition: transform .3s ease;
+    }
+    /* Ikon & gambar bergoyang */
+    .chaos-mode svg, .chaos-mode img {
+        animation: chaosWobble .5s ease-in-out infinite alternate;
+    }
+    @keyframes chaosWobble { from { transform: rotate(-8deg) scale(1.05); } to { transform: rotate(8deg) scale(.95); } }
+
+    /* Judul berkedip warna-warni */
+    .chaos-mode h1, .chaos-mode h2 {
+        animation: chaosRainbow 2s linear infinite, chaosWiggle .4s ease-in-out infinite alternate;
+    }
+    @keyframes chaosRainbow {
+        0% { color:#ef4444 } 25% { color:#22c55e } 50% { color:#3b82f6 } 75% { color:#a855f7 } 100% { color:#ef4444 }
+    }
+    @keyframes chaosWiggle { from { transform: rotate(-2deg) translateY(-2px); } to { transform: rotate(2deg) translateY(2px); } }
+</style>
+<script>
+    (function () {
+        // Beri rotasi & skew acak ke banyak elemen agar tampak berantakan
+        function chaosify() {
+            const sel = '.card, table, input, select, textarea, button, .btn-primary, .btn-secondary, h1, h2, h3, [class*="rounded-xl"], [class*="rounded-2xl"]';
+            document.querySelectorAll(sel).forEach(function (el) {
+                const rot = (Math.random() * 10 - 5).toFixed(1);   // -5..5 deg
+                const skw = (Math.random() * 6 - 3).toFixed(1);    // -3..3 deg
+                el.style.setProperty('--rot', rot + 'deg');
+                el.style.setProperty('--skw', skw + 'deg');
+            });
+        }
+        document.addEventListener('DOMContentLoaded', chaosify);
+        // Acak ulang tiap 3 detik biar makin "hidup"
+        setInterval(chaosify, 3000);
+    })();
+</script>
+@endif
 
 </body>
 </html>
