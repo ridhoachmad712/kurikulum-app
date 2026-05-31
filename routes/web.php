@@ -128,6 +128,10 @@ Route::middleware(['auth'])->group(function () {
     // ── SUPER ADMIN ──────────────────────────────────────────────
     Route::middleware(['role:super_admin'])->prefix('super-admin')->name('super-admin.')->group(function () {
         Route::get('/', [SuperAdminController::class, 'index'])->name('index');
+
+        // Kelola Akun & Role
+        Route::post('users/{user}/reset-password', [\App\Http\Controllers\SuperAdmin\UserController::class, 'resetPassword'])->name('users.reset-password');
+        Route::resource('users', \App\Http\Controllers\SuperAdmin\UserController::class)->except(['show']);
     });
 
     // Profile
