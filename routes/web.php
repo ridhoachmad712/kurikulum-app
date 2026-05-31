@@ -158,6 +158,13 @@ Route::middleware(['auth'])->group(function () {
         // Bersihkan Cache
         Route::post('cache/clear', [\App\Http\Controllers\SuperAdmin\CacheController::class, 'clear'])->name('cache.clear');
 
+        // Log Error Aplikasi
+        Route::get('error-logs',     [\App\Http\Controllers\SuperAdmin\ErrorLogController::class, 'index'])->name('error-logs.index');
+        Route::delete('error-logs',  [\App\Http\Controllers\SuperAdmin\ErrorLogController::class, 'clear'])->name('error-logs.clear');
+
+        // Statistik Penggunaan
+        Route::get('usage-stats', [\App\Http\Controllers\SuperAdmin\UsageStatsController::class, 'index'])->name('usage-stats.index');
+
         // Kelola Role & Permission
         Route::get('roles',                 [\App\Http\Controllers\SuperAdmin\RolePermissionController::class, 'index'])->name('roles.index');
         Route::post('roles',                [\App\Http\Controllers\SuperAdmin\RolePermissionController::class, 'storeRole'])->name('roles.store');
