@@ -132,6 +132,10 @@ Route::middleware(['auth'])->group(function () {
         // Kelola Akun & Role
         Route::post('users/{user}/reset-password', [\App\Http\Controllers\SuperAdmin\UserController::class, 'resetPassword'])->name('users.reset-password');
         Route::post('users/{user}/impersonate',    [\App\Http\Controllers\SuperAdmin\ImpersonationController::class, 'start'])->name('users.impersonate');
+        // Import akun massal
+        Route::get('users-import',          [\App\Http\Controllers\SuperAdmin\UserImportController::class, 'form'])->name('users.import.form');
+        Route::post('users-import',         [\App\Http\Controllers\SuperAdmin\UserImportController::class, 'import'])->name('users.import');
+        Route::get('users-import/template', [\App\Http\Controllers\SuperAdmin\UserImportController::class, 'template'])->name('users.import.template');
         Route::resource('users', \App\Http\Controllers\SuperAdmin\UserController::class)->except(['show']);
 
         // Log Aktivitas

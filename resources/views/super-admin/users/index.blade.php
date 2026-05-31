@@ -5,9 +5,22 @@
 <x-page-header title="Kelola Akun & Role" subtitle="Kelola seluruh akun lintas program studi dan atur rolenya"
                back="{{ route('super-admin.index') }}" backLabel="Super Admin">
     <x-slot name="actions">
+        <a href="{{ route('super-admin.users.import.form') }}" class="btn-secondary">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
+            Import Excel
+        </a>
         <a href="{{ route('super-admin.users.create') }}" class="btn-primary">+ Tambah Akun</a>
     </x-slot>
 </x-page-header>
+
+@if(session('import_skipped') && count(session('import_skipped')))
+<div class="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-4 text-xs text-amber-700">
+    <strong>{{ count(session('import_skipped')) }} baris dilewati saat import:</strong>
+    <ul class="list-disc list-inside mt-1 space-y-0.5 max-h-32 overflow-y-auto">
+        @foreach(session('import_skipped') as $s)<li>{{ $s }}</li>@endforeach
+    </ul>
+</div>
+@endif
 
 {{-- Filter role --}}
 @php
