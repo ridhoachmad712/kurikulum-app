@@ -136,6 +136,10 @@ Route::middleware(['auth'])->group(function () {
         // Log Aktivitas
         Route::get('logs',       [\App\Http\Controllers\SuperAdmin\ActivityLogController::class, 'index'])->name('logs.index');
         Route::delete('logs/prune', [\App\Http\Controllers\SuperAdmin\ActivityLogController::class, 'prune'])->name('logs.prune');
+
+        // Backup
+        Route::get('backup',          [\App\Http\Controllers\SuperAdmin\BackupController::class, 'index'])->name('backup.index');
+        Route::get('backup/download', [\App\Http\Controllers\SuperAdmin\BackupController::class, 'download'])->name('backup.download');
     });
 
     // Profile
