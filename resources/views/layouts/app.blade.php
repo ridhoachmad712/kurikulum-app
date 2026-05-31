@@ -33,9 +33,54 @@
         .stepper-active:hover{background-color:{{ $tc[1] }}!important}
         .user-avatar:hover{background-color:{{ $tc[1] }}!important}
     </style>
+
+    {{-- ── TEMA TEKNIS (Data-Dense Compact) — khusus Super Admin ── --}}
+    @if(auth()->user()->hasRole('super_admin'))
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style id="tech-style">
+        .tech-mode { --mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace; }
+
+        /* Sudut lebih tajam */
+        .tech-mode [class*="rounded-2xl"],
+        .tech-mode [class*="rounded-xl"],
+        .tech-mode [class*="rounded-lg"] { border-radius: 5px !important; }
+        .tech-mode [class*="rounded-full"] { border-radius: 9999px !important; }
+
+        /* Tabel: padat + garis grid + monospace */
+        .tech-mode table { font-family: var(--mono); font-size: 12px; border-collapse: collapse; }
+        .tech-mode table th {
+            text-transform: uppercase; letter-spacing: .05em; font-size: 10px;
+            color: #475569; background: #f1f5f9;
+        }
+        .tech-mode table th, .tech-mode table td {
+            padding-top: .38rem !important; padding-bottom: .38rem !important;
+            border: 1px solid #eef2f6;
+        }
+        .tech-mode table tbody tr:hover { background: #f8fafc; }
+
+        /* Monospace untuk data teknis */
+        .tech-mode .font-mono,
+        .tech-mode code,
+        .tech-mode .text-2xl,
+        .tech-mode .text-3xl,
+        .tech-mode input,
+        .tech-mode select { font-family: var(--mono); }
+
+        /* Heading section: gaya label teknis */
+        .tech-mode h1 { font-family: var(--mono); letter-spacing: -.02em; }
+
+        /* Kartu: border lebih tegas, shadow lebih tipis */
+        .tech-mode .card,
+        .tech-mode [class*="shadow-sm"] { box-shadow: none !important; border-color: #e2e8f0 !important; }
+
+        /* Badge: kotak (bukan pill) untuk kesan teknis */
+        .tech-mode .badge,
+        .tech-mode [class*="rounded-full"][class*="text-xs"] { border-radius: 4px !important; }
+    </style>
+    @endif
     @endauth
 </head>
-<body class="h-full font-sans antialiased text-gray-900 {{ auth()->user()?->chaos_mode ? 'chaos-mode' : '' }}">
+<body class="h-full font-sans antialiased text-gray-900 {{ auth()->user()?->chaos_mode ? 'chaos-mode' : '' }} {{ auth()->user()?->hasRole('super_admin') ? 'tech-mode' : '' }}">
 
 <div class="min-h-screen flex" x-data="{ sidebarOpen: false, collapsed: false, helpOpen: false }">
 
