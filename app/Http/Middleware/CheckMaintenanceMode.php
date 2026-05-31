@@ -13,8 +13,9 @@ class CheckMaintenanceMode
     {
         if (Setting::bool('maintenance_mode')) {
             $user = $request->user();
-            // Super admin tetap bisa akses; izinkan juga route login/logout agar bisa masuk
-            $allowed = $request->routeIs('login') || $request->routeIs('logout');
+            // Izinkan halaman & proses login/logout agar super admin bisa masuk.
+            // Pakai is() (cek path) karena route POST /login tidak bernama.
+            $allowed = $request->is('login') || $request->routeIs('logout');
 
             if (! $allowed && (! $user || ! $user->hasRole('super_admin'))) {
                 return response()->view('maintenance', [
