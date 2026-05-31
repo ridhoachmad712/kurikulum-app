@@ -83,6 +83,33 @@ function fmtBytes($bytes) {
     </div>
 </div>
 
+{{-- Bersihkan Cache --}}
+<div class="mt-6">
+    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Pemeliharaan Cache</p>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+        <p class="text-xs text-gray-500 leading-relaxed mb-4">
+            Bersihkan cache aplikasi tanpa perlu SSH — berguna setelah <span class="font-mono">git pull</span> di server agar perubahan kode &amp; tampilan langsung diterapkan.
+        </p>
+        <div class="flex flex-wrap gap-2">
+            <form method="POST" action="{{ route('super-admin.cache.clear') }}">
+                @csrf
+                <input type="hidden" name="type" value="all">
+                <button type="submit" class="btn-primary">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+                    Bersihkan Semua
+                </button>
+            </form>
+            @foreach(['config'=>'Konfigurasi','view'=>'Tampilan','route'=>'Rute','cache'=>'Aplikasi'] as $type => $label)
+            <form method="POST" action="{{ route('super-admin.cache.clear') }}">
+                @csrf
+                <input type="hidden" name="type" value="{{ $type }}">
+                <button type="submit" class="btn-secondary">{{ $label }}</button>
+            </form>
+            @endforeach
+        </div>
+    </div>
+</div>
+
 {{-- Statistik record --}}
 <div class="mt-6">
     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Jumlah Record</p>

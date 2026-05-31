@@ -155,6 +155,9 @@ Route::middleware(['auth'])->group(function () {
         // Info Sistem
         Route::get('system', [\App\Http\Controllers\SuperAdmin\SystemInfoController::class, 'index'])->name('system.index');
 
+        // Bersihkan Cache
+        Route::post('cache/clear', [\App\Http\Controllers\SuperAdmin\CacheController::class, 'clear'])->name('cache.clear');
+
         // Kelola Role & Permission
         Route::get('roles',                 [\App\Http\Controllers\SuperAdmin\RolePermissionController::class, 'index'])->name('roles.index');
         Route::post('roles',                [\App\Http\Controllers\SuperAdmin\RolePermissionController::class, 'storeRole'])->name('roles.store');
