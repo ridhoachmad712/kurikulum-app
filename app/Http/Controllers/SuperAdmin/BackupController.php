@@ -40,6 +40,8 @@ class BackupController extends Controller
         $database = DB::getDatabaseName();
         $filename = 'backup-' . str($database)->slug() . '-' . now()->format('Ymd-His') . '.sql';
 
+        \App\Models\Setting::put('last_backup_at', now()->toDateTimeString());
+
         return response()->streamDownload(function () use ($tables, $database) {
             $out = fopen('php://output', 'w');
 

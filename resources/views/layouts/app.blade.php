@@ -142,6 +142,14 @@
                 </x-slot>
                 <span x-show="!collapsed" x-cloak>Pengaturan</span>
             </x-nav-link>
+            <x-nav-link href="{{ route('super-admin.system.index') }}" :active="request()->routeIs('super-admin.system.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 0 1-3-3m3 3a3 3 0 1 0 0 6h13.5a3 3 0 1 0 0-6m-16.5-3a3 3 0 0 1 3-3h13.5a3 3 0 0 1 3 3m-19.5 0a4.5 4.5 0 0 1 .9-2.7L5.737 5.1a3.375 3.375 0 0 1 2.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 0 1 .9 2.7M3 16.5h.008v.008H3v-.008Zm0-3h.008v.008H3v-.008Z"/>
+                    </svg>
+                </x-slot>
+                <span x-show="!collapsed" x-cloak>Info Sistem</span>
+            </x-nav-link>
             @endhasrole
 
             {{-- ════════════════════════════════════

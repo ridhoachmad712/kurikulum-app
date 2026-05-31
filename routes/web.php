@@ -150,6 +150,9 @@ Route::middleware(['auth'])->group(function () {
         // Pengaturan
         Route::get('settings',  [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'index'])->name('settings.index');
         Route::patch('settings', [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'update'])->name('settings.update');
+
+        // Info Sistem
+        Route::get('system', [\App\Http\Controllers\SuperAdmin\SystemInfoController::class, 'index'])->name('system.index');
     });
 
     // Hentikan impersonate — dapat diakses meski sedang jadi user lain
