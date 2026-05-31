@@ -34,98 +34,48 @@
         .user-avatar:hover{background-color:{{ $tc[1] }}!important}
     </style>
 
-    {{-- ── TEMA TEKNIS (Dark Console) — khusus Super Admin ── --}}
+    {{-- ── TEMA TEKNIS (Data-Dense Compact) — khusus Super Admin ── --}}
     @if(auth()->user()->hasRole('super_admin'))
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style id="tech-style">
-        .tech-mode {
-            --mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
-            --bg0: #0b1120;   /* dasar gelap   */
-            --bg1: #111827;   /* panel/kartu   */
-            --bg2: #0d1526;   /* header/footer */
-            --line:#1f2a3d;   /* garis         */
-            --txt: #cbd5e1;   /* teks utama    */
-            --dim: #64748b;   /* teks redup    */
-            --acc: #34d399;   /* aksen hijau terminal */
-            --acc2:#22d3ee;   /* aksen cyan    */
-        }
+        .tech-mode { --mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace; }
 
-        /* ── Monospace menyeluruh ── */
-        .tech-mode, .tech-mode * { font-family: var(--mono) !important; }
+        /* Sudut lebih tajam */
+        .tech-mode [class*="rounded-2xl"],
+        .tech-mode [class*="rounded-xl"],
+        .tech-mode [class*="rounded-lg"] { border-radius: 5px !important; }
+        .tech-mode [class*="rounded-full"] { border-radius: 9999px !important; }
 
-        /* ── Latar gelap ── */
-        .tech-mode { background: var(--bg0) !important; }
-        .tech-mode main, .tech-mode .min-h-screen { background: var(--bg0) !important; }
-        .tech-mode aside { background: var(--bg2) !important; border-right: 1px solid var(--line); }
-        .tech-mode header, .tech-mode footer { background: var(--bg2) !important; border-color: var(--line) !important; }
-
-        /* Flip utilitas terang → gelap */
-        .tech-mode .bg-white { background-color: var(--bg1) !important; }
-        .tech-mode .bg-gray-50, .tech-mode .bg-gray-100 { background-color: var(--bg2) !important; }
-        .tech-mode .text-gray-900, .tech-mode .text-gray-800, .tech-mode .text-gray-700 { color: var(--txt) !important; }
-        .tech-mode .text-gray-600, .tech-mode .text-gray-500 { color: #94a3b8 !important; }
-        .tech-mode .text-gray-400, .tech-mode .text-gray-300 { color: var(--dim) !important; }
-        .tech-mode .border-gray-100, .tech-mode .border-gray-200, .tech-mode .border-gray-50,
-        .tech-mode .divide-gray-50 > *, .tech-mode .divide-gray-100 > * { border-color: var(--line) !important; }
-
-        /* ── Sudut tajam ── */
-        .tech-mode [class*="rounded-2xl"], .tech-mode [class*="rounded-xl"],
-        .tech-mode [class*="rounded-lg"], .tech-mode [class*="rounded-md"] { border-radius: 4px !important; }
-        .tech-mode [class*="shadow"] { box-shadow: none !important; }
-        .tech-mode .bg-white, .tech-mode .card { border: 1px solid var(--line) !important; }
-
-        /* ── Tabel: grid konsol ── */
-        .tech-mode table { font-size: 12px; border-collapse: collapse; }
-        .tech-mode table thead, .tech-mode table th { background: #0e1729 !important; }
+        /* Tabel: padat + garis grid + monospace */
+        .tech-mode table { font-family: var(--mono); font-size: 12px; border-collapse: collapse; }
         .tech-mode table th {
-            text-transform: uppercase; letter-spacing: .06em; font-size: 10px; color: var(--acc2) !important;
+            text-transform: uppercase; letter-spacing: .05em; font-size: 10px;
+            color: #475569; background: #f1f5f9;
         }
         .tech-mode table th, .tech-mode table td {
-            border: 1px solid var(--line) !important;
-            padding-top: .4rem !important; padding-bottom: .4rem !important;
+            padding-top: .38rem !important; padding-bottom: .38rem !important;
+            border: 1px solid #eef2f6;
         }
-        .tech-mode table tbody tr:hover, .tech-mode .hover\:bg-gray-50:hover { background: #0e1729 !important; }
+        .tech-mode table tbody tr:hover { background: #f8fafc; }
 
-        /* ── Heading bergaya prompt ── */
-        .tech-mode h1 { color: var(--acc) !important; letter-spacing: -.01em; }
-        .tech-mode main h1::before { content: '$ '; color: var(--acc2); }
-        .tech-mode .uppercase { color: var(--acc2) !important; }
+        /* Monospace untuk data teknis */
+        .tech-mode .font-mono,
+        .tech-mode code,
+        .tech-mode .text-2xl,
+        .tech-mode .text-3xl,
+        .tech-mode input,
+        .tech-mode select { font-family: var(--mono); }
 
-        /* ── Form gelap ── */
-        .tech-mode input, .tech-mode select, .tech-mode textarea, .tech-mode .form-input {
-            background-color: #0e1729 !important; color: var(--txt) !important; border-color: var(--line) !important;
-        }
-        .tech-mode input::placeholder, .tech-mode textarea::placeholder { color: #475569 !important; }
+        /* Heading section: gaya label teknis */
+        .tech-mode h1 { font-family: var(--mono); letter-spacing: -.02em; }
 
-        /* ── Badge kotak ── */
-        .tech-mode [class*="rounded-full"][class*="text-xs"],
-        .tech-mode [class*="rounded-full"][class*="text-\[1"] { border-radius: 3px !important; }
+        /* Kartu: border lebih tegas, shadow lebih tipis */
+        .tech-mode .card,
+        .tech-mode [class*="shadow-sm"] { box-shadow: none !important; border-color: #e2e8f0 !important; }
 
-        /* Soft badge backgrounds agar kontras di gelap */
-        .tech-mode .bg-blue-50, .tech-mode .bg-green-50, .tech-mode .bg-amber-50,
-        .tech-mode .bg-rose-50, .tech-mode .bg-emerald-50, .tech-mode .bg-indigo-50,
-        .tech-mode .bg-violet-50, .tech-mode .bg-sky-50, .tech-mode .bg-teal-50,
-        .tech-mode .bg-red-50, .tech-mode .bg-pink-50 { background-color: rgba(255,255,255,.04) !important; }
-        .tech-mode .bg-blue-100, .tech-mode .bg-green-100, .tech-mode .bg-amber-100,
-        .tech-mode .bg-rose-100, .tech-mode .bg-emerald-100, .tech-mode .bg-indigo-100,
-        .tech-mode .bg-violet-100, .tech-mode .bg-red-100, .tech-mode .bg-gray-100 { background-color: rgba(255,255,255,.07) !important; }
-
-        /* Avatar tetap bulat */
-        .tech-mode .user-avatar, .tech-mode .rounded-full.w-8 { border-radius: 9999px !important; }
-
-        /* Scrollbar konsol */
-        .tech-mode ::-webkit-scrollbar { width: 9px; height: 9px; }
-        .tech-mode ::-webkit-scrollbar-track { background: var(--bg0); }
-        .tech-mode ::-webkit-scrollbar-thumb { background: #243049; border-radius: 2px; }
-        .tech-mode ::-webkit-scrollbar-thumb:hover { background: #34507a; }
-
-        /* Garis grid samar di latar */
-        .tech-mode main {
-            background-image:
-                linear-gradient(rgba(52,211,153,.025) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(52,211,153,.025) 1px, transparent 1px) !important;
-            background-size: 28px 28px !important;
-        }
+        /* Badge: kotak (bukan pill) untuk kesan teknis */
+        .tech-mode .badge,
+        .tech-mode [class*="rounded-full"][class*="text-xs"] { border-radius: 4px !important; }
     </style>
     @endif
     @endauth
