@@ -153,6 +153,15 @@ Route::middleware(['auth'])->group(function () {
 
         // Info Sistem
         Route::get('system', [\App\Http\Controllers\SuperAdmin\SystemInfoController::class, 'index'])->name('system.index');
+
+        // Kelola Role & Permission
+        Route::get('roles',                 [\App\Http\Controllers\SuperAdmin\RolePermissionController::class, 'index'])->name('roles.index');
+        Route::post('roles',                [\App\Http\Controllers\SuperAdmin\RolePermissionController::class, 'storeRole'])->name('roles.store');
+        Route::get('roles/{role}/edit',     [\App\Http\Controllers\SuperAdmin\RolePermissionController::class, 'editRole'])->name('roles.edit');
+        Route::patch('roles/{role}',        [\App\Http\Controllers\SuperAdmin\RolePermissionController::class, 'updateRole'])->name('roles.update');
+        Route::delete('roles/{role}',       [\App\Http\Controllers\SuperAdmin\RolePermissionController::class, 'destroyRole'])->name('roles.destroy');
+        Route::post('permissions',          [\App\Http\Controllers\SuperAdmin\RolePermissionController::class, 'storePermission'])->name('permissions.store');
+        Route::delete('permissions/{permission}', [\App\Http\Controllers\SuperAdmin\RolePermissionController::class, 'destroyPermission'])->name('permissions.destroy');
     });
 
     // Hentikan impersonate — dapat diakses meski sedang jadi user lain
