@@ -19,6 +19,7 @@ use App\Http\Controllers\Master\ProfilLulusanController;
 use App\Http\Controllers\Master\ProgramStudiController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\SuperAdmin\SuperAdminController;
 use Illuminate\Support\Facades\Route;
 
 // ── PUBLIC (tanpa login) ─────────────────────────────────────────
@@ -122,6 +123,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('penugasan/{mataKuliah}/toggle',  [PenugasanController::class, 'toggle']) ->name('penugasan.toggle');
         Route::resource('users', UserController::class)->except(['show']);
         Route::get ('hak-akses',                      fn() => view('admin.hak-akses'))        ->name('hak-akses');
+    });
+
+    // ── SUPER ADMIN ──────────────────────────────────────────────
+    Route::middleware(['role:super_admin'])->prefix('super-admin')->name('super-admin.')->group(function () {
+        Route::get('/', [SuperAdminController::class, 'index'])->name('index');
     });
 
     // Profile

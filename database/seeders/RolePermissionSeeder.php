@@ -13,7 +13,7 @@ class RolePermissionSeeder extends Seeder
     {
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        $roles = ['admin', 'kaprodi', 'dosen'];
+        $roles = ['super_admin', 'admin', 'kaprodi', 'dosen'];
         foreach ($roles as $role) {
             Role::firstOrCreate(['name' => $role, 'guard_name' => 'web']);
         }
@@ -21,6 +21,13 @@ class RolePermissionSeeder extends Seeder
         $prodi = ProgramStudi::first();
 
         $verified = now();
+
+        // Super Admin — dua role (super_admin + admin) agar otomatis bisa semua yang admin bisa
+        $superAdmin = User::updateOrCreate(
+            ['email' => 'superadmin@kurikulum.id'],
+            ['name' => 'Super Administrator', 'password' => Hash::make('password'), 'program_studi_id' => $prodi?->id, 'email_verified_at' => $verified]
+        );
+        $superAdmin->syncRoles(['super_admin', 'admin']);
 
         // Admin
         $admin = User::updateOrCreate(
