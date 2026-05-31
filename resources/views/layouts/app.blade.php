@@ -76,7 +76,8 @@
         {{-- Navigation --}}
         <nav class="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto overflow-x-hidden scrollbar-hide">
 
-            {{-- Dashboard --}}
+            {{-- Dashboard — disembunyikan untuk super admin --}}
+            @unless(auth()->user()->hasRole('super_admin'))
             <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" :collapsed="$collapsed ?? false">
                 <x-slot name="icon">
                     <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -85,6 +86,7 @@
                 </x-slot>
                 <span x-show="!collapsed" x-cloak>Dashboard</span>
             </x-nav-link>
+            @endunless
 
             {{-- Profil --}}
             <x-nav-link href="{{ route('profile.edit') }}" :active="request()->routeIs('profile.edit')">
@@ -161,9 +163,9 @@
             @endhasrole
 
             {{-- ════════════════════════════════════
-                 ADMIN / KAPRODI
+                 ADMIN / KAPRODI — disembunyikan untuk super admin
             ════════════════════════════════════ --}}
-            @hasanyrole('admin|kaprodi')
+            @if(auth()->user()->hasAnyRole(['admin','kaprodi']) && !auth()->user()->hasRole('super_admin'))
 
             <p class="nav-section-label" x-show="!collapsed" x-cloak>Administrasi</p>
             <x-nav-link href="{{ route('kelengkapan') }}" :active="request()->routeIs('kelengkapan')">
@@ -294,7 +296,7 @@
                 </span>
             </a>
 
-            @endhasanyrole
+            @endif
 
             {{-- ════════════════════════════════════
                  DOSEN

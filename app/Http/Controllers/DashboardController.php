@@ -15,6 +15,11 @@ class DashboardController extends Controller
         $user = auth()->user();
         $psId = (int) $user->program_studi_id;
 
+        // Super admin tidak punya dashboard — arahkan ke Pusat Kontrol
+        if ($user->hasRole('super_admin')) {
+            return redirect()->route('super-admin.index');
+        }
+
         if ($user->isDosen()) {
             return $this->dosenDashboard($user, $psId);
         }
