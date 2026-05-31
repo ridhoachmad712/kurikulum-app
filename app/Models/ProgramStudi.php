@@ -3,9 +3,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Concerns\LogsActivity;
 
 class ProgramStudi extends Model
 {
+    use LogsActivity;
+
     protected $fillable = ['kode','nama','jenjang','fakultas','universitas','aktif','visi','misi','tujuan','alamat','email','telepon','website'];
 
     protected $casts = ['aktif' => 'boolean'];

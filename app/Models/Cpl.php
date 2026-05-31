@@ -5,9 +5,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Concerns\LogsActivity;
 
 class Cpl extends Model
 {
+    use LogsActivity;
+
     protected $fillable = ['program_studi_id','kode','deskripsi','keterangan','urutan'];
 
     public function programStudi(): BelongsTo

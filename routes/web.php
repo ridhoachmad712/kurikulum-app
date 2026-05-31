@@ -132,6 +132,10 @@ Route::middleware(['auth'])->group(function () {
         // Kelola Akun & Role
         Route::post('users/{user}/reset-password', [\App\Http\Controllers\SuperAdmin\UserController::class, 'resetPassword'])->name('users.reset-password');
         Route::resource('users', \App\Http\Controllers\SuperAdmin\UserController::class)->except(['show']);
+
+        // Log Aktivitas
+        Route::get('logs',       [\App\Http\Controllers\SuperAdmin\ActivityLogController::class, 'index'])->name('logs.index');
+        Route::delete('logs/prune', [\App\Http\Controllers\SuperAdmin\ActivityLogController::class, 'prune'])->name('logs.prune');
     });
 
     // Profile

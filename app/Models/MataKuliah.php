@@ -6,9 +6,12 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Concerns\LogsActivity;
 
 class MataKuliah extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'program_studi_id','kode_rps','nama','sks',
         'semester','konsentrasi','is_pilihan','aktif','urutan','deskripsi',
