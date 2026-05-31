@@ -32,6 +32,37 @@
             </div>
         </div>
 
+        {{-- Pengumuman Global --}}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h2 class="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                <span class="w-1 h-4 rounded-full bg-sky-500"></span> Pengumuman Global
+            </h2>
+            <label class="flex items-start gap-3 cursor-pointer mb-4">
+                <input type="checkbox" name="announcement_enabled" value="1" {{ $settings['announcement_enabled'] === '1' ? 'checked' : '' }}
+                       class="mt-0.5 w-5 h-5 rounded border-gray-300 text-sky-500 focus:ring-sky-400">
+                <span>
+                    <span class="text-sm font-medium text-gray-700">Tampilkan banner pengumuman</span>
+                    <span class="block text-xs text-gray-400 mt-0.5">Banner tampil di atas halaman untuk semua pengguna yang login.</span>
+                </span>
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <div class="sm:col-span-3">
+                    <label class="form-label">Teks Pengumuman</label>
+                    <input type="text" name="announcement_text" value="{{ old('announcement_text', $settings['announcement_text']) }}"
+                           class="form-input @error('announcement_text') border-red-400 @enderror"
+                           placeholder="Mis. Deadline pengisian kurikulum 30 Juni 2026">
+                    @error('announcement_text')<p class="form-error">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label class="form-label">Tipe</label>
+                    <select name="announcement_type" class="form-input">
+                        <option value="info"    {{ $settings['announcement_type'] === 'info' ? 'selected' : '' }}>Info (biru)</option>
+                        <option value="warning" {{ $settings['announcement_type'] === 'warning' ? 'selected' : '' }}>Penting (kuning)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
         {{-- Footer & Kredit --}}
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <h2 class="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">

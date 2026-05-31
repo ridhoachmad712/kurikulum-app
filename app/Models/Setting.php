@@ -22,6 +22,9 @@ class Setting extends Model
         'break_reminder_enabled' => '1',
         'break_reminder_min'     => '20',
         'break_reminder_max'     => '30',
+        'announcement_enabled'   => '0',
+        'announcement_text'      => '',
+        'announcement_type'      => 'info',   // info | warning
     ];
 
     /** Ambil semua pengaturan (cached), gabung dengan default. */

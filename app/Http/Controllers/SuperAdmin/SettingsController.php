@@ -26,16 +26,19 @@ class SettingsController extends Controller
             'footer_year'        => 'required|string|max:20',
             'break_reminder_min' => 'required|integer|min:1|max:240',
             'break_reminder_max' => 'required|integer|min:1|max:240|gte:break_reminder_min',
+            'announcement_text'  => 'nullable|string|max:300',
+            'announcement_type'  => 'required|in:info,warning',
         ]);
 
         // Field teks
         foreach ($data as $key => $value) {
-            Setting::put($key, $value);
+            Setting::put($key, $value ?? '');
         }
 
         // Toggle (checkbox — absen = mati)
         Setting::put('maintenance_mode', $request->boolean('maintenance_mode') ? '1' : '0');
         Setting::put('break_reminder_enabled', $request->boolean('break_reminder_enabled') ? '1' : '0');
+        Setting::put('announcement_enabled', $request->boolean('announcement_enabled') ? '1' : '0');
 
         return back()->with('success', 'Pengaturan berhasil disimpan.');
     }
