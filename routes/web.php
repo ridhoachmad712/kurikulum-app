@@ -140,6 +140,10 @@ Route::middleware(['auth'])->group(function () {
         // Backup
         Route::get('backup',          [\App\Http\Controllers\SuperAdmin\BackupController::class, 'index'])->name('backup.index');
         Route::get('backup/download', [\App\Http\Controllers\SuperAdmin\BackupController::class, 'download'])->name('backup.download');
+
+        // Pengaturan
+        Route::get('settings',  [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'index'])->name('settings.index');
+        Route::patch('settings', [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'update'])->name('settings.update');
     });
 
     // Profile

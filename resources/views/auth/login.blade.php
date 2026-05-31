@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Masuk — {{ config('app.name') }}</title>
+    <title>Masuk — {{ \App\Models\Setting::get('app_name') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -20,8 +20,8 @@
     {{-- Logo & Title --}}
     <div class="text-center mb-8">
         <img src="{{ asset('images/2logo.png') }}" alt="Logo UNM" class="w-20 h-20 object-contain mx-auto mb-4">
-        <h1 class="text-xl font-bold text-gray-900">Sistem Informasi Kurikulum</h1>
-        <p class="text-sm text-gray-500 mt-1">Prodi Manajemen FEB UNM</p>
+        <h1 class="text-xl font-bold text-gray-900">{{ \App\Models\Setting::get('app_name') }}</h1>
+        <p class="text-sm text-gray-500 mt-1">{{ \App\Models\Setting::get('institution_name') }}</p>
     </div>
 
     {{-- Card --}}

@@ -117,6 +117,31 @@
                 </x-slot>
                 <span x-show="!collapsed" x-cloak>Kelola Akun & Role</span>
             </x-nav-link>
+            <x-nav-link href="{{ route('super-admin.logs.index') }}" :active="request()->routeIs('super-admin.logs.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z"/>
+                    </svg>
+                </x-slot>
+                <span x-show="!collapsed" x-cloak>Log Aktivitas</span>
+            </x-nav-link>
+            <x-nav-link href="{{ route('super-admin.backup.index') }}" :active="request()->routeIs('super-admin.backup.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"/>
+                    </svg>
+                </x-slot>
+                <span x-show="!collapsed" x-cloak>Backup Database</span>
+            </x-nav-link>
+            <x-nav-link href="{{ route('super-admin.settings.index') }}" :active="request()->routeIs('super-admin.settings.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                    </svg>
+                </x-slot>
+                <span x-show="!collapsed" x-cloak>Pengaturan</span>
+            </x-nav-link>
             @endhasrole
 
             {{-- ════════════════════════════════════
@@ -505,12 +530,13 @@
 
         {{-- Footer --}}
         <footer class="min-h-[44px] py-2 bg-white flex items-center justify-center px-4 sm:px-6 shrink-0 sticky bottom-0 z-30">
+            @php $set = \App\Models\Setting::all(); @endphp
             <p class="text-[13px] text-gray-500 flex items-center gap-2 flex-wrap justify-center">
                 <span>
-                    This App developed with love and coffee by
-                    <a href="https://instagram.com/ridhoachmad_" target="_blank"
-                       class="text-green-600 hover:text-green-700 font-medium transition-colors">@ridhoachmad_</a>
-                    &nbsp;&copy; 2026
+                    {{ $set['footer_text'] }}
+                    <a href="{{ $set['footer_credit_url'] ?: '#' }}" target="_blank"
+                       class="text-green-600 hover:text-green-700 font-medium transition-colors">{{ $set['footer_credit_name'] }}</a>
+                    &nbsp;&copy; {{ $set['footer_year'] }}
                 </span>
                 <span class="text-gray-300 hidden sm:inline">|</span>
                 <a href="https://trakteer.id/ridhoachmad_/tip" target="_blank" rel="noopener noreferrer"
@@ -618,11 +644,15 @@
 
 <script>
 (function () {
+    @php $brSet = \App\Models\Setting::all(); @endphp
+    const BR_ENABLED = {{ $brSet['break_reminder_enabled'] === '1' ? 'true' : 'false' }};
+    const BR_MIN = {{ (int) $brSet['break_reminder_min'] }};
+    const BR_MAX = {{ max((int) $brSet['break_reminder_min'], (int) $brSet['break_reminder_max']) }};
     const CHECK_MS = 30 * 1000;
 
     function randomDelay() {
-        // Random antara 20–30 menit (dalam milidetik)
-        return (20 + Math.random() * 10) * 60 * 1000;
+        // Random antara BR_MIN–BR_MAX menit (dalam milidetik)
+        return (BR_MIN + Math.random() * Math.max(0, BR_MAX - BR_MIN)) * 60 * 1000;
     }
 
     // Init session timer — hanya set sekali per sesi browser (reset saat tab ditutup)
@@ -743,11 +773,13 @@
         }
     }
 
-    // Mulai check setelah halaman settle, lalu setiap 30 detik
-    setTimeout(function () {
-        checkReminder();
-        setInterval(checkReminder, CHECK_MS);
-    }, 1500);
+    // Mulai check setelah halaman settle, lalu setiap 30 detik — hanya jika diaktifkan
+    if (BR_ENABLED) {
+        setTimeout(function () {
+            checkReminder();
+            setInterval(checkReminder, CHECK_MS);
+        }, 1500);
+    }
 })();
 </script>
 
