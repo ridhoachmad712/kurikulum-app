@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\ProgramStudi;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -60,6 +61,8 @@ class UserController extends Controller
 
         $user->syncRoles($this->rolesFor($data['role']));
 
+        ActivityLog::record('created', "membuat akun \"{$user->name}\" (role: {$data['role']})", 'Akun', $user->id, $user->name);
+
         return redirect()->route('super-admin.users.index')->with('success', 'Akun berhasil dibuat.');
     }
 
@@ -90,6 +93,8 @@ class UserController extends Controller
 
         $user->syncRoles($this->rolesFor($data['role']));
 
+        ActivityLog::record('updated', "memperbarui akun \"{$user->name}\" (role: {$data['role']})", 'Akun', $user->id, $user->name);
+
         return redirect()->route('super-admin.users.index')->with('success', 'Akun berhasil diperbarui.');
     }
 
@@ -98,7 +103,10 @@ class UserController extends Controller
         if ($user->id === auth()->id()) {
             return back()->with('error', 'Tidak dapat menghapus akun Anda sendiri.');
         }
+        $nama = $user->name;
+        $uid  = $user->id;
         $user->delete();
+        ActivityLog::record('deleted', "menghapus akun \"{$nama}\"", 'Akun', $uid, $nama);
         return redirect()->route('super-admin.users.index')->with('success', 'Akun dihapus.');
     }
 
@@ -106,6 +114,7 @@ class UserController extends Controller
     public function resetPassword(User $user)
     {
         $user->update(['password' => Hash::make('password')]);
+        ActivityLog::record('password_reset', "mereset password akun \"{$user->name}\"", 'Akun', $user->id, $user->name);
         return back()->with('success', "Password {$user->name} direset ke default ('password').");
     }
 

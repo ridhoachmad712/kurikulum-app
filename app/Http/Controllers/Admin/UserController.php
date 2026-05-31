@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -51,6 +52,8 @@ class UserController extends Controller
 
         $user->assignRole($data['role']);
 
+        ActivityLog::record('created', "membuat akun \"{$user->name}\" (role: {$data['role']})", 'Akun', $user->id, $user->name);
+
         return redirect()->route('admin.users.index')->with('success', 'Akun berhasil dibuat.');
     }
 
@@ -76,6 +79,8 @@ class UserController extends Controller
 
         $user->syncRoles([$data['role']]);
 
+        ActivityLog::record('updated', "memperbarui akun \"{$user->name}\" (role: {$data['role']})", 'Akun', $user->id, $user->name);
+
         return redirect()->route('admin.users.index')->with('success', 'Akun berhasil diperbarui.');
     }
 
@@ -84,7 +89,9 @@ class UserController extends Controller
         if ($user->id === auth()->id()) {
             return back()->with('error', 'Tidak dapat menghapus akun sendiri.');
         }
+        $nama = $user->name; $uid = $user->id;
         $user->delete();
+        ActivityLog::record('deleted', "menghapus akun \"{$nama}\"", 'Akun', $uid, $nama);
         return redirect()->route('admin.users.index')->with('success', 'Akun dihapus.');
     }
 }

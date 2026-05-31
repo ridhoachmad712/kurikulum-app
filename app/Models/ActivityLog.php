@@ -27,11 +27,37 @@ class ActivityLog extends Model
         'ProgramStudi'  => 'Program Studi',
         'ProfilLulusan' => 'Profil Lulusan',
         'CloTaxonomi'   => 'CLO Taxonomy',
+        'Akun'          => 'Akun',
+        'Autentikasi'   => 'Autentikasi',
     ];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /** Catat aktivitas manual (non-model) — mis. login, perubahan akun. */
+    public static function record(
+        string $action,
+        string $description,
+        ?string $subjectType = null,
+        $subjectId = null,
+        ?string $subjectLabel = null,
+        ?int $userId = null,
+        ?string $userName = null,
+    ): void {
+        $actor = auth()->user();
+        static::create([
+            'user_id'       => $userId ?? $actor?->id,
+            'user_name'     => $userName ?? $actor?->name ?? 'Sistem',
+            'action'        => $action,
+            'subject_type'  => $subjectType,
+            'subject_id'    => $subjectId,
+            'subject_label' => $subjectLabel,
+            'description'   => $description,
+            'ip_address'    => request()->ip(),
+            'created_at'    => now(),
+        ]);
     }
 
     public function getSubjectLabelHumanAttribute(): string

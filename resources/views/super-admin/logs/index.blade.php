@@ -15,36 +15,39 @@
 
 @php
 $actionMeta = [
-    'created' => ['Tambah', 'bg-green-100 text-green-700', 'M12 4.5v15m7.5-7.5h-15'],
-    'updated' => ['Ubah',   'bg-amber-100 text-amber-700', 'M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z'],
-    'deleted' => ['Hapus',  'bg-red-100 text-red-700',     'M6 18L18 6M6 6l12 12'],
+    'created'       => ['Tambah',       'bg-green-100 text-green-700',   'M12 4.5v15m7.5-7.5h-15'],
+    'updated'       => ['Ubah',         'bg-amber-100 text-amber-700',   'M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z'],
+    'deleted'       => ['Hapus',        'bg-red-100 text-red-700',       'M6 18L18 6M6 6l12 12'],
+    'login'         => ['Login',        'bg-blue-100 text-blue-700',     'M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9'],
+    'logout'        => ['Logout',       'bg-gray-100 text-gray-600',     'M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75'],
+    'login_failed'  => ['Login Gagal',  'bg-red-100 text-red-700',       'M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z'],
+    'password_reset'=> ['Reset Pass',   'bg-violet-100 text-violet-700', 'M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z'],
+    'impersonate'   => ['Masuk Sbg',    'bg-indigo-100 text-indigo-700', 'M15 12a3 3 0 11-6 0 3 3 0 016 0z'],
 ];
 @endphp
 
 {{-- Filter --}}
-<div class="flex items-center gap-2 mb-5 flex-wrap">
+<form method="GET" class="flex items-center gap-2 mb-5 flex-wrap">
+    @if($search)<input type="hidden" name="search" value="{{ $search }}">@endif
     {{-- Aksi --}}
-    <div class="flex items-center gap-1.5">
-        <a href="{{ route('super-admin.logs.index', array_filter(['subject'=>$subject,'search'=>$search])) }}"
-           class="px-3 py-1.5 rounded-lg text-xs font-medium transition {{ !$action ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">Semua Aksi</a>
+    <select name="action" onchange="this.form.submit()" class="form-input py-2 text-sm w-auto">
+        <option value="">Semua Aksi</option>
         @foreach($actionMeta as $key => [$label, $cls, $icon])
-        <a href="{{ route('super-admin.logs.index', array_filter(['action'=>$key,'subject'=>$subject,'search'=>$search])) }}"
-           class="px-3 py-1.5 rounded-lg text-xs font-medium transition {{ $action === $key ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">{{ $label }}</a>
+        <option value="{{ $key }}" {{ $action === $key ? 'selected' : '' }}>{{ $label }}</option>
         @endforeach
-    </div>
+    </select>
     {{-- Subjek --}}
-    <form method="GET" class="flex items-center gap-2">
-        @if($action)<input type="hidden" name="action" value="{{ $action }}">@endif
-        @if($search)<input type="hidden" name="search" value="{{ $search }}">@endif
-        <select name="subject" onchange="this.form.submit()" class="form-input py-2 text-sm w-auto">
-            <option value="">Semua Jenis Data</option>
-            @foreach($subjects as $key => $label)
-            <option value="{{ $key }}" {{ $subject === $key ? 'selected' : '' }}>{{ $label }}</option>
-            @endforeach
-        </select>
-    </form>
+    <select name="subject" onchange="this.form.submit()" class="form-input py-2 text-sm w-auto">
+        <option value="">Semua Jenis Data</option>
+        @foreach($subjects as $key => $label)
+        <option value="{{ $key }}" {{ $subject === $key ? 'selected' : '' }}>{{ $label }}</option>
+        @endforeach
+    </select>
+    @if($action || $subject)
+    <a href="{{ route('super-admin.logs.index', array_filter(['search'=>$search])) }}" class="text-xs text-gray-400 hover:text-gray-600">Reset</a>
+    @endif
     <div class="ml-auto"><x-search-input placeholder="Cari data, pelaku, atau aksi..." /></div>
-</div>
+</form>
 
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="overflow-x-auto">

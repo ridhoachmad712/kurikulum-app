@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,6 +18,8 @@ class ImpersonationController extends Controller
         if ($user->hasRole('super_admin')) {
             return back()->with('error', 'Tidak dapat masuk sebagai sesama Super Admin.');
         }
+
+        ActivityLog::record('impersonate', "masuk sebagai \"{$user->name}\"", 'Akun', $user->id, $user->name);
 
         // Simpan id super admin asli, lalu beralih
         session(['impersonator_id' => auth()->id()]);
