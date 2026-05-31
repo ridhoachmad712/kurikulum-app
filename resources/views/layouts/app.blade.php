@@ -40,6 +40,9 @@
     <style id="tech-style">
         .tech-mode { --mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace; }
 
+        /* Semua font jadi monospace */
+        .tech-mode, .tech-mode * { font-family: var(--mono) !important; }
+
         /* Sudut lebih tajam */
         .tech-mode [class*="rounded-2xl"],
         .tech-mode [class*="rounded-xl"],
