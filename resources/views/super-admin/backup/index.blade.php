@@ -35,6 +35,39 @@
                 Simpan dengan aman dan jangan bagikan ke pihak yang tidak berwenang.
             </p>
         </div>
+
+        {{-- Restore --}}
+        <div x-data="{ ready: false }" class="mt-4 bg-white border border-red-200 rounded-2xl p-5">
+            <div class="flex items-center gap-2 mb-2">
+                <svg class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>
+                </svg>
+                <h3 class="font-bold text-sm text-red-700">Pulihkan dari Backup</h3>
+            </div>
+            <p class="text-xs text-gray-500 leading-relaxed mb-4">
+                Mengunggah file <strong>.sql</strong> akan <strong class="text-red-600">menimpa seluruh data saat ini</strong>.
+                Tindakan ini tidak dapat dibatalkan. Pastikan Anda sudah membuat backup terbaru.
+            </p>
+            <form method="POST" action="{{ route('super-admin.backup.restore') }}" enctype="multipart/form-data"
+                  onsubmit="return confirm('PERINGATAN: Seluruh data saat ini akan ditimpa dan tidak dapat dikembalikan. Lanjutkan?')">
+                @csrf
+                <input type="file" name="file" accept=".sql" required
+                       class="w-full text-xs text-gray-600 border border-gray-300 rounded-lg px-3 py-2 mb-3
+                              file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-gray-200 file:text-gray-700 file:text-xs file:cursor-pointer">
+                <label class="flex items-start gap-2 mb-4 cursor-pointer">
+                    <input type="checkbox" name="confirm" value="1" x-model="ready"
+                           class="mt-0.5 w-4 h-4 rounded border-gray-300 text-red-500 focus:ring-red-400">
+                    <span class="text-xs text-gray-600">Saya memahami data saat ini akan ditimpa permanen.</span>
+                </label>
+                @error('confirm')<p class="form-error mb-2">{{ $message }}</p>@enderror
+                <button type="submit" :disabled="!ready"
+                        :class="ready ? '' : 'opacity-40 cursor-not-allowed'"
+                        style="background-color:#dc2626"
+                        class="w-full py-2.5 text-white text-sm font-semibold rounded-xl transition">
+                    Pulihkan Database
+                </button>
+            </form>
+        </div>
     </div>
 
     {{-- Ringkasan isi DB --}}

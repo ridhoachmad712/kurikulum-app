@@ -145,6 +145,7 @@ Route::middleware(['auth'])->group(function () {
         // Backup
         Route::get('backup',          [\App\Http\Controllers\SuperAdmin\BackupController::class, 'index'])->name('backup.index');
         Route::get('backup/download', [\App\Http\Controllers\SuperAdmin\BackupController::class, 'download'])->name('backup.download');
+        Route::post('backup/restore', [\App\Http\Controllers\SuperAdmin\BackupController::class, 'restore'])->name('backup.restore');
 
         // Pengaturan
         Route::get('settings',  [\App\Http\Controllers\SuperAdmin\SettingsController::class, 'index'])->name('settings.index');
