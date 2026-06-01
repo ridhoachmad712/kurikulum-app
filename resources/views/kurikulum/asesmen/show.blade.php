@@ -378,6 +378,14 @@ function showStatus(msg) {
 function hideStatus() {
     document.getElementById('save-status')?.classList.add('hidden');
 }
+
+// Hitung total semua baris saat halaman dimuat (sesuai data tersimpan)
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('tr[id^="row-"]').forEach(function (row) {
+        const uid = row.id.replace('row-', '');
+        updateTotal(uid);
+    });
+});
 </script>
 
 @hasrole('dosen')
