@@ -13,11 +13,10 @@
 <div class="bg-blue-50 border border-blue-100 rounded-lg px-4 py-2.5 mb-5 text-xs text-blue-700 flex items-start gap-2">
     <svg class="w-4 h-4 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
     <span>
-        Halaman ini memiliki <strong>dua kolom input</strong>:
-        <span class="inline-flex items-center gap-1 mx-1 px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded font-semibold text-[11px]">Bobot Sub-CPMK</span>
-        — isi % porsi bobot Sub-CPMK ini dari total CPMK (kosongkan = dibagi rata otomatis); dan
-        kolom <strong>Tugas / Kuis / dst</strong> — distribusi metode penilaian yang jumlahnya harus sama dengan Bobot Sub-CPMK.
-        Nilai target ditampilkan di kolom <em>Total / Target</em>. Semua perubahan disimpan otomatis.
+        Bobot tiap CPMK <strong>dibagi rata otomatis</strong> ke seluruh Sub-CPMK-nya — Anda cukup mengisi
+        distribusi metode penilaian (<strong>Tugas / Kuis / dst</strong>) pada tiap Sub-CPMK.
+        Jumlah metode per baris diusahakan sama dengan <em>target</em> (ditampilkan di kolom <em>Total / Target</em>).
+        Semua perubahan disimpan otomatis.
     </span>
 </div>
 
@@ -98,23 +97,13 @@
         <span class="font-semibold text-gray-700 text-sm">{{ $cpmk->kode }}</span>
         <span class="text-sm text-gray-600">{{ Str::limit($cpmk->deskripsi, 70) }}</span>
 
-        {{-- Bobot info + status distribusi --}}
+        {{-- Bobot info --}}
         @if($totalBobot > 0)
-        @php
-            $totalManual = $meta['total_manual'] ?? 0;
-            $sisa = round($totalBobot - $totalManual, 2);
-            $sisaCls = abs($sisa) <= 0.01
-                ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
-                : ($sisa < 0 ? 'bg-red-50 border-red-200 text-red-600' : 'bg-amber-50 border-amber-200 text-amber-700');
-        @endphp
         <span class="px-2 py-0.5 bg-gray-100 border border-gray-200 rounded-full text-xs text-gray-600">
             Total CPMK: {{ round($totalBobot) }}%
         </span>
-        <span id="sisa-badge-{{ $cpmk->id }}" class="px-2 py-0.5 border rounded-full text-xs {{ $sisaCls }}">
-            @if(abs($sisa) <= 0.01) ✓ Bobot terdistribusi
-            @elseif($sisa < 0) ⚠ Melebihi {{ round(abs($sisa)) }}%
-            @else Sisa: {{ round($sisa) }}%
-            @endif
+        <span class="px-2 py-0.5 bg-indigo-50 border border-indigo-200 rounded-full text-xs text-indigo-700">
+            Dibagi rata: {{ round($meta['bobot_per_sub'] ?? 0, 2) }}% / Sub-CPMK
         </span>
         @else
         <span class="px-2 py-0.5 bg-amber-50 border border-amber-200 rounded-full text-xs text-amber-600">
@@ -145,18 +134,6 @@
                 <tr class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
                     <th class="border-b border-gray-100 px-4 py-2.5 text-left w-36">Sub-CPMK</th>
                     <th class="border-b border-gray-100 px-4 py-2.5 text-left">Deskripsi</th>
-                    <th class="border-b border-gray-100 px-3 py-2.5 text-center w-28 bg-indigo-50 text-indigo-600">
-                        <div class="flex items-center justify-center gap-1">
-                            <span>Bobot Sub-CPMK</span>
-                            <span title="Porsi bobot (%) yang dimiliki Sub-CPMK ini dari total bobot CPMK. Kosongkan = dibagi rata otomatis. Jumlah metode asesmen di bawah harus sama dengan nilai ini."
-                                  class="cursor-help text-indigo-400 hover:text-indigo-600 normal-case font-normal tracking-normal">
-                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </span>
-                        </div>
-                        <p class="text-[10px] font-normal normal-case tracking-normal text-indigo-400 mt-0.5">kosong = otomatis</p>
-                    </th>
                     <th class="border-b border-gray-100 px-3 py-2.5 text-center w-20">Tugas</th>
                     <th class="border-b border-gray-100 px-3 py-2.5 text-center w-20">Kuis</th>
                     <th class="border-b border-gray-100 px-3 py-2.5 text-center w-24">Kasus/Proyek</th>
@@ -184,18 +161,6 @@
                     data-total-cpmk="{{ $totalBobot }}">
                     <td class="px-4 py-2.5 font-medium text-teal-700 text-xs align-middle">{{ $sc->kode }}</td>
                     <td class="px-4 py-2.5 text-gray-600 text-xs align-middle">{{ $sc->deskripsi }}</td>
-
-                    {{-- Kolom Bobot manual --}}
-                    <td class="px-3 py-2 text-center align-middle bg-indigo-50/40">
-                        <input type="number" min="0" max="100" step="1"
-                            id="bobot-{{ $uid }}"
-                            value="{{ $sc->pivot->bobot !== null ? round((float)$sc->pivot->bobot) : '' }}"
-                            placeholder="auto"
-                            oninput="debounceBobot('{{ $uid }}', {{ $sc->id }}, {{ $cpmk->id }})"
-                            class="w-16 text-center border border-indigo-200 rounded-lg px-1.5 py-1 text-xs
-                                   focus:outline-none focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 bg-white">
-                        <p id="bobot-hint-{{ $uid }}" class="text-[9px] text-indigo-300 mt-0.5 hidden">0 = auto</p>
-                    </td>
 
                     @foreach(['tugas','quis','kasus_proyek','uts','uas'] as $field)
                     <td class="px-3 py-2 text-center align-middle">
@@ -245,68 +210,8 @@ table input[type=number] { -moz-appearance: textfield; }
 </style>
 
 <script>
-const CSRF        = '{{ csrf_token() }}';
-const timers      = {};
-const bobotTimers = {};
-
-// ── Auto-save Bobot Sub-CPMK ──────────────────────────────────────
-function debounceBobot(uid, scId, cpmkId) {
-    clearTimeout(bobotTimers[uid]);
-    // Tampilkan hint jika user ketik 0
-    const inp  = document.getElementById('bobot-' + uid);
-    const hint = document.getElementById('bobot-hint-' + uid);
-    if (hint) hint.classList.toggle('hidden', inp?.value !== '0');
-    showStatus('Menyimpan bobot...');
-    bobotTimers[uid] = setTimeout(() => saveBobotSc(uid, scId, cpmkId), 500);
-}
-
-async function saveBobotSc(uid, scId, cpmkId) {
-    const rawVal = document.getElementById('bobot-' + uid)?.value;
-    const bobot  = rawVal === '' ? 0 : (parseFloat(rawVal) || 0);
-    try {
-        const res  = await fetch(`/kurikulum/api/sub-cpmk/${scId}/bobot`, {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
-            body:    JSON.stringify({ cpmk_id: cpmkId, bobot }),
-        });
-        if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            showStatus('⚠ ' + (err.message || 'Gagal menyimpan (error ' + res.status + ')'));
-            setTimeout(() => hideStatus(), 4000);
-            return;
-        }
-        const json = await res.json();
-        if (json.ok) {
-            const row = document.getElementById('row-' + uid);
-            if (row) row.dataset.target = bobot;
-            updateTotal(uid);
-            updateSisaBadge(cpmkId, json.total_cpmk, json.total_sub_bobot);
-            showStatus('✓ Tersimpan');
-            setTimeout(() => hideStatus(), 2000);
-        }
-    } catch {
-        showStatus('⚠ Tidak dapat terhubung ke server — coba refresh halaman');
-        setTimeout(() => hideStatus(), 4000);
-    }
-}
-
-function updateSisaBadge(cpmkId, totalCpmk, totalSub) {
-    const badge = document.getElementById('sisa-badge-' + cpmkId);
-    if (!badge) return;
-    const sisa = Math.round((totalCpmk - totalSub) * 100) / 100;
-    const abs  = Math.abs(sisa);
-    badge.className = 'px-2 py-0.5 border rounded-full text-xs ' +
-        (abs <= 0.01
-            ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
-            : sisa < 0
-                ? 'bg-red-50 border-red-200 text-red-600'
-                : 'bg-amber-50 border-amber-200 text-amber-700');
-    badge.textContent = abs <= 0.01
-        ? '✓ Bobot terdistribusi'
-        : sisa < 0
-            ? '⚠ Melebihi ' + Math.round(abs) + '%'
-            : 'Sisa: ' + Math.round(sisa) + '%';
-}
+const CSRF   = '{{ csrf_token() }}';
+const timers = {};
 
 function debounce(uid, scId) {
     clearTimeout(timers[uid]);
@@ -407,12 +312,12 @@ document.addEventListener('DOMContentLoaded', function () {
 @section('help')
 <div class="space-y-4">
     <div>
-        <h3 class="font-semibold text-gray-800 mb-1.5">Kolom Bobot Sub-CPMK</h3>
-        <p class="text-xs text-gray-500 leading-relaxed">Isi persentase porsi bobot Sub-CPMK ini dari total bobot CPMK induknya. Jika dikosongkan, bobot dibagi rata otomatis ke semua Sub-CPMK dalam satu CPMK.</p>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Bobot Dibagi Rata Otomatis</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Bobot tiap CPMK (dari Tabel 7 / tab Bobot CPMK) otomatis dibagi rata ke seluruh Sub-CPMK-nya. Anda tidak perlu mengisi bobot per Sub-CPMK lagi.</p>
     </div>
     <div>
         <h3 class="font-semibold text-gray-800 mb-1.5">Kolom Metode Asesmen</h3>
-        <p class="text-xs text-gray-500 leading-relaxed">Distribusikan bobot Sub-CPMK ke metode penilaian (Tugas, Kuis, UTS, UAS, dll.). Jumlah total metode harus sama dengan nilai di kolom Bobot Sub-CPMK.</p>
+        <p class="text-xs text-gray-500 leading-relaxed">Cukup isi distribusi metode penilaian (Tugas, Kuis, UTS, UAS, dll.) untuk tiap Sub-CPMK. Jumlah total metode diusahakan sama dengan <em>target</em> (= bobot CPMK ÷ jumlah Sub-CPMK).</p>
     </div>
     <div>
         <h3 class="font-semibold text-gray-800 mb-1.5">Indikator Selaras</h3>

@@ -75,19 +75,16 @@ class AsesmenController extends Controller
             $totalBobot  = (float) $cpmk->cpmkCpls->where('has_relation', true)->sum('bobot_persen');
             $subCount    = $cpmk->subCpmks->count();
             $bobotPerSub = $subCount > 0 ? round($totalBobot / $subCount, 2) : 0;
-            $totalManual = $cpmk->subCpmks->sum(fn($s) => (float) ($s->pivot->bobot ?? 0));
 
             $cpmkMeta[$cpmk->id] = [
                 'total_bobot'   => $totalBobot,
                 'bobot_per_sub' => $bobotPerSub,
                 'sub_count'     => $subCount,
-                'total_manual'  => round($totalManual, 2),
             ];
 
+            // Target tiap Sub-CPMK = bobot CPMK dibagi rata (sederhana, tanpa input per Sub).
             foreach ($cpmk->subCpmks as $sc) {
-                // Kunci per (CPMK, Sub-CPMK) — satu Sub-CPMK bisa terhubung ke banyak CPMK.
-                // Gunakan bobot pivot jika sudah diisi, fallback ke pembagian rata.
-                $subCpmkBobot[$cpmk->id][$sc->id] = $sc->pivot->bobot !== null ? (float) $sc->pivot->bobot : $bobotPerSub;
+                $subCpmkBobot[$cpmk->id][$sc->id] = $bobotPerSub;
             }
         }
 
