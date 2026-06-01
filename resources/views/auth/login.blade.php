@@ -18,8 +18,8 @@
 
 <div class="min-h-screen flex">
 
-    {{-- ── KIRI: Gambar (sembunyi di mobile) ── --}}
-    <div class="hidden lg:block lg:w-1/2 xl:w-3/5 relative">
+    {{-- ── KIRI: Gambar (sembunyi di mobile) — 3/4 lebar ── --}}
+    <div class="hidden lg:block lg:w-3/4 relative">
         <img src="{{ asset('images/bg.jpeg') }}" alt="Kampus"
              class="absolute inset-0 w-full h-full object-cover">
         {{-- Overlay gradien + branding --}}
@@ -41,8 +41,8 @@
         </div>
     </div>
 
-    {{-- ── KANAN: Form login ── --}}
-    <div class="w-full lg:w-1/2 xl:w-2/5 flex items-center justify-center px-6 py-12 bg-slate-50">
+    {{-- ── KANAN: Form login — 1/4 lebar ── --}}
+    <div class="w-full lg:w-1/4 flex items-center justify-center px-6 py-12 bg-slate-50">
         <div class="w-full max-w-sm">
 
             {{-- Logo & judul (untuk mobile / konsistensi) --}}
