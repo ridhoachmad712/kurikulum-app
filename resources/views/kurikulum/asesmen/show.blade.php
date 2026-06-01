@@ -13,28 +13,27 @@
 <div class="bg-blue-50 border border-blue-100 rounded-lg px-4 py-2.5 mb-5 text-xs text-blue-700 flex items-start gap-2">
     <svg class="w-4 h-4 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
     <span>
-        Bobot tiap CPMK <strong>dibagi rata otomatis</strong> ke seluruh Sub-CPMK-nya — Anda cukup mengisi
-        distribusi metode penilaian (<strong>Tugas / Kuis / dst</strong>) pada tiap Sub-CPMK.
-        Jumlah metode per baris diusahakan sama dengan <em>target</em> (ditampilkan di kolom <em>Total / Target</em>).
+        Isi distribusi metode penilaian (<strong>Tugas / Kuis / Kasus·Proyek / UTS / UAS</strong>)
+        <strong>satu kali untuk tiap CPMK</strong>. Sistem otomatis membagi rata nilai tersebut ke seluruh
+        Sub-CPMK di belakang layar. Usahakan jumlah metode sama dengan <em>target</em> (= total bobot CPMK terhadap CPL).
         Semua perubahan disimpan otomatis.
     </span>
 </div>
 
 @php
-    $summTotal   = 0;
-    $summFilled  = 0;
-    $summSelaras = 0;
+    $summTotal   = 0;   // jumlah CPMK yang punya bobot
+    $summFilled  = 0;   // CPMK yang sudah diisi
+    $summSelaras = 0;   // CPMK yang total metodenya = target
     foreach ($cpmks as $cpmk) {
-        $meta        = $cpmkMeta[$cpmk->id] ?? [];
-        $bobotPerSub = (float) ($meta['bobot_per_sub'] ?? 0);
-        if ($bobotPerSub <= 0) continue;
-        foreach ($cpmk->subCpmks as $sc) {
-            $summTotal++;
-            if ($sc->asesmen !== null) {
-                $summFilled++;
-                $t = (float) $sc->asesmen->total;
-                if (abs($t - $bobotPerSub) <= 0.5) $summSelaras++;
-            }
+        $meta = $cpmkMeta[$cpmk->id] ?? [];
+        if ($cpmk->subCpmks->isEmpty()) continue;
+        $target = (float) ($meta['total_bobot'] ?? 0);
+        if ($target <= 0) continue;
+        $summTotal++;
+        $t = (float) ($cpmkAsesmen[$cpmk->id]['total'] ?? 0);
+        if ($t > 0) {
+            $summFilled++;
+            if (abs($t - $target) <= 0.5) $summSelaras++;
         }
     }
     $summPct = $summTotal > 0 ? round($summSelaras / $summTotal * 100) : 0;
@@ -46,7 +45,7 @@
     <div class="flex items-center gap-4 text-sm flex-wrap flex-1 min-w-0">
         <div class="flex flex-col items-center px-4 py-1.5 bg-gray-50 rounded-lg min-w-[72px]">
             <span class="text-lg font-bold text-gray-800">{{ $summTotal }}</span>
-            <span class="text-[10px] text-gray-400 uppercase tracking-wide">Sub-CPMK</span>
+            <span class="text-[10px] text-gray-400 uppercase tracking-wide">CPMK</span>
         </div>
         <div class="flex flex-col items-center px-4 py-1.5 bg-blue-50 rounded-lg min-w-[72px]">
             <span class="text-lg font-bold text-blue-700">{{ $summFilled }}</span>
@@ -72,67 +71,22 @@
                  style="width: {{ $summPct }}%"></div>
         </div>
         @if($summSelaras === $summTotal)
-        <p class="text-[10px] text-green-600 mt-1 font-medium">✓ Semua Sub-CPMK sudah selaras</p>
+        <p class="text-[10px] text-green-600 mt-1 font-medium">✓ Semua CPMK sudah selaras</p>
         @elseif($summFilled < $summTotal)
-        <p class="text-[10px] text-gray-400 mt-1">{{ $summTotal - $summFilled }} Sub-CPMK belum diisi</p>
+        <p class="text-[10px] text-gray-400 mt-1">{{ $summTotal - $summFilled }} CPMK belum diisi</p>
         @else
-        <p class="text-[10px] text-amber-600 mt-1">{{ $summTotal - $summSelaras }} Sub-CPMK belum selaras</p>
+        <p class="text-[10px] text-amber-600 mt-1">{{ $summTotal - $summSelaras }} CPMK belum selaras</p>
         @endif
     </div>
 </div>
 @endif
 
-@forelse($cpmks as $cpmk)
-@if($cpmk->subCpmks->isNotEmpty())
-@php
-    $meta        = $cpmkMeta[$cpmk->id] ?? ['total_bobot' => 0, 'bobot_per_sub' => 0, 'sub_count' => 0];
-    $bobotPerSub = $meta['bobot_per_sub'];
-    $totalBobot  = $meta['total_bobot'];
-    $noClo       = $cpmk->subCpmks->every(fn($sc) => $sc->subCpmkClos->isEmpty());
-@endphp
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-5">
-
-    {{-- Header CPMK --}}
-    <div class="px-5 py-3 border-b border-gray-100 bg-gray-50 flex items-center gap-3 flex-wrap">
-        <span class="font-semibold text-gray-700 text-sm">{{ $cpmk->kode }}</span>
-        <span class="text-sm text-gray-600">{{ Str::limit($cpmk->deskripsi, 70) }}</span>
-
-        {{-- Bobot info --}}
-        @if($totalBobot > 0)
-        <span class="px-2 py-0.5 bg-gray-100 border border-gray-200 rounded-full text-xs text-gray-600">
-            Total CPMK: {{ round($totalBobot) }}%
-        </span>
-        <span class="px-2 py-0.5 bg-indigo-50 border border-indigo-200 rounded-full text-xs text-indigo-700">
-            Dibagi rata: {{ round($meta['bobot_per_sub'] ?? 0, 2) }}% / Sub-CPMK
-        </span>
-        @else
-        <span class="px-2 py-0.5 bg-amber-50 border border-amber-200 rounded-full text-xs text-amber-600">
-            ⚠ Bobot CPMK–CPL belum diisi
-        </span>
-        @endif
-
-        {{-- Warning: semua Sub-CPMK belum punya CLO --}}
-        @if($noClo)
-        <a href="{{ route('kurikulum.sub-cpmk.show', $mataKuliah) }}"
-           class="px-2 py-0.5 bg-orange-50 border border-orange-200 rounded-full text-xs text-orange-600 hover:bg-orange-100 transition-colors">
-            ⚠ Sub-CPMK belum memiliki CLO
-        </a>
-        @endif
-
-        <a href="{{ route('kurikulum.sub-cpmk.show', $mataKuliah) }}"
-           class="ml-auto inline-flex items-center gap-1 text-xs text-gray-400 hover:text-gray-700 hover:underline shrink-0">
-            Kelola Sub-CPMK
-            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-            </svg>
-        </a>
-    </div>
-
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="overflow-x-auto">
         <table class="min-w-full text-sm border-collapse">
             <thead>
                 <tr class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
-                    <th class="border-b border-gray-100 px-4 py-2.5 text-left w-36">Sub-CPMK</th>
+                    <th class="border-b border-gray-100 px-4 py-2.5 text-left w-40">CPMK</th>
                     <th class="border-b border-gray-100 px-4 py-2.5 text-left">Deskripsi</th>
                     <th class="border-b border-gray-100 px-3 py-2.5 text-center w-20">Tugas</th>
                     <th class="border-b border-gray-100 px-3 py-2.5 text-center w-20">Kuis</th>
@@ -143,39 +97,60 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
-                @foreach($cpmk->subCpmks as $sc)
+                @forelse($cpmks as $cpmk)
+                @if($cpmk->subCpmks->isNotEmpty())
                 @php
-                    $uid     = $cpmk->id.'-'.$sc->id;
-                    $a       = $sc->asesmen;
-                    $total   = $a ? (float) $a->total : 0;
-                    $target  = $subCpmkBobot[$cpmk->id][$sc->id] ?? 0;
+                    $meta    = $cpmkMeta[$cpmk->id] ?? ['total_bobot' => 0, 'sub_count' => 0, 'no_clo' => true];
+                    $agg     = $cpmkAsesmen[$cpmk->id] ?? ['tugas'=>0,'quis'=>0,'kasus_proyek'=>0,'uts'=>0,'uas'=>0,'total'=>0];
+                    $target  = (float) $meta['total_bobot'];
+                    $total   = (float) $agg['total'];
+                    $noClo   = $meta['no_clo'] ?? false;
                     $match   = $target > 0 && abs($total - $target) <= 0.5;
                     $over    = $target > 0 && $total > $target + 0.5;
                     $badgeCls = $match ? 'bg-green-100 text-green-700'
                               : ($over  ? 'bg-red-100 text-red-700'
                               : ($total > 0 ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-400'));
                 @endphp
-                <tr class="hover:bg-gray-50" id="row-{{ $uid }}"
-                    data-target="{{ $target }}"
-                    data-cpmk-id="{{ $cpmk->id }}"
-                    data-total-cpmk="{{ $totalBobot }}">
-                    <td class="px-4 py-2.5 font-medium text-teal-700 text-xs align-middle">{{ $sc->kode }}</td>
-                    <td class="px-4 py-2.5 text-gray-600 text-xs align-middle">{{ $sc->deskripsi }}</td>
+                <tr class="hover:bg-gray-50" id="row-{{ $cpmk->id }}" data-target="{{ $target }}">
+                    <td class="px-4 py-3 align-top">
+                        <div class="font-semibold text-gray-700 text-sm">{{ $cpmk->kode }}</div>
+                        <div class="flex flex-wrap items-center gap-1.5 mt-1.5">
+                            @if($target > 0)
+                            <span class="px-1.5 py-0.5 bg-gray-100 border border-gray-200 rounded-full text-[10px] text-gray-600">
+                                Bobot {{ round($target) }}%
+                            </span>
+                            @else
+                            <span class="px-1.5 py-0.5 bg-amber-50 border border-amber-200 rounded-full text-[10px] text-amber-600">
+                                ⚠ Bobot CPMK–CPL belum diisi
+                            </span>
+                            @endif
+                            <span class="px-1.5 py-0.5 bg-indigo-50 border border-indigo-200 rounded-full text-[10px] text-indigo-600">
+                                {{ $meta['sub_count'] }} Sub-CPMK
+                            </span>
+                        </div>
+                        @if($noClo)
+                        <a href="{{ route('kurikulum.sub-cpmk.show', $mataKuliah) }}"
+                           class="inline-block mt-1.5 px-1.5 py-0.5 bg-orange-50 border border-orange-200 rounded-full text-[10px] text-orange-600 hover:bg-orange-100 transition-colors">
+                            ⚠ Sub-CPMK belum memiliki CLO
+                        </a>
+                        @endif
+                    </td>
+                    <td class="px-4 py-3 text-gray-600 text-xs align-top">{{ Str::limit($cpmk->deskripsi, 120) }}</td>
 
                     @foreach(['tugas','quis','kasus_proyek','uts','uas'] as $field)
-                    <td class="px-3 py-2 text-center align-middle">
+                    <td class="px-3 py-3 text-center align-middle">
                         <input type="number" min="0" max="100" step="1"
-                            id="{{ $field }}-{{ $uid }}"
-                            value="{{ $a ? round((float)$a->{$field}) : '' }}"
+                            id="{{ $field }}-{{ $cpmk->id }}"
+                            value="{{ $total > 0 ? round((float)$agg[$field]) : '' }}"
                             placeholder="0"
-                            oninput="debounce('{{ $uid }}', {{ $sc->id }})"
+                            oninput="debounce({{ $cpmk->id }})"
                             class="w-16 text-center border border-gray-200 rounded-lg px-1.5 py-1 text-xs
                                    focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400">
                     </td>
                     @endforeach
 
-                    <td class="px-3 py-2 text-center align-middle">
-                        <span id="total-{{ $uid }}"
+                    <td class="px-3 py-3 text-center align-middle">
+                        <span id="total-{{ $cpmk->id }}"
                               class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold {{ $badgeCls }}">
                             {{ $total > 0 ? round($total).'%' : '–' }}
                             @if($over) ⚠ @endif
@@ -185,25 +160,24 @@
                         @endif
                     </td>
                 </tr>
-                @endforeach
+                @endif
+                @empty
+                <tr>
+                    <td colspan="8" class="text-center py-16 text-gray-400">
+                        Belum ada Sub-CPMK untuk mata kuliah ini.
+                    </td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
 </div>
-@endif
-@empty
-<div class="text-center py-16 text-gray-400">
-    <p>Belum ada Sub-CPMK untuk mata kuliah ini.</p>
-</div>
-@endforelse
 
 {{-- Status bar --}}
 <div id="save-status" class="fixed bottom-4 right-4 text-xs px-3 py-1.5 rounded-full shadow hidden
     bg-white border border-gray-200 text-gray-600 transition-all"></div>
 
 <style>
-#bobot-form input[type=number]::-webkit-inner-spin-button,
-#bobot-form input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 table input[type=number]::-webkit-inner-spin-button,
 table input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 table input[type=number] { -moz-appearance: textfield; }
@@ -213,23 +187,23 @@ table input[type=number] { -moz-appearance: textfield; }
 const CSRF   = '{{ csrf_token() }}';
 const timers = {};
 
-function debounce(uid, scId) {
-    clearTimeout(timers[uid]);
-    updateTotal(uid);              // tampilkan total langsung saat mengetik
+function debounce(cpmkId) {
+    clearTimeout(timers[cpmkId]);
+    updateTotal(cpmkId);              // tampilkan total langsung saat mengetik
     showStatus('Mengetik...');
-    timers[uid] = setTimeout(() => saveRow(uid, scId), 500);
+    timers[cpmkId] = setTimeout(() => saveCpmk(cpmkId), 500);
 }
 
-async function saveRow(uid, scId) {
+async function saveCpmk(cpmkId) {
     const fields = ['tugas','quis','kasus_proyek','uts','uas'];
     const body   = {};
     for (const f of fields) {
-        body[f] = parseFloat(document.getElementById(f + '-' + uid)?.value || 0) || 0;
+        body[f] = parseFloat(document.getElementById(f + '-' + cpmkId)?.value || 0) || 0;
     }
 
     showStatus('Menyimpan...');
     try {
-        const res  = await fetch(`/kurikulum/api/asesmen/${scId}`, {
+        const res = await fetch(`/kurikulum/api/cpmk/${cpmkId}/asesmen`, {
             method:  'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
             body:    JSON.stringify(body),
@@ -242,7 +216,7 @@ async function saveRow(uid, scId) {
         }
         const json = await res.json();
         if (json.ok) {
-            updateTotal(uid);
+            updateTotal(cpmkId);
             showStatus('✓ Tersimpan');
             setTimeout(() => hideStatus(), 2000);
         }
@@ -253,16 +227,16 @@ async function saveRow(uid, scId) {
 }
 
 // Hitung ulang total baris (dari 5 input metode) + perbarui badge vs target
-function updateTotal(uid) {
-    const el = document.getElementById('total-' + uid);
+function updateTotal(cpmkId) {
+    const el = document.getElementById('total-' + cpmkId);
     if (!el) return;
     let total = 0;
     ['tugas','quis','kasus_proyek','uts','uas'].forEach(f => {
-        total += parseFloat(document.getElementById(f + '-' + uid)?.value || 0) || 0;
+        total += parseFloat(document.getElementById(f + '-' + cpmkId)?.value || 0) || 0;
     });
     total = Math.round(total * 100) / 100;
 
-    const row    = document.getElementById('row-' + uid);
+    const row    = document.getElementById('row-' + cpmkId);
     const target = parseFloat(row?.dataset.target ?? 0);
     const match  = target > 0 && Math.abs(total - target) <= 0.5;
     const over   = target > 0 && total > target + 0.5;
@@ -287,8 +261,7 @@ function hideStatus() {
 // Hitung total semua baris saat halaman dimuat (sesuai data tersimpan)
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('tr[id^="row-"]').forEach(function (row) {
-        const uid = row.id.replace('row-', '');
-        updateTotal(uid);
+        updateTotal(row.id.replace('row-', ''));
     });
 });
 </script>
@@ -312,16 +285,16 @@ document.addEventListener('DOMContentLoaded', function () {
 @section('help')
 <div class="space-y-4">
     <div>
-        <h3 class="font-semibold text-gray-800 mb-1.5">Bobot Dibagi Rata Otomatis</h3>
-        <p class="text-xs text-gray-500 leading-relaxed">Bobot tiap CPMK (dari Tabel 7 / tab Bobot CPMK) otomatis dibagi rata ke seluruh Sub-CPMK-nya. Anda tidak perlu mengisi bobot per Sub-CPMK lagi.</p>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Satu Isian per CPMK</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Anda cukup mengisi distribusi metode penilaian (Tugas, Kuis, Kasus/Proyek, UTS, UAS) <strong>satu kali untuk tiap CPMK</strong>. Tidak perlu lagi mengisi per Sub-CPMK.</p>
     </div>
     <div>
-        <h3 class="font-semibold text-gray-800 mb-1.5">Kolom Metode Asesmen</h3>
-        <p class="text-xs text-gray-500 leading-relaxed">Cukup isi distribusi metode penilaian (Tugas, Kuis, UTS, UAS, dll.) untuk tiap Sub-CPMK. Jumlah total metode diusahakan sama dengan <em>target</em> (= bobot CPMK ÷ jumlah Sub-CPMK).</p>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Dibagi Rata Otomatis</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Nilai yang Anda isi otomatis dibagi rata ke seluruh Sub-CPMK CPMK tersebut, sehingga perhitungan pengukuran &amp; akreditasi tetap berjalan seperti biasa.</p>
     </div>
     <div>
         <h3 class="font-semibold text-gray-800 mb-1.5">Indikator Selaras</h3>
-        <p class="text-xs text-gray-500 leading-relaxed">Kolom <strong>Total / Target</strong> menampilkan jumlah bobot yang telah diisi. Baris berwarna hijau berarti sudah selaras; kuning berarti belum pas.</p>
+        <p class="text-xs text-gray-500 leading-relaxed">Kolom <strong>Total / Target</strong> menampilkan jumlah bobot yang telah diisi. Hijau berarti sudah selaras dengan target (= total bobot CPMK terhadap CPL); kuning berarti belum pas; merah berarti melebihi target.</p>
     </div>
     <div class="bg-blue-50 rounded-xl px-4 py-3">
         <p class="text-xs text-blue-700 font-medium">💡 Tips</p>

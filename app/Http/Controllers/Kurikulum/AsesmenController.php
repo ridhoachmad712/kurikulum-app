@@ -6,7 +6,6 @@ use App\Http\Controllers\Concerns\DosenMkScope;
 use App\Http\Controllers\Controller;
 use App\Models\Cpmk;
 use App\Models\MataKuliah;
-use App\Models\SubCpmk;
 use App\Models\SubCpmkAsesmen;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -66,38 +65,43 @@ class AsesmenController extends Controller
             ->orderBy('urutan')
             ->get();
 
-        // Bobot teoritis per Sub-CPMK = total bobot CPMK terhadap CPL / jumlah Sub-CPMK
-        // Sama dengan kalkulasi di PengukuranController::cpmk()
-        $subCpmkBobot = [];   // [cpmk_id][sub_cpmk_id => bobot_teoritis]
-        $cpmkMeta     = [];   // [cpmk_id => ['total_bobot', 'bobot_per_sub', 'sub_count']]
+        $fields = ['tugas', 'quis', 'kasus_proyek', 'uts', 'uas'];
+
+        $cpmkMeta    = [];   // [cpmk_id => total_bobot, sub_count, no_clo]
+        $cpmkAsesmen = [];   // [cpmk_id => [tugas, quis, ..., total]] — agregat dari semua Sub-CPMK
 
         foreach ($cpmks as $cpmk) {
-            $totalBobot  = (float) $cpmk->cpmkCpls->where('has_relation', true)->sum('bobot_persen');
-            $subCount    = $cpmk->subCpmks->count();
-            $bobotPerSub = $subCount > 0 ? round($totalBobot / $subCount, 2) : 0;
+            $totalBobot = (float) $cpmk->cpmkCpls->where('has_relation', true)->sum('bobot_persen');
+            $subCount   = $cpmk->subCpmks->count();
 
-            $cpmkMeta[$cpmk->id] = [
-                'total_bobot'   => $totalBobot,
-                'bobot_per_sub' => $bobotPerSub,
-                'sub_count'     => $subCount,
-            ];
-
-            // Target tiap Sub-CPMK = bobot CPMK dibagi rata (sederhana, tanpa input per Sub).
+            // Agregat asesmen CPMK = jumlah nilai metode seluruh Sub-CPMK-nya
+            $agg = array_fill_keys($fields, 0.0);
             foreach ($cpmk->subCpmks as $sc) {
-                $subCpmkBobot[$cpmk->id][$sc->id] = $bobotPerSub;
+                if ($sc->asesmen) {
+                    foreach ($fields as $f) $agg[$f] += (float) $sc->asesmen->{$f};
+                }
             }
+            $agg = array_map(fn ($v) => round($v, 2), $agg);
+            $agg['total'] = round(array_sum($agg), 2);
+
+            $cpmkAsesmen[$cpmk->id] = $agg;
+            $cpmkMeta[$cpmk->id] = [
+                'total_bobot' => $totalBobot,
+                'sub_count'   => $subCount,
+                'no_clo'      => $cpmk->subCpmks->every(fn ($sc) => $sc->subCpmkClos->isEmpty()),
+            ];
         }
 
-        return view('kurikulum.asesmen.show', compact('mataKuliah', 'cpmks', 'subCpmkBobot', 'cpmkMeta'));
+        return view('kurikulum.asesmen.show', compact('mataKuliah', 'cpmks', 'cpmkMeta', 'cpmkAsesmen'));
     }
 
     /* ----------------------------------------------------------------
-     * SAVE — simpan bobot asesmen untuk 1 Sub-CPMK (AJAX, auto-save)
+     * SAVE — simpan asesmen di level CPMK (dibagi rata ke Sub-CPMK)
      * ---------------------------------------------------------------- */
-    public function save(Request $request, SubCpmk $subCpmk): JsonResponse
+    public function saveCpmk(Request $request, Cpmk $cpmk): JsonResponse
     {
-        $subCpmk->loadMissing('mataKuliah');
-        $this->authorizeDosenMk($subCpmk->mataKuliah);
+        $cpmk->loadMissing('mataKuliah');
+        $this->authorizeDosenMk($cpmk->mataKuliah);
 
         $data = $request->validate([
             'tugas'        => 'required|numeric|min:0|max:100',
@@ -107,13 +111,29 @@ class AsesmenController extends Controller
             'uas'          => 'required|numeric|min:0|max:100',
         ]);
 
-        SubCpmkAsesmen::updateOrCreate(
-            ['sub_cpmk_id' => $subCpmk->id],
-            $data
-        );
+        $subs = $cpmk->subCpmks()->get();
+        $n    = $subs->count();
+        if ($n === 0) {
+            return response()->json(['ok' => false, 'message' => 'CPMK ini belum memiliki Sub-CPMK.'], 422);
+        }
 
-        $total = round(array_sum($data), 2);
+        $fields = ['tugas', 'quis', 'kasus_proyek', 'uts', 'uas'];
 
-        return response()->json(['ok' => true, 'total' => $total]);
+        // Bagi rata tiap metode ke semua Sub-CPMK; sisa pembulatan ke sub terakhir agar jumlah persis.
+        $per = [];
+        foreach ($fields as $f) {
+            $per[$f] = round($data[$f] / $n, 2);
+        }
+        foreach ($subs->values() as $i => $sc) {
+            $vals = [];
+            foreach ($fields as $f) {
+                $vals[$f] = ($i === $n - 1)
+                    ? round($data[$f] - $per[$f] * ($n - 1), 2)   // sub terakhir menyerap sisa
+                    : $per[$f];
+            }
+            SubCpmkAsesmen::updateOrCreate(['sub_cpmk_id' => $sc->id], $vals);
+        }
+
+        return response()->json(['ok' => true, 'total' => round(array_sum($data), 2)]);
     }
 }

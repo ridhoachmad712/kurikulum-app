@@ -98,7 +98,7 @@ Route::middleware(['auth'])->group(function () {
         // Asesmen
         Route::get ('asesmen',               [AsesmenController::class, 'index']) ->name('asesmen.index');
         Route::get ('asesmen/{mataKuliah}',  [AsesmenController::class, 'show'])  ->name('asesmen.show');
-        Route::post('api/asesmen/{subCpmk}', [AsesmenController::class, 'save'])  ->name('api.asesmen.save');
+        Route::post('api/cpmk/{cpmk}/asesmen', [AsesmenController::class, 'saveCpmk'])->name('api.asesmen.save-cpmk');
 
         // Pengukuran CPMK & CPL
         Route::get('pengukuran-cpmk',              [PengukuranController::class, 'cpmk'])     ->name('pengukuran.cpmk');

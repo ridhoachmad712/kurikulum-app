@@ -1,4 +1,5 @@
 *.log
+deploy.ps1
 .DS_Store
 cookie.txt
 *.py
