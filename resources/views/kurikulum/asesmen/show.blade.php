@@ -168,16 +168,17 @@
             <tbody class="divide-y divide-gray-50">
                 @foreach($cpmk->subCpmks as $sc)
                 @php
+                    $uid     = $cpmk->id.'-'.$sc->id;
                     $a       = $sc->asesmen;
                     $total   = $a ? (float) $a->total : 0;
-                    $target  = $subCpmkBobot[$sc->id] ?? 0;
+                    $target  = $subCpmkBobot[$cpmk->id][$sc->id] ?? 0;
                     $match   = $target > 0 && abs($total - $target) <= 0.5;
                     $over    = $target > 0 && $total > $target + 0.5;
                     $badgeCls = $match ? 'bg-green-100 text-green-700'
                               : ($over  ? 'bg-red-100 text-red-700'
                               : ($total > 0 ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-400'));
                 @endphp
-                <tr class="hover:bg-gray-50" id="row-{{ $sc->id }}"
+                <tr class="hover:bg-gray-50" id="row-{{ $uid }}"
                     data-target="{{ $target }}"
                     data-cpmk-id="{{ $cpmk->id }}"
                     data-total-cpmk="{{ $totalBobot }}">
@@ -187,29 +188,29 @@
                     {{-- Kolom Bobot manual --}}
                     <td class="px-3 py-2 text-center align-middle bg-indigo-50/40">
                         <input type="number" min="0" max="100" step="1"
-                            id="bobot-{{ $sc->id }}"
+                            id="bobot-{{ $uid }}"
                             value="{{ $sc->pivot->bobot !== null ? round((float)$sc->pivot->bobot) : '' }}"
                             placeholder="auto"
-                            oninput="debounceBobot({{ $sc->id }}, {{ $cpmk->id }})"
+                            oninput="debounceBobot('{{ $uid }}', {{ $sc->id }}, {{ $cpmk->id }})"
                             class="w-16 text-center border border-indigo-200 rounded-lg px-1.5 py-1 text-xs
                                    focus:outline-none focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 bg-white">
-                        <p id="bobot-hint-{{ $sc->id }}" class="text-[9px] text-indigo-300 mt-0.5 hidden">0 = auto</p>
+                        <p id="bobot-hint-{{ $uid }}" class="text-[9px] text-indigo-300 mt-0.5 hidden">0 = auto</p>
                     </td>
 
                     @foreach(['tugas','quis','kasus_proyek','uts','uas'] as $field)
                     <td class="px-3 py-2 text-center align-middle">
                         <input type="number" min="0" max="100" step="1"
-                            id="{{ $field }}-{{ $sc->id }}"
+                            id="{{ $field }}-{{ $uid }}"
                             value="{{ $a ? round((float)$a->{$field}) : '' }}"
                             placeholder="0"
-                            oninput="debounce({{ $sc->id }})"
+                            oninput="debounce('{{ $uid }}', {{ $sc->id }})"
                             class="w-16 text-center border border-gray-200 rounded-lg px-1.5 py-1 text-xs
                                    focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400">
                     </td>
                     @endforeach
 
                     <td class="px-3 py-2 text-center align-middle">
-                        <span id="total-{{ $sc->id }}"
+                        <span id="total-{{ $uid }}"
                               class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold {{ $badgeCls }}">
                             {{ $total > 0 ? round($total).'%' : '–' }}
                             @if($over) ⚠ @endif
@@ -249,18 +250,18 @@ const timers      = {};
 const bobotTimers = {};
 
 // ── Auto-save Bobot Sub-CPMK ──────────────────────────────────────
-function debounceBobot(scId, cpmkId) {
-    clearTimeout(bobotTimers[scId]);
+function debounceBobot(uid, scId, cpmkId) {
+    clearTimeout(bobotTimers[uid]);
     // Tampilkan hint jika user ketik 0
-    const inp  = document.getElementById('bobot-' + scId);
-    const hint = document.getElementById('bobot-hint-' + scId);
+    const inp  = document.getElementById('bobot-' + uid);
+    const hint = document.getElementById('bobot-hint-' + uid);
     if (hint) hint.classList.toggle('hidden', inp?.value !== '0');
     showStatus('Menyimpan bobot...');
-    bobotTimers[scId] = setTimeout(() => saveBobotSc(scId, cpmkId), 500);
+    bobotTimers[uid] = setTimeout(() => saveBobotSc(uid, scId, cpmkId), 500);
 }
 
-async function saveBobotSc(scId, cpmkId) {
-    const rawVal = document.getElementById('bobot-' + scId)?.value;
+async function saveBobotSc(uid, scId, cpmkId) {
+    const rawVal = document.getElementById('bobot-' + uid)?.value;
     const bobot  = rawVal === '' ? 0 : (parseFloat(rawVal) || 0);
     try {
         const res  = await fetch(`/kurikulum/api/sub-cpmk/${scId}/bobot`, {
@@ -276,9 +277,9 @@ async function saveBobotSc(scId, cpmkId) {
         }
         const json = await res.json();
         if (json.ok) {
-            const row = document.getElementById('row-' + scId);
+            const row = document.getElementById('row-' + uid);
             if (row) row.dataset.target = bobot;
-            updateTotal(scId, parseFloat(document.getElementById('total-' + scId)?.textContent) || 0);
+            updateTotal(uid);
             updateSisaBadge(cpmkId, json.total_cpmk, json.total_sub_bobot);
             showStatus('✓ Tersimpan');
             setTimeout(() => hideStatus(), 2000);
@@ -307,22 +308,22 @@ function updateSisaBadge(cpmkId, totalCpmk, totalSub) {
             : 'Sisa: ' + Math.round(sisa) + '%';
 }
 
-function debounce(id) {
-    clearTimeout(timers[id]);
+function debounce(uid, scId) {
+    clearTimeout(timers[uid]);
     showStatus('Mengetik...');
-    timers[id] = setTimeout(() => saveRow(id), 500);
+    timers[uid] = setTimeout(() => saveRow(uid, scId), 500);
 }
 
-async function saveRow(id) {
+async function saveRow(uid, scId) {
     const fields = ['tugas','quis','kasus_proyek','uts','uas'];
     const body   = {};
     for (const f of fields) {
-        body[f] = parseFloat(document.getElementById(f + '-' + id)?.value || 0) || 0;
+        body[f] = parseFloat(document.getElementById(f + '-' + uid)?.value || 0) || 0;
     }
 
     showStatus('Menyimpan...');
     try {
-        const res  = await fetch(`/kurikulum/api/asesmen/${id}`, {
+        const res  = await fetch(`/kurikulum/api/asesmen/${scId}`, {
             method:  'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
             body:    JSON.stringify(body),
@@ -335,7 +336,7 @@ async function saveRow(id) {
         }
         const json = await res.json();
         if (json.ok) {
-            updateTotal(id, json.total);
+            updateTotal(uid);
             showStatus('✓ Tersimpan');
             setTimeout(() => hideStatus(), 2000);
         }
@@ -345,10 +346,17 @@ async function saveRow(id) {
     }
 }
 
-function updateTotal(id, total) {
-    const el     = document.getElementById('total-' + id);
+// Hitung ulang total baris (dari 5 input metode) + perbarui badge vs target
+function updateTotal(uid) {
+    const el = document.getElementById('total-' + uid);
     if (!el) return;
-    const row    = document.getElementById('row-' + id);
+    let total = 0;
+    ['tugas','quis','kasus_proyek','uts','uas'].forEach(f => {
+        total += parseFloat(document.getElementById(f + '-' + uid)?.value || 0) || 0;
+    });
+    total = Math.round(total * 100) / 100;
+
+    const row    = document.getElementById('row-' + uid);
     const target = parseFloat(row?.dataset.target ?? 0);
     const match  = target > 0 && Math.abs(total - target) <= 0.5;
     const over   = target > 0 && total > target + 0.5;

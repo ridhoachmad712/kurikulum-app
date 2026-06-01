@@ -68,7 +68,7 @@ class AsesmenController extends Controller
 
         // Bobot teoritis per Sub-CPMK = total bobot CPMK terhadap CPL / jumlah Sub-CPMK
         // Sama dengan kalkulasi di PengukuranController::cpmk()
-        $subCpmkBobot = [];   // [sub_cpmk_id => bobot_teoritis]
+        $subCpmkBobot = [];   // [cpmk_id][sub_cpmk_id => bobot_teoritis]
         $cpmkMeta     = [];   // [cpmk_id => ['total_bobot', 'bobot_per_sub', 'sub_count']]
 
         foreach ($cpmks as $cpmk) {
@@ -85,8 +85,9 @@ class AsesmenController extends Controller
             ];
 
             foreach ($cpmk->subCpmks as $sc) {
-                // Gunakan bobot pivot jika sudah diisi, fallback ke pembagian rata
-                $subCpmkBobot[$sc->id] = $sc->pivot->bobot !== null ? (float) $sc->pivot->bobot : $bobotPerSub;
+                // Kunci per (CPMK, Sub-CPMK) — satu Sub-CPMK bisa terhubung ke banyak CPMK.
+                // Gunakan bobot pivot jika sudah diisi, fallback ke pembagian rata.
+                $subCpmkBobot[$cpmk->id][$sc->id] = $sc->pivot->bobot !== null ? (float) $sc->pivot->bobot : $bobotPerSub;
             }
         }
 
