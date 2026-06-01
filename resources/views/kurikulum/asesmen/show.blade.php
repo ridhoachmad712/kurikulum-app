@@ -310,6 +310,7 @@ function updateSisaBadge(cpmkId, totalCpmk, totalSub) {
 
 function debounce(uid, scId) {
     clearTimeout(timers[uid]);
+    updateTotal(uid);              // tampilkan total langsung saat mengetik
     showStatus('Mengetik...');
     timers[uid] = setTimeout(() => saveRow(uid, scId), 500);
 }
