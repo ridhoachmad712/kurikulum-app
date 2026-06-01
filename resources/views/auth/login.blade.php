@@ -18,31 +18,14 @@
 
 <div class="min-h-screen flex">
 
-    {{-- ── KIRI: Gambar (sembunyi di mobile) — 3/4 lebar ── --}}
-    <div class="hidden lg:block lg:w-3/4 relative">
-        <img src="{{ asset('images/bg.jpeg') }}" alt="Kampus"
-             class="absolute inset-0 w-full h-full object-cover">
-        {{-- Overlay gradien + branding --}}
-        <div class="absolute inset-0 bg-gradient-to-tr from-blue-950/85 via-blue-900/55 to-blue-800/25"></div>
-        <div class="relative h-full flex flex-col justify-between p-12 text-white">
-            <div class="flex items-center gap-3">
-                <img src="{{ asset('images/2logo.png') }}" alt="Logo" class="w-11 h-11 object-contain drop-shadow">
-                <span class="font-semibold tracking-wide text-sm">{{ \App\Models\Setting::get('institution_name') }}</span>
-            </div>
-            <div>
-                <h2 class="text-3xl xl:text-4xl font-extrabold leading-tight max-w-md drop-shadow">
-                    {{ \App\Models\Setting::get('app_name') }}
-                </h2>
-                <p class="text-blue-100/90 text-sm mt-3 max-w-md leading-relaxed">
-                    Dokumentasi kurikulum berbasis OBE — pemetaan CPL, mata kuliah, dan matriks capaian pembelajaran dalam satu sistem.
-                </p>
-            </div>
-            <p class="text-blue-200/70 text-xs">© {{ date('Y') }} {{ \App\Models\Setting::get('institution_name') }}</p>
-        </div>
+    {{-- ── KIRI: Gambar (sembunyi di mobile) — lebar sesuai rasio asli gambar ── --}}
+    <div class="hidden lg:block shrink-0 bg-slate-100">
+        <img src="{{ asset('images/bg.jpg') }}" alt="Latar"
+             class="h-screen w-auto block">
     </div>
 
-    {{-- ── KANAN: Form login — 1/4 lebar ── --}}
-    <div class="w-full lg:w-1/4 flex items-center justify-center px-6 py-12 bg-slate-50">
+    {{-- ── KANAN: Form login (mengisi sisa ruang) ── --}}
+    <div class="flex-1 flex items-center justify-center px-6 py-12 bg-slate-50">
         <div class="w-full max-w-sm">
 
             {{-- Logo & judul (untuk mobile / konsistensi) --}}
