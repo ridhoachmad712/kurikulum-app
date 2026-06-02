@@ -169,6 +169,38 @@
                 </tr>
                 @endforelse
             </tbody>
+            @php
+                $colTotals = ['tugas'=>0,'quis'=>0,'kasus_proyek'=>0,'uts'=>0,'uas'=>0];
+                foreach ($cpmks as $cpmk) {
+                    if ($cpmk->subCpmks->isEmpty()) continue;
+                    $agg = $cpmkAsesmen[$cpmk->id] ?? [];
+                    foreach (array_keys($colTotals) as $f) {
+                        $colTotals[$f] += (float) ($agg[$f] ?? 0);
+                    }
+                }
+                $grandTotal = round(array_sum($colTotals), 2);
+            @endphp
+            <tfoot>
+                <tr class="bg-gray-50 border-t-2 border-gray-200 text-sm font-semibold text-gray-700">
+                    <td class="px-4 py-3 align-middle" colspan="2">
+                        <span class="text-xs uppercase tracking-wider text-gray-500">Total per Aspek Penilaian</span>
+                    </td>
+                    @foreach(['tugas','quis','kasus_proyek','uts','uas'] as $field)
+                    <td class="px-3 py-3 text-center align-middle">
+                        <span id="coltotal-{{ $field }}"
+                              class="inline-block min-w-[44px] px-2 py-0.5 rounded-lg bg-white border border-gray-200">
+                            {{ round($colTotals[$field]) }}
+                        </span>
+                    </td>
+                    @endforeach
+                    <td class="px-3 py-3 text-center align-middle">
+                        <span id="coltotal-grand"
+                              class="inline-block px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
+                            {{ round($grandTotal) }}%
+                        </span>
+                    </td>
+                </tr>
+            </tfoot>
         </table>
     </div>
 </div>
@@ -187,11 +219,31 @@ table input[type=number] { -moz-appearance: textfield; }
 const CSRF   = '{{ csrf_token() }}';
 const timers = {};
 
+const FIELDS = ['tugas','quis','kasus_proyek','uts','uas'];
+
 function debounce(cpmkId) {
     clearTimeout(timers[cpmkId]);
-    updateTotal(cpmkId);              // tampilkan total langsung saat mengetik
+    updateTotal(cpmkId);              // tampilkan total baris langsung saat mengetik
+    updateColumnTotals();             // perbarui total per aspek (footer)
     showStatus('Mengetik...');
     timers[cpmkId] = setTimeout(() => saveCpmk(cpmkId), 500);
+}
+
+// Jumlahkan tiap kolom aspek penilaian dari seluruh CPMK (baris footer)
+function updateColumnTotals() {
+    let grand = 0;
+    FIELDS.forEach(f => {
+        let sum = 0;
+        document.querySelectorAll('input[id^="' + f + '-"]').forEach(inp => {
+            sum += parseFloat(inp.value || 0) || 0;
+        });
+        sum = Math.round(sum * 100) / 100;
+        grand += sum;
+        const el = document.getElementById('coltotal-' + f);
+        if (el) el.textContent = Math.round(sum);
+    });
+    const g = document.getElementById('coltotal-grand');
+    if (g) g.textContent = Math.round(grand) + '%';
 }
 
 async function saveCpmk(cpmkId) {
@@ -263,6 +315,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('tr[id^="row-"]').forEach(function (row) {
         updateTotal(row.id.replace('row-', ''));
     });
+    updateColumnTotals();
 });
 </script>
 
