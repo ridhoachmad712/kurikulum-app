@@ -27,8 +27,8 @@
     foreach ($cpmks as $cpmk) {
         $meta = $cpmkMeta[$cpmk->id] ?? [];
         if ($cpmk->subCpmks->isEmpty()) continue;
-        $target = (float) ($meta['total_bobot'] ?? 0);
-        if ($target <= 0) continue;
+        if (($meta['total_bobot'] ?? 0) <= 0) continue;
+        $target = (int) ($meta['target'] ?? round($meta['total_bobot'] ?? 0));
         $summTotal++;
         $t = (float) ($cpmkAsesmen[$cpmk->id]['total'] ?? 0);
         if ($t > 0) {
@@ -102,7 +102,8 @@
                 @php
                     $meta    = $cpmkMeta[$cpmk->id] ?? ['total_bobot' => 0, 'sub_count' => 0, 'no_clo' => true];
                     $agg     = $cpmkAsesmen[$cpmk->id] ?? ['tugas'=>0,'quis'=>0,'kasus_proyek'=>0,'uts'=>0,'uas'=>0,'total'=>0];
-                    $target  = (float) $meta['total_bobot'];
+                    // Target = bobot CPMK yang sudah dibulatkan bersama (LRM) agar jumlah target = 100
+                    $target  = $meta['total_bobot'] > 0 ? (int) ($meta['target'] ?? round($meta['total_bobot'])) : 0;
                     $total   = (float) $agg['total'];
                     $noClo   = $meta['no_clo'] ?? false;
                     $match   = $target > 0 && abs($total - $target) <= 0.5;
@@ -205,6 +206,103 @@
     </div>
 </div>
 
+{{-- ─── Matriks CPL terhadap Instrumen Penilaian ─────────────────── --}}
+@php
+    $cplInstr = ['tugas'=>0,'quis'=>0,'kasus_proyek'=>0,'uts'=>0,'uas'=>0];
+    foreach ($cplRows as $r) {
+        foreach (array_keys($cplInstr) as $f) $cplInstr[$f] += $r[$f];
+    }
+    $cplGrand = round(array_sum($cplInstr), 2);
+@endphp
+<div class="mt-7">
+    <div class="flex items-center gap-2 mb-1 flex-wrap">
+        <h2 class="text-sm font-bold text-gray-800">Matriks CPL terhadap Instrumen Penilaian</h2>
+        <span class="px-2 py-0.5 bg-gray-100 border border-gray-200 rounded-full text-[10px] text-gray-500">acuan bobot CPMK→CPL (Tabel 7)</span>
+    </div>
+    <p class="text-xs text-gray-400 mb-3">
+        Bobot asesmen tiap CPMK diatribusikan ke CPL secara proporsional terhadap bobot CPMK→CPL. Diperbarui otomatis mengikuti isian di atas.
+    </p>
+
+    @if(empty($cplRows))
+    <div class="bg-amber-50 border border-amber-200 rounded-xl px-5 py-4 flex items-start gap-3">
+        <svg class="w-5 h-5 text-amber-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+        <div>
+            <p class="text-sm font-semibold text-amber-800">Matriks CPL belum bisa dihitung</p>
+            <p class="text-xs text-amber-700 mt-1 leading-relaxed">
+                Tabel ini mengacu pada <strong>bobot CPMK terhadap CPL (Tabel 7)</strong>. Saat ini belum ada CPMK
+                yang memiliki bobot CPMK→CPL, sehingga distribusi penilaian ke CPL belum dapat ditampilkan.
+                Isi dulu bobotnya, lalu tabel ini akan terisi otomatis.
+            </p>
+            <a href="{{ route('kurikulum.cpmk.show', $mataKuliah) }}"
+               class="inline-flex items-center gap-1 mt-2 text-xs font-medium text-amber-800 hover:underline">
+                Isi Bobot CPMK→CPL (Tabel 7)
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+    </div>
+    @else
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
+                        <th class="border-b border-gray-100 px-4 py-2.5 text-left">CPL</th>
+                        <th class="border-b border-gray-100 px-3 py-2.5 text-center w-20">Tugas</th>
+                        <th class="border-b border-gray-100 px-3 py-2.5 text-center w-20">Kuis</th>
+                        <th class="border-b border-gray-100 px-3 py-2.5 text-center w-24">Kasus/Proyek</th>
+                        <th class="border-b border-gray-100 px-3 py-2.5 text-center w-20">UTS</th>
+                        <th class="border-b border-gray-100 px-3 py-2.5 text-center w-20">UAS</th>
+                        <th class="border-b border-gray-100 px-3 py-2.5 text-center w-24">Total CPL</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    @foreach($cplRows as $cplId => $row)
+                    <tr class="hover:bg-gray-50" id="cplrow-{{ $cplId }}">
+                        <td class="px-4 py-3 align-top">
+                            <span class="font-semibold text-gray-700 text-sm">{{ $row['kode'] }}</span>
+                            <span class="block text-gray-500 text-xs mt-0.5">{{ Str::limit($row['nama'], 70) }}</span>
+                        </td>
+                        @foreach(['tugas','quis','kasus_proyek','uts','uas'] as $field)
+                        <td class="px-3 py-3 text-center align-middle text-gray-700 text-xs">
+                            <span id="cplcell-{{ $cplId }}-{{ $field }}">{{ $row[$field] > 0 ? round($row[$field]).'%' : '–' }}</span>
+                        </td>
+                        @endforeach
+                        <td class="px-3 py-3 text-center align-middle">
+                            <span id="cpltotal-{{ $cplId }}"
+                                  class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">
+                                {{ round($row['total']) }}%
+                            </span>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+                <tfoot>
+                    <tr class="bg-gray-50 border-t-2 border-gray-200 text-sm font-semibold text-gray-700">
+                        <td class="px-4 py-3 align-middle">
+                            <span class="text-xs uppercase tracking-wider text-gray-500">Total Instrumen</span>
+                        </td>
+                        @foreach(['tugas','quis','kasus_proyek','uts','uas'] as $field)
+                        <td class="px-3 py-3 text-center align-middle">
+                            <span id="cplinstr-{{ $field }}"
+                                  class="inline-block min-w-[44px] px-2 py-0.5 rounded-lg bg-white border border-gray-200">
+                                {{ round($cplInstr[$field]) }}%
+                            </span>
+                        </td>
+                        @endforeach
+                        <td class="px-3 py-3 text-center align-middle">
+                            <span id="cplgrand"
+                                  class="inline-block px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
+                                {{ round($cplGrand) }}%
+                            </span>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    @endif
+</div>
+
 {{-- Status bar --}}
 <div id="save-status" class="fixed bottom-4 right-4 text-xs px-3 py-1.5 rounded-full shadow hidden
     bg-white border border-gray-200 text-gray-600 transition-all"></div>
@@ -220,13 +318,85 @@ const CSRF   = '{{ csrf_token() }}';
 const timers = {};
 
 const FIELDS = ['tugas','quis','kasus_proyek','uts','uas'];
+const CPL_SHARES = @json($cplShares ?? new stdClass);
 
 function debounce(cpmkId) {
     clearTimeout(timers[cpmkId]);
     updateTotal(cpmkId);              // tampilkan total baris langsung saat mengetik
     updateColumnTotals();             // perbarui total per aspek (footer)
+    updateCplTable();                 // perbarui matriks CPL
     showStatus('Mengetik...');
     timers[cpmkId] = setTimeout(() => saveCpmk(cpmkId), 500);
+}
+
+// Metode sisa terbesar — bulatkan array nilai ke int yang jumlahnya = target
+// (target default = round(jumlah)). Tie-break stabil per index, identik dgn PHP.
+function largestRemainder(values, target) {
+    if (!values.length) return [];
+    const sum = values.reduce((s, v) => s + v, 0);
+    if (target === undefined || target === null) target = Math.round(sum);
+
+    const floors = values.map(v => Math.floor(v));
+    const rema   = values.map((v, i) => v - floors[i]);
+    let diff = target - floors.reduce((s, v) => s + v, 0);
+
+    const order = values.map((_, i) => i).sort((a, b) => (rema[b] - rema[a]) || (a - b));
+    if (diff > 0) {
+        for (let i = 0; i < diff && i < order.length; i++) floors[order[i]] += 1;
+    } else if (diff < 0) {
+        for (let i = 0; i < -diff && i < order.length; i++) floors[order[order.length - 1 - i]] -= 1;
+    }
+    return floors;
+}
+
+// Recompute matriks CPL dari isian CPMK saat ini (atribusi proporsional bobot CPMK→CPL)
+function updateCplTable() {
+    const rows = Array.from(document.querySelectorAll('tr[id^="cplrow-"]'));
+    if (!rows.length) return;
+
+    const cplIds = rows.map(r => r.id.replace('cplrow-', ''));
+    const acc = {};
+    cplIds.forEach(id => acc[id] = { tugas:0, quis:0, kasus_proyek:0, uts:0, uas:0 });
+
+    // Akumulasi nilai mentah (pecahan) per CPL dari atribusi tiap CPMK
+    document.querySelectorAll('tr[id^="row-"]').forEach(row => {
+        const cpmkId = row.id.replace('row-', '');
+        const shares = CPL_SHARES[cpmkId];
+        if (!shares) return;
+        const vals = {};
+        FIELDS.forEach(f => vals[f] = parseFloat(document.getElementById(f + '-' + cpmkId)?.value || 0) || 0);
+        shares.forEach(s => {
+            if (!acc[s.cpl_id]) return;
+            FIELDS.forEach(f => acc[s.cpl_id][f] += vals[f] * s.share);
+        });
+    });
+
+    // 1) Bulatkan total tiap CPL agar jumlahnya = round(grand total)
+    const rawRowTotals = cplIds.map(id => FIELDS.reduce((s, f) => s + acc[id][f], 0));
+    const intRowTotals = largestRemainder(rawRowTotals);
+
+    // 2) Bulatkan 5 sel tiap CPL agar jumlahnya = total CPL yang sudah bulat
+    const instr = { tugas:0, quis:0, kasus_proyek:0, uts:0, uas:0 };
+    let grand = 0;
+    cplIds.forEach((id, idx) => {
+        const cellVals = FIELDS.map(f => acc[id][f]);
+        const intCells = largestRemainder(cellVals, intRowTotals[idx]);
+        FIELDS.forEach((f, i) => {
+            const cell = document.getElementById('cplcell-' + id + '-' + f);
+            if (cell) cell.textContent = intCells[i] > 0 ? intCells[i] + '%' : '–';
+            instr[f] += intCells[i];
+        });
+        const tEl = document.getElementById('cpltotal-' + id);
+        if (tEl) tEl.textContent = intRowTotals[idx] + '%';
+        grand += intRowTotals[idx];
+    });
+
+    FIELDS.forEach(f => {
+        const el = document.getElementById('cplinstr-' + f);
+        if (el) el.textContent = instr[f] + '%';
+    });
+    const g = document.getElementById('cplgrand');
+    if (g) g.textContent = grand + '%';
 }
 
 // Jumlahkan tiap kolom aspek penilaian dari seluruh CPMK (baris footer)
@@ -316,6 +486,7 @@ document.addEventListener('DOMContentLoaded', function () {
         updateTotal(row.id.replace('row-', ''));
     });
     updateColumnTotals();
+    updateCplTable();
 });
 </script>
 

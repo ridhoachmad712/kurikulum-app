@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cpmk;
 use App\Models\MataKuliah;
 use App\Models\SubCpmkAsesmen;
+use App\Support\Rounding;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -61,7 +62,7 @@ class AsesmenController extends Controller
         $this->authorizeDosenMk($mataKuliah);
 
         $cpmks = $mataKuliah->cpmks()
-            ->with(['subCpmks.asesmen', 'subCpmks.subCpmkClos', 'cpmkCpls'])
+            ->with(['subCpmks.asesmen', 'subCpmks.subCpmkClos', 'cpmkCpls.cpl'])
             ->orderBy('urutan')
             ->get();
 
@@ -92,7 +93,79 @@ class AsesmenController extends Controller
             ];
         }
 
-        return view('kurikulum.asesmen.show', compact('mataKuliah', 'cpmks', 'cpmkMeta', 'cpmkAsesmen'));
+        // Target per CPMK dibulatkan bersama (metode sisa terbesar) agar jumlah
+        // seluruh target = 100, bukan 101 akibat pembulatan tiap CPMK sendiri-sendiri.
+        // Contoh: 40 + 37.5 + 22.5 (=100) → target 40 + 38 + 22, bukan 40 + 38 + 23.
+        $rawTargets = [];
+        foreach ($cpmks as $cpmk) {
+            if (($cpmkMeta[$cpmk->id]['total_bobot'] ?? 0) > 0) {
+                $rawTargets[$cpmk->id] = $cpmkMeta[$cpmk->id]['total_bobot'];
+            }
+        }
+        $intTargets = Rounding::largestRemainder($rawTargets);
+        foreach ($cpmkMeta as $id => &$m) {
+            $m['target'] = $intTargets[$id] ?? (int) round($m['total_bobot']);
+        }
+        unset($m);
+
+        /* ----------------------------------------------------------------
+         * Matriks CPL terhadap Instrumen Penilaian
+         * Asesmen tiap CPMK diatribusikan ke CPL secara proporsional
+         * berdasarkan bobot CPMK→CPL (acuan Tabel 7).
+         * ---------------------------------------------------------------- */
+        $cplRows   = [];   // [cpl_id => [kode, nama, urutan, tugas..uas, total]]
+        $cplShares = [];   // [cpmk_id => [['cpl_id','share'], ...]] untuk live-update JS
+
+        foreach ($cpmks as $cpmk) {
+            $links    = $cpmk->cpmkCpls->where('has_relation', true)->filter(fn ($l) => $l->bobot_persen > 0);
+            $sumBobot = (float) $links->sum('bobot_persen');
+            if ($sumBobot <= 0) continue;
+
+            $agg = $cpmkAsesmen[$cpmk->id];
+            foreach ($links as $link) {
+                $cpl = $link->cpl;
+                if (!$cpl) continue;
+                $share = (float) $link->bobot_persen / $sumBobot;
+
+                $cplShares[$cpmk->id][] = ['cpl_id' => $cpl->id, 'share' => round($share, 6)];
+
+                if (!isset($cplRows[$cpl->id])) {
+                    $cplRows[$cpl->id] = [
+                        'kode'   => $cpl->kode,
+                        'nama'   => $cpl->deskripsi,
+                        'urutan' => $cpl->urutan,
+                        'tugas'  => 0, 'quis' => 0, 'kasus_proyek' => 0, 'uts' => 0, 'uas' => 0,
+                    ];
+                }
+                foreach ($fields as $f) {
+                    $cplRows[$cpl->id][$f] += $agg[$f] * $share;
+                }
+            }
+        }
+
+        uasort($cplRows, fn ($a, $b) => $a['urutan'] <=> $b['urutan']);
+
+        // Pembulatan metode sisa terbesar agar total selalu pas (tidak pernah 101):
+        // 1) Bulatkan total tiap CPL sehingga jumlahnya = round(grand total)
+        $rawRowTotals = [];
+        foreach ($cplRows as $id => $r) {
+            $rawRowTotals[$id] = $r['tugas'] + $r['quis'] + $r['kasus_proyek'] + $r['uts'] + $r['uas'];
+        }
+        $intRowTotals = Rounding::largestRemainder($rawRowTotals);
+
+        // 2) Dalam tiap CPL, bulatkan 5 sel agar jumlahnya = total CPL yang sudah bulat
+        foreach ($cplRows as $id => &$r) {
+            $intCells = Rounding::largestRemainder(
+                ['tugas' => $r['tugas'], 'quis' => $r['quis'], 'kasus_proyek' => $r['kasus_proyek'], 'uts' => $r['uts'], 'uas' => $r['uas']],
+                $intRowTotals[$id]
+            );
+            foreach ($fields as $f) $r[$f] = $intCells[$f];
+            $r['total'] = $intRowTotals[$id];
+        }
+        unset($r);
+
+        return view('kurikulum.asesmen.show',
+            compact('mataKuliah', 'cpmks', 'cpmkMeta', 'cpmkAsesmen', 'cplRows', 'cplShares'));
     }
 
     /* ----------------------------------------------------------------
