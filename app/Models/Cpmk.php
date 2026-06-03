@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany; // tetap dipakai untuk cpmkCpls
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Cpmk extends Model
 {
@@ -25,6 +26,12 @@ class Cpmk extends Model
     public function cpmkCpls(): HasMany
     {
         return $this->hasMany(CpmkCpl::class);
+    }
+
+    /** Asesmen di level CPMK (sumber kebenaran input Bobot Asesmen) */
+    public function asesmen(): HasOne
+    {
+        return $this->hasOne(CpmkAsesmen::class);
     }
 
     /** CPMK dapat terhubung ke banyak Sub-CPMK dalam MK yang sama */

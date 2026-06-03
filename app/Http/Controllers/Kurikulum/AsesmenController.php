@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Kurikulum;
 use App\Http\Controllers\Concerns\DosenMkScope;
 use App\Http\Controllers\Controller;
 use App\Models\Cpmk;
+use App\Models\CpmkAsesmen;
 use App\Models\MataKuliah;
 use App\Models\SubCpmkAsesmen;
 use App\Support\Rounding;
@@ -62,27 +63,24 @@ class AsesmenController extends Controller
         $this->authorizeDosenMk($mataKuliah);
 
         $cpmks = $mataKuliah->cpmks()
-            ->with(['subCpmks.asesmen', 'subCpmks.subCpmkClos', 'cpmkCpls.cpl'])
+            ->with(['subCpmks.subCpmkClos', 'cpmkCpls.cpl', 'asesmen'])
             ->orderBy('urutan')
             ->get();
 
         $fields = ['aktivitas_partisipatif', 'tugas', 'quis', 'kasus_proyek', 'uts', 'uas'];
 
         $cpmkMeta    = [];   // [cpmk_id => total_bobot, sub_count, no_clo]
-        $cpmkAsesmen = [];   // [cpmk_id => [tugas, quis, ..., total]] — agregat dari semua Sub-CPMK
+        $cpmkAsesmen = [];   // [cpmk_id => [aktivitas.., uas, total]] — asesmen level CPMK
 
         foreach ($cpmks as $cpmk) {
             $totalBobot = (float) $cpmk->cpmkCpls->where('has_relation', true)->sum('bobot_persen');
             $subCount   = $cpmk->subCpmks->count();
 
-            // Agregat asesmen CPMK = jumlah nilai metode seluruh Sub-CPMK-nya
-            $agg = array_fill_keys($fields, 0.0);
-            foreach ($cpmk->subCpmks as $sc) {
-                if ($sc->asesmen) {
-                    foreach ($fields as $f) $agg[$f] += (float) $sc->asesmen->{$f};
-                }
-            }
-            $agg = array_map(fn ($v) => round($v, 2), $agg);
+            // Asesmen dibaca langsung dari level CPMK (bukan agregasi Sub-CPMK,
+            // agar Sub-CPMK yang dipakai bersama beberapa CPMK tidak saling menimpa).
+            $a   = $cpmk->asesmen;
+            $agg = [];
+            foreach ($fields as $f) $agg[$f] = $a ? round((float) $a->{$f}, 2) : 0.0;
             $agg['total'] = round(array_sum($agg), 2);
 
             $cpmkAsesmen[$cpmk->id] = $agg;
@@ -193,7 +191,13 @@ class AsesmenController extends Controller
 
         $fields = ['aktivitas_partisipatif', 'tugas', 'quis', 'kasus_proyek', 'uts', 'uas'];
 
-        // Bagi rata tiap metode ke semua Sub-CPMK; sisa pembulatan ke sub terakhir agar jumlah persis.
+        // SUMBER KEBENARAN: simpan asesmen di level CPMK (anti tumpang-tindih Sub-CPMK bersama)
+        CpmkAsesmen::updateOrCreate(['cpmk_id' => $cpmk->id], $data);
+
+        // KOMPATIBILITAS: tetap distribusikan rata ke Sub-CPMK agar tabel Pengukuran,
+        // Tabel 11, dan halaman publik (yang membaca per-Sub-CPMK) tetap menampilkan data.
+        // (Untuk Sub-CPMK yang dipakai beberapa CPMK, baris ini bisa saling menimpa —
+        //  itu tidak memengaruhi halaman Bobot Asesmen yang kini membaca level CPMK.)
         $per = [];
         foreach ($fields as $f) {
             $per[$f] = round($data[$f] / $n, 2);
