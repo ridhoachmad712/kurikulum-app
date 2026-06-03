@@ -66,7 +66,7 @@ class AsesmenController extends Controller
             ->orderBy('urutan')
             ->get();
 
-        $fields = ['tugas', 'quis', 'kasus_proyek', 'uts', 'uas'];
+        $fields = ['aktivitas_partisipatif', 'tugas', 'quis', 'kasus_proyek', 'uts', 'uas'];
 
         $cpmkMeta    = [];   // [cpmk_id => total_bobot, sub_count, no_clo]
         $cpmkAsesmen = [];   // [cpmk_id => [tugas, quis, ..., total]] — agregat dari semua Sub-CPMK
@@ -134,7 +134,7 @@ class AsesmenController extends Controller
                         'kode'   => $cpl->kode,
                         'nama'   => $cpl->deskripsi,
                         'urutan' => $cpl->urutan,
-                        'tugas'  => 0, 'quis' => 0, 'kasus_proyek' => 0, 'uts' => 0, 'uas' => 0,
+                        'aktivitas_partisipatif' => 0, 'tugas' => 0, 'quis' => 0, 'kasus_proyek' => 0, 'uts' => 0, 'uas' => 0,
                     ];
                 }
                 foreach ($fields as $f) {
@@ -149,14 +149,14 @@ class AsesmenController extends Controller
         // 1) Bulatkan total tiap CPL sehingga jumlahnya = round(grand total)
         $rawRowTotals = [];
         foreach ($cplRows as $id => $r) {
-            $rawRowTotals[$id] = $r['tugas'] + $r['quis'] + $r['kasus_proyek'] + $r['uts'] + $r['uas'];
+            $rawRowTotals[$id] = $r['aktivitas_partisipatif'] + $r['tugas'] + $r['quis'] + $r['kasus_proyek'] + $r['uts'] + $r['uas'];
         }
         $intRowTotals = Rounding::largestRemainder($rawRowTotals);
 
         // 2) Dalam tiap CPL, bulatkan 5 sel agar jumlahnya = total CPL yang sudah bulat
         foreach ($cplRows as $id => &$r) {
             $intCells = Rounding::largestRemainder(
-                ['tugas' => $r['tugas'], 'quis' => $r['quis'], 'kasus_proyek' => $r['kasus_proyek'], 'uts' => $r['uts'], 'uas' => $r['uas']],
+                ['aktivitas_partisipatif' => $r['aktivitas_partisipatif'], 'tugas' => $r['tugas'], 'quis' => $r['quis'], 'kasus_proyek' => $r['kasus_proyek'], 'uts' => $r['uts'], 'uas' => $r['uas']],
                 $intRowTotals[$id]
             );
             foreach ($fields as $f) $r[$f] = $intCells[$f];
@@ -177,6 +177,7 @@ class AsesmenController extends Controller
         $this->authorizeDosenMk($cpmk->mataKuliah);
 
         $data = $request->validate([
+            'aktivitas_partisipatif' => 'required|numeric|min:0|max:100',
             'tugas'        => 'required|numeric|min:0|max:100',
             'quis'         => 'required|numeric|min:0|max:100',
             'kasus_proyek' => 'required|numeric|min:0|max:100',
@@ -190,7 +191,7 @@ class AsesmenController extends Controller
             return response()->json(['ok' => false, 'message' => 'CPMK ini belum memiliki Sub-CPMK.'], 422);
         }
 
-        $fields = ['tugas', 'quis', 'kasus_proyek', 'uts', 'uas'];
+        $fields = ['aktivitas_partisipatif', 'tugas', 'quis', 'kasus_proyek', 'uts', 'uas'];
 
         // Bagi rata tiap metode ke semua Sub-CPMK; sisa pembulatan ke sub terakhir agar jumlah persis.
         $per = [];

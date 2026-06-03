@@ -102,6 +102,7 @@
                 <tr class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
                     <th class="border-b border-gray-100 px-4 py-2.5 text-left w-40">CPMK</th>
                     <th class="border-b border-gray-100 px-4 py-2.5 text-left">Deskripsi</th>
+                    <th class="border-b border-gray-100 px-3 py-2.5 text-center w-28">Aktivitas Partisipatif</th>
                     <th class="border-b border-gray-100 px-3 py-2.5 text-center w-20">Tugas</th>
                     <th class="border-b border-gray-100 px-3 py-2.5 text-center w-20">Kuis</th>
                     <th class="border-b border-gray-100 px-3 py-2.5 text-center w-24">Kasus/Proyek</th>
@@ -115,7 +116,7 @@
                 @if($cpmk->subCpmks->isNotEmpty())
                 @php
                     $meta    = $cpmkMeta[$cpmk->id] ?? ['total_bobot' => 0, 'sub_count' => 0, 'no_clo' => true];
-                    $agg     = $cpmkAsesmen[$cpmk->id] ?? ['tugas'=>0,'quis'=>0,'kasus_proyek'=>0,'uts'=>0,'uas'=>0,'total'=>0];
+                    $agg     = $cpmkAsesmen[$cpmk->id] ?? ['aktivitas_partisipatif'=>0,'tugas'=>0,'quis'=>0,'kasus_proyek'=>0,'uts'=>0,'uas'=>0,'total'=>0];
                     // Target = bobot CPMK yang sudah dibulatkan bersama (LRM) agar jumlah target = 100
                     $target  = $meta['total_bobot'] > 0 ? (int) ($meta['target'] ?? round($meta['total_bobot'])) : 0;
                     $total   = (float) $agg['total'];
@@ -152,7 +153,7 @@
                     </td>
                     <td class="px-4 py-3 text-gray-600 text-xs align-top">{{ Str::limit($cpmk->deskripsi, 120) }}</td>
 
-                    @foreach(['tugas','quis','kasus_proyek','uts','uas'] as $field)
+                    @foreach(['aktivitas_partisipatif','tugas','quis','kasus_proyek','uts','uas'] as $field)
                     <td class="px-3 py-3 text-center align-middle">
                         <input type="number" min="0" max="100" step="1"
                             id="{{ $field }}-{{ $cpmk->id }}"
@@ -178,14 +179,14 @@
                 @endif
                 @empty
                 <tr>
-                    <td colspan="8" class="text-center py-16 text-gray-400">
+                    <td colspan="9" class="text-center py-16 text-gray-400">
                         Belum ada Sub-CPMK untuk mata kuliah ini.
                     </td>
                 </tr>
                 @endforelse
             </tbody>
             @php
-                $colTotals = ['tugas'=>0,'quis'=>0,'kasus_proyek'=>0,'uts'=>0,'uas'=>0];
+                $colTotals = ['aktivitas_partisipatif'=>0,'tugas'=>0,'quis'=>0,'kasus_proyek'=>0,'uts'=>0,'uas'=>0];
                 foreach ($cpmks as $cpmk) {
                     if ($cpmk->subCpmks->isEmpty()) continue;
                     $agg = $cpmkAsesmen[$cpmk->id] ?? [];
@@ -200,7 +201,7 @@
                     <td class="px-4 py-3 align-middle" colspan="2">
                         <span class="text-xs uppercase tracking-wider text-gray-500">Total per Aspek Penilaian</span>
                     </td>
-                    @foreach(['tugas','quis','kasus_proyek','uts','uas'] as $field)
+                    @foreach(['aktivitas_partisipatif','tugas','quis','kasus_proyek','uts','uas'] as $field)
                     <td class="px-3 py-3 text-center align-middle">
                         <span id="coltotal-{{ $field }}"
                               class="inline-block min-w-[44px] px-2 py-0.5 rounded-lg bg-white border border-gray-200">
@@ -222,7 +223,7 @@
 
 {{-- ─── Matriks CPL terhadap Instrumen Penilaian ─────────────────── --}}
 @php
-    $cplInstr = ['tugas'=>0,'quis'=>0,'kasus_proyek'=>0,'uts'=>0,'uas'=>0];
+    $cplInstr = ['aktivitas_partisipatif'=>0,'tugas'=>0,'quis'=>0,'kasus_proyek'=>0,'uts'=>0,'uas'=>0];
     foreach ($cplRows as $r) {
         foreach (array_keys($cplInstr) as $f) $cplInstr[$f] += $r[$f];
     }
@@ -261,6 +262,7 @@
                 <thead>
                     <tr class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
                         <th class="border-b border-gray-100 px-4 py-2.5 text-left">CPL</th>
+                        <th class="border-b border-gray-100 px-3 py-2.5 text-center w-28">Aktivitas Partisipatif</th>
                         <th class="border-b border-gray-100 px-3 py-2.5 text-center w-20">Tugas</th>
                         <th class="border-b border-gray-100 px-3 py-2.5 text-center w-20">Kuis</th>
                         <th class="border-b border-gray-100 px-3 py-2.5 text-center w-24">Kasus/Proyek</th>
@@ -276,7 +278,7 @@
                             <span class="font-semibold text-gray-700 text-sm">{{ $row['kode'] }}</span>
                             <span class="block text-gray-500 text-xs mt-0.5">{{ Str::limit($row['nama'], 70) }}</span>
                         </td>
-                        @foreach(['tugas','quis','kasus_proyek','uts','uas'] as $field)
+                        @foreach(['aktivitas_partisipatif','tugas','quis','kasus_proyek','uts','uas'] as $field)
                         <td class="px-3 py-3 text-center align-middle text-gray-700 text-xs">
                             <span id="cplcell-{{ $cplId }}-{{ $field }}">{{ $row[$field] > 0 ? round($row[$field]).'%' : '–' }}</span>
                         </td>
@@ -295,7 +297,7 @@
                         <td class="px-4 py-3 align-middle">
                             <span class="text-xs uppercase tracking-wider text-gray-500">Total Instrumen</span>
                         </td>
-                        @foreach(['tugas','quis','kasus_proyek','uts','uas'] as $field)
+                        @foreach(['aktivitas_partisipatif','tugas','quis','kasus_proyek','uts','uas'] as $field)
                         <td class="px-3 py-3 text-center align-middle">
                             <span id="cplinstr-{{ $field }}"
                                   class="inline-block min-w-[44px] px-2 py-0.5 rounded-lg bg-white border border-gray-200">
@@ -332,7 +334,7 @@ const CSRF   = '{{ csrf_token() }}';
 const timers = {};
 const pending = new Set();   // CPMK yang isiannya belum tersimpan ke server
 
-const FIELDS = ['tugas','quis','kasus_proyek','uts','uas'];
+const FIELDS = ['aktivitas_partisipatif','tugas','quis','kasus_proyek','uts','uas'];
 const CPL_SHARES = @json($cplShares ?? new stdClass);
 
 function debounce(cpmkId) {
@@ -386,7 +388,7 @@ function updateCplTable() {
 
     const cplIds = rows.map(r => r.id.replace('cplrow-', ''));
     const acc = {};
-    cplIds.forEach(id => acc[id] = { tugas:0, quis:0, kasus_proyek:0, uts:0, uas:0 });
+    cplIds.forEach(id => acc[id] = { aktivitas_partisipatif:0, tugas:0, quis:0, kasus_proyek:0, uts:0, uas:0 });
 
     // Akumulasi nilai mentah (pecahan) per CPL dari atribusi tiap CPMK
     document.querySelectorAll('tr[id^="row-"]').forEach(row => {
@@ -406,7 +408,7 @@ function updateCplTable() {
     const intRowTotals = largestRemainder(rawRowTotals);
 
     // 2) Bulatkan 5 sel tiap CPL agar jumlahnya = total CPL yang sudah bulat
-    const instr = { tugas:0, quis:0, kasus_proyek:0, uts:0, uas:0 };
+    const instr = { aktivitas_partisipatif:0, tugas:0, quis:0, kasus_proyek:0, uts:0, uas:0 };
     let grand = 0;
     cplIds.forEach((id, idx) => {
         const cellVals = FIELDS.map(f => acc[id][f]);
@@ -528,7 +530,7 @@ function updateTotal(cpmkId) {
     const el = document.getElementById('total-' + cpmkId);
     if (!el) return;
     let total = 0;
-    ['tugas','quis','kasus_proyek','uts','uas'].forEach(f => {
+    ['aktivitas_partisipatif','tugas','quis','kasus_proyek','uts','uas'].forEach(f => {
         total += parseFloat(document.getElementById(f + '-' + cpmkId)?.value || 0) || 0;
     });
     total = Math.round(total * 100) / 100;

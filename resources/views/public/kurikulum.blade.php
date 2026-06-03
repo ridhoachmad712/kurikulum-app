@@ -640,6 +640,7 @@
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="border border-gray-200 px-3 py-2 text-left w-28 text-gray-600">Sub-CPMK</th>
+                                <th class="border border-gray-200 px-2 py-2 text-center w-24 text-gray-600">Aktivitas Partisipatif</th>
                                 <th class="border border-gray-200 px-2 py-2 text-center w-16 text-gray-600">Tugas</th>
                                 <th class="border border-gray-200 px-2 py-2 text-center w-16 text-gray-600">Kuis</th>
                                 <th class="border border-gray-200 px-2 py-2 text-center w-24 text-gray-600">Kasus/Proyek</th>
@@ -654,13 +655,14 @@
                             @foreach($subsWithAsesmen as $sub)
                             @php
                                 $a       = $sub->asesmen;
-                                $total   = $a->tugas + $a->quis + $a->kasus_proyek + $a->uts + $a->uas;
+                                $total   = $a->aktivitas_partisipatif + $a->tugas + $a->quis + $a->kasus_proyek + $a->uts + $a->uas;
                                 $teoritis = $bobotPerSub[$sub->id] ?? 0;
                                 $selisih  = abs($total - $teoritis);
                                 $selaras  = $teoritis > 0 && $selisih <= 0.5;
                             @endphp
                             <tr class="hover:bg-gray-50">
                                 <td class="border border-gray-200 px-3 py-1.5 font-medium text-teal-700">{{ $sub->kode }}</td>
+                                <td class="border border-gray-200 px-2 py-1.5 text-center">@if($a->aktivitas_partisipatif > 0)<span class="text-gray-700">{{ $a->aktivitas_partisipatif }}</span>@else<span class="text-gray-300">—</span>@endif</td>
                                 <td class="border border-gray-200 px-2 py-1.5 text-center">@if($a->tugas > 0)<span class="text-gray-700">{{ $a->tugas }}</span>@else<span class="text-gray-300">—</span>@endif</td>
                                 <td class="border border-gray-200 px-2 py-1.5 text-center">@if($a->quis > 0)<span class="text-gray-700">{{ $a->quis }}</span>@else<span class="text-gray-300">—</span>@endif</td>
                                 <td class="border border-gray-200 px-2 py-1.5 text-center">@if($a->kasus_proyek > 0)<span class="text-gray-700">{{ $a->kasus_proyek }}</span>@else<span class="text-gray-300">—</span>@endif</td>

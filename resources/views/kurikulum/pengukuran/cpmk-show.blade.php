@@ -42,7 +42,7 @@
 @forelse($cpmks as $cpmk)
 @if($cpmk->subCpmks->isNotEmpty())
 @php
-    $instruments = ['tugas' => 'Tugas', 'quis' => 'Kuis', 'kasus_proyek' => 'Kasus/Proyek', 'uts' => 'UTS', 'uas' => 'UAS'];
+    $instruments = ['aktivitas_partisipatif' => 'Aktivitas Partisipatif', 'tugas' => 'Tugas', 'quis' => 'Kuis', 'kasus_proyek' => 'Kasus/Proyek', 'uts' => 'UTS', 'uas' => 'UAS'];
     // Hitung total per kolom (instrumen) untuk CPMK ini
     $colTotals = [];
     foreach (array_keys($instruments) as $f) {
@@ -176,7 +176,7 @@
 
 <script>
 const CSRF         = '{{ csrf_token() }}';
-const FIELDS       = ['tugas','quis','kasus_proyek','uts','uas'];
+const FIELDS       = ['aktivitas_partisipatif','tugas','quis','kasus_proyek','uts','uas'];
 const bobotTargets = @json($bobotTargets);
 const timers       = {};
 

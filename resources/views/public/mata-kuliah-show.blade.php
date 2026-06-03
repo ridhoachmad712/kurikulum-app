@@ -122,7 +122,7 @@
                     @if($sc->asesmen)
                     @php $a = $sc->asesmen; @endphp
                     <div class="shrink-0 flex flex-wrap gap-1.5 text-xs justify-end">
-                        @foreach(['tugas'=>'Tugas','quis'=>'Kuis','kasus_proyek'=>'Kasus','uts'=>'UTS','uas'=>'UAS'] as $field => $label)
+                        @foreach(['aktivitas_partisipatif'=>'Aktivitas Partisipatif','tugas'=>'Tugas','quis'=>'Kuis','kasus_proyek'=>'Kasus','uts'=>'UTS','uas'=>'UAS'] as $field => $label)
                         @if($a->$field > 0)
                         <span class="px-2 py-0.5 bg-amber-50 text-amber-700 rounded-full font-medium">{{ $label }}: {{ $a->$field }}%</span>
                         @endif
