@@ -81,6 +81,20 @@
 </div>
 @endif
 
+{{-- Toolbar simpan --}}
+<div class="flex items-center justify-between gap-3 mb-3 flex-wrap">
+    <p id="dirty-hint" class="text-xs text-gray-400">
+        Perubahan tersimpan otomatis. Klik <strong>Simpan</strong> untuk memastikan semua isian tersimpan.
+    </p>
+    <button type="button" id="btn-save-all" onclick="saveAll()"
+            class="btn-primary text-sm shrink-0">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+        </svg>
+        <span id="btn-save-all-label">Simpan</span>
+    </button>
+</div>
+
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="overflow-x-auto">
         <table class="min-w-full text-sm border-collapse">
@@ -316,17 +330,33 @@ table input[type=number] { -moz-appearance: textfield; }
 <script>
 const CSRF   = '{{ csrf_token() }}';
 const timers = {};
+const pending = new Set();   // CPMK yang isiannya belum tersimpan ke server
 
 const FIELDS = ['tugas','quis','kasus_proyek','uts','uas'];
 const CPL_SHARES = @json($cplShares ?? new stdClass);
 
 function debounce(cpmkId) {
     clearTimeout(timers[cpmkId]);
+    pending.add(String(cpmkId));      // tandai ada perubahan belum tersimpan
+    updateDirtyHint();
     updateTotal(cpmkId);              // tampilkan total baris langsung saat mengetik
     updateColumnTotals();             // perbarui total per aspek (footer)
     updateCplTable();                 // perbarui matriks CPL
     showStatus('Mengetik...');
     timers[cpmkId] = setTimeout(() => saveCpmk(cpmkId), 500);
+}
+
+// Perbarui petunjuk & tombol simpan sesuai status perubahan
+function updateDirtyHint() {
+    const hint = document.getElementById('dirty-hint');
+    const btn  = document.getElementById('btn-save-all');
+    if (pending.size > 0) {
+        if (hint) { hint.innerHTML = '<span class="text-amber-600 font-medium">● ' + pending.size + ' CPMK belum tersimpan</span> — klik Simpan.'; }
+        if (btn)  { btn.classList.add('ring-2','ring-amber-300'); }
+    } else {
+        if (hint) { hint.innerHTML = 'Semua isian tersimpan. ✓'; }
+        if (btn)  { btn.classList.remove('ring-2','ring-amber-300'); }
+    }
 }
 
 // Metode sisa terbesar — bulatkan array nilai ke int yang jumlahnya = target
@@ -416,37 +446,82 @@ function updateColumnTotals() {
     if (g) g.textContent = Math.round(grand) + '%';
 }
 
-async function saveCpmk(cpmkId) {
-    const fields = ['tugas','quis','kasus_proyek','uts','uas'];
-    const body   = {};
-    for (const f of fields) {
-        body[f] = parseFloat(document.getElementById(f + '-' + cpmkId)?.value || 0) || 0;
-    }
+// POST inti — kirim isian 1 CPMK; kembalikan true bila tersimpan
+async function postCpmk(cpmkId) {
+    const body = {};
+    FIELDS.forEach(f => body[f] = parseFloat(document.getElementById(f + '-' + cpmkId)?.value || 0) || 0);
+    const res = await fetch(`/kurikulum/api/cpmk/${cpmkId}/asesmen`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
+        body:    JSON.stringify(body),
+    });
+    if (!res.ok) return false;
+    const json = await res.json().catch(() => ({}));
+    return !!json.ok;
+}
 
+// Auto-save 1 CPMK (dipicu debounce)
+async function saveCpmk(cpmkId) {
     showStatus('Menyimpan...');
     try {
-        const res = await fetch(`/kurikulum/api/cpmk/${cpmkId}/asesmen`, {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
-            body:    JSON.stringify(body),
-        });
-        if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            showStatus('⚠ ' + (err.message || 'Gagal menyimpan (error ' + res.status + ')'));
-            setTimeout(() => hideStatus(), 4000);
-            return;
-        }
-        const json = await res.json();
-        if (json.ok) {
+        const ok = await postCpmk(cpmkId);
+        if (ok) {
+            pending.delete(String(cpmkId));
+            updateDirtyHint();
             updateTotal(cpmkId);
             showStatus('✓ Tersimpan');
             setTimeout(() => hideStatus(), 2000);
+        } else {
+            showStatus('⚠ Gagal menyimpan — klik Simpan untuk mencoba lagi');
+            setTimeout(() => hideStatus(), 4000);
         }
     } catch {
-        showStatus('⚠ Tidak dapat terhubung ke server — coba refresh halaman');
+        showStatus('⚠ Tidak dapat terhubung ke server — coba klik Simpan / refresh');
         setTimeout(() => hideStatus(), 4000);
     }
 }
+
+// Simpan SEMUA CPMK secara eksplisit (tombol Simpan)
+async function saveAll() {
+    const btn   = document.getElementById('btn-save-all');
+    const label = document.getElementById('btn-save-all-label');
+    // batalkan timer auto-save yang masih menunggu — kita simpan langsung
+    Object.values(timers).forEach(t => clearTimeout(t));
+
+    const ids = Array.from(document.querySelectorAll('tr[id^="row-"]')).map(r => r.id.replace('row-', ''));
+    if (!ids.length) return;
+
+    if (btn) btn.disabled = true;
+    if (label) label.textContent = 'Menyimpan...';
+    showStatus('Menyimpan semua...');
+
+    let ok = 0, fail = 0;
+    for (const id of ids) {
+        try {
+            if (await postCpmk(id)) { ok++; pending.delete(String(id)); updateTotal(id); }
+            else { fail++; }
+        } catch { fail++; }
+    }
+
+    updateColumnTotals();
+    updateCplTable();
+    updateDirtyHint();
+
+    if (btn) btn.disabled = false;
+    if (label) label.textContent = 'Simpan';
+
+    if (fail === 0) {
+        showStatus('✓ Semua tersimpan (' + ok + ' CPMK)');
+    } else {
+        showStatus('⚠ ' + fail + ' CPMK gagal disimpan — coba lagi');
+    }
+    setTimeout(() => hideStatus(), 3500);
+}
+
+// Peringatan bila menutup/pindah halaman dengan perubahan belum tersimpan
+window.addEventListener('beforeunload', function (e) {
+    if (pending.size > 0) { e.preventDefault(); e.returnValue = ''; }
+});
 
 // Hitung ulang total baris (dari 5 input metode) + perbarui badge vs target
 function updateTotal(cpmkId) {
@@ -487,6 +562,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     updateColumnTotals();
     updateCplTable();
+    updateDirtyHint();
 });
 </script>
 
