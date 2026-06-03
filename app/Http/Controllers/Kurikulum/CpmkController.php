@@ -287,7 +287,10 @@ class CpmkController extends Controller
     }
 
     /* ----------------------------------------------------------------
-     * TABEL 12 — % Matriks CPMK × CPL (bobot_persen + total per CPL)
+     * TABEL 12 — % Matriks Sub-CPMK × CPL
+     *   Bobot Sub-CPMK→CPL diturunkan dari CPMK induk:
+     *   bobot_sub_cpl = bobot_CPMK_ke_CPL / jumlah_sub_dalam_CPMK
+     *   (total per kolom CPL tetap sama dengan Tabel 7)
      * ---------------------------------------------------------------- */
     public function tabel12()
     {
@@ -296,11 +299,47 @@ class CpmkController extends Controller
 
         $q = MataKuliah::where('program_studi_id', $psId)
             ->where('aktif', true)
-            ->with(['cpmks.cpmkCpls'])
+            ->with(['cpmks' => fn($q) => $q->with(['cpmkCpls', 'subCpmks'])->orderBy('urutan')])
             ->orderBy('urutan');
         $this->applyDosenScope($q);
-        $mataKuliahs = $q->get()->filter(fn($mk) => $mk->cpmks->isNotEmpty() &&
-            $mk->cpmks->some(fn($c) => $c->cpmkCpls->isNotEmpty()));
+        $mataKuliahs = $q->get()->filter(fn($mk) => $mk->cpmks->flatMap->subCpmks->isNotEmpty());
+
+        // Bangun matriks Sub-CPMK × CPL per MK
+        foreach ($mataKuliahs as $mk) {
+            $rows      = [];
+            $colTotals = [];
+            foreach ($cpls as $cpl) $colTotals[$cpl->id] = 0.0;
+
+            foreach ($mk->cpmks as $cpmk) {
+                $subCount = $cpmk->subCpmks->count();
+                if ($subCount === 0) continue;
+
+                foreach ($cpmk->subCpmks as $i => $sub) {
+                    $cells    = [];
+                    $rowTotal = 0.0;
+                    foreach ($cpls as $cpl) {
+                        $cc    = $cpmk->cpmkCpls->firstWhere('cpl_id', $cpl->id);
+                        $bobot = $cc ? (float) $cc->bobot_persen / $subCount : 0.0;
+                        $cells[$cpl->id]      = $bobot;
+                        $rowTotal            += $bobot;
+                        $colTotals[$cpl->id] += $bobot;
+                    }
+                    $rows[] = [
+                        'cpmk_kode'  => $cpmk->kode,
+                        'cpmk_first' => $i === 0,          // tandai baris pertama tiap CPMK
+                        'cpmk_span'  => $subCount,
+                        'sub_kode'   => $sub->kode,
+                        'sub_desc'   => $sub->deskripsi,
+                        'cells'      => $cells,
+                        'total'      => $rowTotal,
+                    ];
+                }
+            }
+
+            $mk->t12_rows      = $rows;
+            $mk->t12_colTotals = $colTotals;
+            $mk->t12_grand     = array_sum($colTotals);
+        }
 
         return view('kurikulum.cpmk.tabel12', compact('cpls', 'mataKuliahs'));
     }
