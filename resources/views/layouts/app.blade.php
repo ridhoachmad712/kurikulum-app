@@ -426,6 +426,15 @@
                 <span x-show="!collapsed" x-cloak>Deskripsi Mata Kuliah</span>
             </x-nav-link>
 
+            <x-nav-link href="{{ route('kurikulum.rps-documents.index') }}" :active="request()->routeIs('kurikulum.rps-documents.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0-4 4m4-4 4 4M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"/>
+                    </svg>
+                </x-slot>
+                <span x-show="!collapsed" x-cloak>Unggah RPS</span>
+            </x-nav-link>
+
             {{-- SEKSI 2: REKAP --}}
             @php
             $tabelViewActive = request()->routeIs('kurikulum.matriks.tabel*')
@@ -461,15 +470,6 @@
                 </x-slot>
                 <span x-show="!collapsed" x-cloak>Hasil Pengukuran</span>
             </x-nav-link>
-
-            <p class="nav-section-label !text-red-300" x-show="!collapsed" x-cloak>On Development</p>
-            <a href="{{ route('kurikulum.rps.index') }}"
-               class="nav-item gap-3 text-red-300 hover:bg-red-50 hover:text-red-400 {{ request()->routeIs('kurikulum.rps.*') ? 'bg-red-50 !text-red-500' : '' }}">
-                <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                <span x-show="!collapsed" x-cloak>RPS</span>
-            </a>
 
             @endhasrole
 

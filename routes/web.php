@@ -10,6 +10,7 @@ use App\Http\Controllers\Kurikulum\MatriksController;
 use App\Http\Controllers\Kurikulum\AsesmenController;
 use App\Http\Controllers\Kurikulum\PengukuranController;
 use App\Http\Controllers\Kurikulum\RpsController;
+use App\Http\Controllers\Kurikulum\RpsDocumentController;
 use App\Http\Controllers\Kurikulum\SubCpmkController;
 use App\Http\Controllers\Master\BahanKajianController;
 use App\Http\Controllers\Master\CloTaxonomiController;
@@ -30,6 +31,7 @@ Route::get('/peo',                    [PublicController::class, 'peo'])         
 Route::get('/plo',                    fn () => redirect()->route('public.peo', [], 301));
 Route::get('/kurikulum',              [PublicController::class, 'kurikulum'])        ->name('public.kurikulum');
 Route::get('/mata-kuliah',            [PublicController::class, 'mataKuliah'])      ->name('public.mata-kuliah');
+Route::get('/mata-kuliah/{mataKuliah}/rps', [PublicController::class, 'mataKuliahRps'])->name('public.mata-kuliah.rps');
 Route::get('/mata-kuliah/{mataKuliah}',[PublicController::class, 'mataKuliahShow'])->name('public.mata-kuliah.show');
 Route::get('/cpl',                    [PublicController::class, 'cpl'])             ->name('public.cpl');
 Route::get('/bahan-kajian',            [PublicController::class, 'bahanKajian'])    ->name('public.bahan-kajian');
@@ -115,6 +117,8 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('deskripsi/{mataKuliah}',   [DeskripsiMkController::class, 'update'])->name('deskripsi.update');
 
         // RPS
+        Route::get('rps-documents', [RpsDocumentController::class, 'index'])->name('rps-documents.index')->middleware('role:dosen');
+        Route::post('rps-documents/{mataKuliah}', [RpsDocumentController::class, 'store'])->name('rps-documents.store')->middleware('role:dosen');
         Route::resource('rps', RpsController::class);
         Route::post('rps/{rps}/submit',  [RpsController::class, 'submit']) ->name('rps.submit');
         Route::post('rps/{rps}/approve', [RpsController::class, 'approve'])->name('rps.approve');

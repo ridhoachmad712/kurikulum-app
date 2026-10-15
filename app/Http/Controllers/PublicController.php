@@ -10,6 +10,7 @@ use App\Models\ProfilLulusan;
 use App\Models\ProgramStudi;
 use App\Models\User;
 use App\Services\MatriksService;
+use Illuminate\Support\Facades\Storage;
 
 class PublicController extends Controller
 {
@@ -106,6 +107,7 @@ class PublicController extends Controller
 
         $mataKuliahs = MataKuliah::where('program_studi_id', $prodi->id)
             ->where('aktif', true)
+            ->with('rpsDocument')
             ->withCount(['cpmks', 'subCpmks'])
             ->with(['mkCpls' => fn($q) => $q->whereNotNull('level'), 'dosens:id,name'])
             ->orderBy('semester')
@@ -114,6 +116,22 @@ class PublicController extends Controller
             ->groupBy('semester');
 
         return view('public.mata-kuliah', compact('prodi', 'cpls', 'mataKuliahs'));
+    }
+
+    /** Tampilkan PDF RPS yang diunggah dosen pengampu. */
+    public function mataKuliahRps(MataKuliah $mataKuliah)
+    {
+        $prodi = $this->getProdi();
+        abort_unless($mataKuliah->aktif && $mataKuliah->program_studi_id === $prodi->id, 404);
+
+        $document = $mataKuliah->rpsDocument;
+        abort_unless($document && Storage::disk('local')->exists($document->file_path), 404);
+
+        $fileName = 'RPS-' . preg_replace('/[^A-Za-z0-9_-]/', '-', $mataKuliah->kode_rps) . '.pdf';
+
+        return Storage::disk('local')->response($document->file_path, $fileName, [
+            'Content-Type' => 'application/pdf',
+        ]);
     }
 
     /** Detail satu mata kuliah */

@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\Concerns\LogsActivity;
 
 class MataKuliah extends Model
@@ -54,6 +55,11 @@ class MataKuliah extends Model
     public function rps(): HasMany
     {
         return $this->hasMany(Rps::class);
+    }
+
+    public function rpsDocument(): HasOne
+    {
+        return $this->hasOne(RpsDocument::class);
     }
 
     public function bahanKajians(): BelongsToMany

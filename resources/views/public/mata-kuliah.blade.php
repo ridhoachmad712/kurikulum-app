@@ -101,7 +101,7 @@ $konsentrasiList = $mataKuliahs->flatten()->pluck('konsentrasi')->filter()->uniq
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">CPL Terkait</th>
                         <th class="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider w-20">CPMK</th>
                         <th class="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider w-24">Sub-CPMK</th>
-                        <th class="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider w-20">Detail</th>
+                        <th class="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider w-40">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
@@ -150,13 +150,22 @@ $konsentrasiList = $mataKuliahs->flatten()->pluck('konsentrasi')->filter()->uniq
                             </span>
                         </td>
                         <td class="px-4 py-3 text-center">
-                            <a href="{{ route('public.mata-kuliah.show', $mk) }}"
-                               class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-700 text-white text-xs font-medium rounded-lg hover:bg-blue-800 transition">
-                                Detail
-                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
-                                </svg>
-                            </a>
+                            <div class="flex items-center justify-center gap-2">
+                                <a href="{{ route('public.mata-kuliah.show', $mk) }}"
+                                   class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-700 text-white text-xs font-medium rounded-lg hover:bg-blue-800 transition">
+                                    Detail
+                                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+                                    </svg>
+                                </a>
+                                @if($mk->rpsDocument)
+                                <a href="{{ route('public.mata-kuliah.rps', $mk) }}" target="_blank" rel="noopener"
+                                   aria-label="Buka RPS {{ $mk->nama }}"
+                                   class="inline-flex items-center px-3 py-1.5 bg-emerald-600 text-white text-xs font-medium rounded-lg hover:bg-emerald-700 transition">
+                                    RPS
+                                </a>
+                                @endif
+                            </div>
                         </td>
                     </tr>
                     @endforeach
