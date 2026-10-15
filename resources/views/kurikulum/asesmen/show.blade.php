@@ -14,8 +14,8 @@
     <svg class="w-4 h-4 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
     <span>
         Isi distribusi metode penilaian (<strong>Tugas / Kuis / Kasus·Proyek / UTS / UAS</strong>)
-        <strong>satu kali untuk tiap CPMK</strong>. Sistem otomatis membagi rata nilai tersebut ke seluruh
-        Sub-CPMK di belakang layar. Usahakan jumlah metode sama dengan <em>target</em> (= total bobot CPMK terhadap CPL).
+        <strong>satu kali untuk tiap CPMK</strong>. Matriks Sub-CPMK di bawah dihitung dari bobot hubungan
+        CPMK→Sub-CPMK; hubungan tanpa bobot manual memakai pembagian rata. Usahakan jumlah metode sama dengan <em>target</em> (= total bobot CPMK terhadap CPL).
         Semua perubahan disimpan otomatis.
     </span>
 </div>
@@ -44,15 +44,15 @@
     {{-- Stats --}}
     <div class="flex items-center gap-4 text-sm flex-wrap flex-1 min-w-0">
         <div class="flex flex-col items-center px-4 py-1.5 bg-gray-50 rounded-lg min-w-[72px]">
-            <span class="text-lg font-bold text-gray-800">{{ $summTotal }}</span>
+            <span class="text-lg font-bold text-gray-800" id="summary-total">{{ $summTotal }}</span>
             <span class="text-[10px] text-gray-400 uppercase tracking-wide">CPMK</span>
         </div>
         <div class="flex flex-col items-center px-4 py-1.5 bg-blue-50 rounded-lg min-w-[72px]">
-            <span class="text-lg font-bold text-blue-700">{{ $summFilled }}</span>
+            <span class="text-lg font-bold text-blue-700" id="summary-filled">{{ $summFilled }}</span>
             <span class="text-[10px] text-blue-400 uppercase tracking-wide">Diisi</span>
         </div>
-        <div class="flex flex-col items-center px-4 py-1.5 {{ $summSelaras === $summTotal ? 'bg-green-50' : ($summSelaras > 0 ? 'bg-amber-50' : 'bg-gray-50') }} rounded-lg min-w-[72px]">
-            <span class="text-lg font-bold {{ $summSelaras === $summTotal ? 'text-green-700' : ($summSelaras > 0 ? 'text-amber-700' : 'text-gray-400') }}">{{ $summSelaras }}</span>
+        <div id="summary-aligned-card" class="flex flex-col items-center px-4 py-1.5 {{ $summSelaras === $summTotal ? 'bg-green-50' : ($summSelaras > 0 ? 'bg-amber-50' : 'bg-gray-50') }} rounded-lg min-w-[72px]">
+            <span class="text-lg font-bold {{ $summSelaras === $summTotal ? 'text-green-700' : ($summSelaras > 0 ? 'text-amber-700' : 'text-gray-400') }}" id="summary-aligned">{{ $summSelaras }}</span>
             <span class="text-[10px] {{ $summSelaras === $summTotal ? 'text-green-400' : ($summSelaras > 0 ? 'text-amber-400' : 'text-gray-400') }} uppercase tracking-wide">Selaras</span>
         </div>
     </div>
@@ -61,21 +61,21 @@
     <div class="flex-1 min-w-[160px]">
         <div class="flex items-center justify-between mb-1.5">
             <span class="text-xs text-gray-500">Progress keselarasan</span>
-            <span class="text-xs font-semibold {{ $summSelaras === $summTotal ? 'text-green-600' : ($summSelaras > 0 ? 'text-amber-600' : 'text-gray-400') }}">
+            <span class="text-xs font-semibold {{ $summSelaras === $summTotal ? 'text-green-600' : ($summSelaras > 0 ? 'text-amber-600' : 'text-gray-400') }}" id="summary-percent">
                 {{ $summPct }}%
             </span>
         </div>
         <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div class="h-full rounded-full transition-all duration-500
+            <div id="summary-bar" class="h-full rounded-full transition-all duration-500
                         {{ $summSelaras === $summTotal ? 'bg-green-500' : ($summSelaras > 0 ? 'bg-amber-400' : 'bg-gray-200') }}"
                  style="width: {{ $summPct }}%"></div>
         </div>
         @if($summSelaras === $summTotal)
-        <p class="text-[10px] text-green-600 mt-1 font-medium">✓ Semua CPMK sudah selaras</p>
+        <p id="summary-message" class="text-[10px] text-green-600 mt-1 font-medium">✓ Semua CPMK sudah selaras</p>
         @elseif($summFilled < $summTotal)
-        <p class="text-[10px] text-gray-400 mt-1">{{ $summTotal - $summFilled }} CPMK belum diisi</p>
+        <p id="summary-message" class="text-[10px] text-gray-400 mt-1">{{ $summTotal - $summFilled }} CPMK belum diisi</p>
         @else
-        <p class="text-[10px] text-amber-600 mt-1">{{ $summTotal - $summSelaras }} CPMK belum selaras</p>
+        <p id="summary-message" class="text-[10px] text-amber-600 mt-1">{{ $summTotal - $summSelaras }} CPMK belum selaras</p>
         @endif
     </div>
 </div>
@@ -155,9 +155,9 @@
 
                     @foreach(['aktivitas_partisipatif','tugas','quis','kasus_proyek','uts','uas'] as $field)
                     <td class="px-3 py-3 text-center align-middle">
-                        <input type="number" min="0" max="100" step="1"
+                        <input type="number" min="0" max="100" step="0.01"
                             id="{{ $field }}-{{ $cpmk->id }}"
-                            value="{{ $total > 0 ? round((float)$agg[$field]) : '' }}"
+                            value="{{ $total > 0 ? round((float)$agg[$field], 2) : '' }}"
                             placeholder="0"
                             oninput="debounce({{ $cpmk->id }})"
                             class="w-16 text-center border border-gray-200 rounded-lg px-1.5 py-1 text-xs
@@ -219,6 +219,79 @@
             </tfoot>
         </table>
     </div>
+</div>
+
+{{-- ─── Matriks Sub-CPMK terhadap Instrumen Penilaian ────────────── --}}
+@php
+    $subInstr = ['aktivitas_partisipatif'=>0,'tugas'=>0,'quis'=>0,'kasus_proyek'=>0,'uts'=>0,'uas'=>0];
+    foreach ($subRows as $row) {
+        foreach (array_keys($subInstr) as $field) $subInstr[$field] += $row[$field];
+    }
+    $subGrand = array_sum($subInstr);
+@endphp
+<div class="mt-7">
+    <div class="flex items-center gap-2 mb-1 flex-wrap">
+        <h2 class="text-sm font-bold text-gray-800">Matriks Sub-CPMK terhadap Instrumen Penilaian</h2>
+        <span class="px-2 py-0.5 bg-gray-100 border border-gray-200 rounded-full text-[10px] text-gray-500">acuan bobot CPMK→Sub-CPMK (Tabel 11)</span>
+    </div>
+    <p class="text-xs text-gray-400 mb-3">
+        Asesmen tiap CPMK dibagikan mengikuti bobot hubungannya dengan Sub-CPMK. Bobot kosong dibagi rata; Sub-CPMK yang terhubung ke beberapa CPMK menerima jumlah kontribusinya.
+    </p>
+    @if(empty($subRows))
+        <div class="bg-amber-50 border border-amber-200 rounded-xl px-5 py-4 text-xs text-amber-800">
+            Hubungkan Sub-CPMK ke CPMK terlebih dahulu untuk melihat matriks ini.
+        </div>
+    @else
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm border-collapse">
+                <thead><tr class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wider">
+                    <th class="border-b border-gray-100 px-4 py-2.5 text-left">Sub-CPMK</th>
+                    <th class="border-b border-gray-100 px-3 py-2.5 text-center">Aktivitas Partisipatif</th>
+                    <th class="border-b border-gray-100 px-3 py-2.5 text-center">Tugas</th>
+                    <th class="border-b border-gray-100 px-3 py-2.5 text-center">Kuis</th>
+                    <th class="border-b border-gray-100 px-3 py-2.5 text-center">Kasus/Proyek</th>
+                    <th class="border-b border-gray-100 px-3 py-2.5 text-center">UTS</th>
+                    <th class="border-b border-gray-100 px-3 py-2.5 text-center">UAS</th>
+                    <th class="border-b border-gray-100 px-3 py-2.5 text-center">Total / Target</th>
+                </tr></thead>
+                <tbody class="divide-y divide-gray-50">
+                    @foreach($subRows as $subId => $row)
+                    @php
+                        $subMatch = $row['target'] > 0 && abs($row['total'] - $row['target']) <= 0.01;
+                        $subOver = $row['total'] > $row['target'] + 0.01;
+                    @endphp
+                    <tr id="subrow-{{ $subId }}" class="hover:bg-gray-50">
+                        <td class="px-4 py-3 align-top min-w-[220px]">
+                            <span class="font-semibold text-gray-700">{{ $row['kode'] }}</span>
+                            <span class="block text-xs text-gray-500 mt-0.5">{{ Str::limit($row['deskripsi'], 90) }}</span>
+                            <span class="block text-[10px] text-indigo-500 mt-1">{{ implode(', ', $row['cpmks']) }}</span>
+                        </td>
+                        @foreach(array_keys($subInstr) as $field)
+                        <td class="px-3 py-3 text-center text-xs text-gray-700" id="subcell-{{ $subId }}-{{ $field }}">
+                            {{ $row[$field] > 0 ? number_format($row[$field], 2, ',', '.').'%' : '–' }}
+                        </td>
+                        @endforeach
+                        <td class="px-3 py-3 text-center">
+                            <span id="subtotal-{{ $subId }}" class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold {{ $subMatch ? 'bg-green-100 text-green-700' : ($subOver ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700') }}">
+                                {{ number_format($row['total'], 2, ',', '.') }}%
+                            </span>
+                            <span id="subtarget-{{ $subId }}" class="block text-[10px] text-gray-400 mt-0.5">target: {{ number_format($row['target'], 2, ',', '.') }}%</span>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+                <tfoot><tr class="bg-gray-50 border-t-2 border-gray-200 text-sm font-semibold text-gray-700">
+                    <td class="px-4 py-3 text-xs uppercase tracking-wider text-gray-500">Total Instrumen</td>
+                    @foreach(array_keys($subInstr) as $field)
+                    <td class="px-3 py-3 text-center" id="subinstr-{{ $field }}">{{ number_format($subInstr[$field], 2, ',', '.') }}%</td>
+                    @endforeach
+                    <td class="px-3 py-3 text-center" id="subgrand">{{ number_format($subGrand, 2, ',', '.') }}%</td>
+                </tr></tfoot>
+            </table>
+        </div>
+    </div>
+    @endif
 </div>
 
 {{-- ─── Matriks CPL terhadap Instrumen Penilaian ─────────────────── --}}
@@ -336,6 +409,8 @@ const pending = new Set();   // CPMK yang isiannya belum tersimpan ke server
 
 const FIELDS = ['aktivitas_partisipatif','tugas','quis','kasus_proyek','uts','uas'];
 const CPL_SHARES = @json($cplShares ?? new stdClass);
+const SUB_SHARES = @json($subShares ?? new stdClass);
+const SUB_TARGETS = @json($subTargets);
 
 function debounce(cpmkId) {
     clearTimeout(timers[cpmkId]);
@@ -343,6 +418,7 @@ function debounce(cpmkId) {
     updateDirtyHint();
     updateTotal(cpmkId);              // tampilkan total baris langsung saat mengetik
     updateColumnTotals();             // perbarui total per aspek (footer)
+    updateSubTable();                 // perbarui matriks Sub-CPMK
     updateCplTable();                 // perbarui matriks CPL
     showStatus('Mengetik...');
     timers[cpmkId] = setTimeout(() => saveCpmk(cpmkId), 500);
@@ -379,6 +455,122 @@ function largestRemainder(values, target) {
         for (let i = 0; i < -diff && i < order.length; i++) floors[order[order.length - 1 - i]] -= 1;
     }
     return floors;
+}
+
+function formatSubPercent(value) {
+    return value.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
+}
+
+// Distribusi dalam satuan sen persen menjaga total setiap instrumen tetap persis.
+function updateSubTable() {
+    const rows = Array.from(document.querySelectorAll('tr[id^="subrow-"]'));
+    if (!rows.length) return;
+
+    const acc = {};
+    rows.forEach(row => {
+        const id = row.id.replace('subrow-', '');
+        acc[id] = Object.fromEntries(FIELDS.map(field => [field, 0]));
+    });
+
+    document.querySelectorAll('tr[id^="row-"]').forEach(row => {
+        const cpmkId = row.id.replace('row-', '');
+        const shares = SUB_SHARES[cpmkId] || [];
+        if (!shares.length) return;
+        FIELDS.forEach(field => {
+            const value = parseFloat(document.getElementById(field + '-' + cpmkId)?.value || 0) || 0;
+            const cents = Math.round(value * 100);
+            const allocated = largestRemainder(shares.map(s => cents * s.share), cents);
+            shares.forEach((share, index) => {
+                if (acc[share.sub_id]) acc[share.sub_id][field] += allocated[index];
+            });
+        });
+    });
+
+    let grand = 0;
+    FIELDS.forEach(field => {
+        let column = 0;
+        rows.forEach(row => {
+            const id = row.id.replace('subrow-', '');
+            const cents = acc[id][field];
+            column += cents;
+            const cell = document.getElementById('subcell-' + id + '-' + field);
+            if (cell) cell.textContent = cents > 0 ? formatSubPercent(cents / 100) : '–';
+        });
+        grand += column;
+        const footer = document.getElementById('subinstr-' + field);
+        if (footer) footer.textContent = formatSubPercent(column / 100);
+    });
+
+    rows.forEach(row => {
+        const id = row.id.replace('subrow-', '');
+        const total = FIELDS.reduce((sum, field) => sum + acc[id][field], 0) / 100;
+        const target = Number(SUB_TARGETS[id] || 0);
+        const match = target > 0 && Math.abs(total - target) <= 0.01;
+        const over = total > target + 0.01;
+        const badge = document.getElementById('subtotal-' + id);
+        if (badge) {
+            badge.textContent = formatSubPercent(total);
+            badge.className = 'inline-block px-2 py-0.5 rounded-full text-xs font-semibold ' +
+                (match ? 'bg-green-100 text-green-700' :
+                 over ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700');
+        }
+    });
+
+    const grandEl = document.getElementById('subgrand');
+    if (grandEl) grandEl.textContent = formatSubPercent(grand / 100);
+}
+
+function updateSummary() {
+    const rows = Array.from(document.querySelectorAll('tr[id^="row-"]'))
+        .filter(row => Number(row.dataset.target || 0) > 0);
+    const total = rows.length;
+    let filled = 0;
+    let aligned = 0;
+    rows.forEach(row => {
+        const id = row.id.replace('row-', '');
+        const sum = FIELDS.reduce((value, field) =>
+            value + (parseFloat(document.getElementById(field + '-' + id)?.value || 0) || 0), 0);
+        if (sum > 0) {
+            filled++;
+            if (Math.abs(sum - Number(row.dataset.target)) <= 0.5) aligned++;
+        }
+    });
+
+    const pct = total > 0 ? Math.round(aligned / total * 100) : 0;
+    const setText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+    setText('summary-total', total);
+    setText('summary-filled', filled);
+    setText('summary-aligned', aligned);
+    setText('summary-percent', pct + '%');
+    const alignedCard = document.getElementById('summary-aligned-card');
+    const alignedValue = document.getElementById('summary-aligned');
+    const percentValue = document.getElementById('summary-percent');
+    if (alignedCard) {
+        alignedCard.classList.remove('bg-green-50', 'bg-amber-50', 'bg-gray-50');
+        alignedCard.classList.add(aligned === total ? 'bg-green-50' : aligned > 0 ? 'bg-amber-50' : 'bg-gray-50');
+    }
+    if (alignedValue) {
+        alignedValue.classList.remove('text-green-700', 'text-amber-700', 'text-gray-400');
+        alignedValue.classList.add(aligned === total ? 'text-green-700' : aligned > 0 ? 'text-amber-700' : 'text-gray-400');
+    }
+    if (percentValue) {
+        percentValue.classList.remove('text-green-600', 'text-amber-600', 'text-gray-400');
+        percentValue.classList.add(aligned === total ? 'text-green-600' : aligned > 0 ? 'text-amber-600' : 'text-gray-400');
+    }
+    const bar = document.getElementById('summary-bar');
+    if (bar) {
+        bar.style.width = pct + '%';
+        bar.classList.remove('bg-green-500', 'bg-amber-400', 'bg-gray-200');
+        bar.classList.add(aligned === total ? 'bg-green-500' : aligned > 0 ? 'bg-amber-400' : 'bg-gray-200');
+    }
+    const message = document.getElementById('summary-message');
+    if (message) {
+        message.textContent = aligned === total ? '✓ Semua CPMK sudah selaras'
+            : filled < total ? (total - filled) + ' CPMK belum diisi'
+            : (total - aligned) + ' CPMK belum selaras';
+        message.className = 'text-[10px] mt-1 ' +
+            (aligned === total ? 'text-green-600 font-medium' : filled < total ? 'text-gray-400' : 'text-amber-600');
+    }
 }
 
 // Recompute matriks CPL dari isian CPMK saat ini (atribusi proporsional bobot CPMK→CPL)
@@ -506,6 +698,7 @@ async function saveAll() {
     }
 
     updateColumnTotals();
+    updateSubTable();
     updateCplTable();
     updateDirtyHint();
 
@@ -546,6 +739,7 @@ function updateTotal(cpmkId) {
          total > 0 ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-400');
 
     el.textContent = (total > 0 ? Math.round(total) + '%' : '–') + (over ? ' ⚠' : '');
+    updateSummary();
 }
 
 function showStatus(msg) {
@@ -563,6 +757,7 @@ document.addEventListener('DOMContentLoaded', function () {
         updateTotal(row.id.replace('row-', ''));
     });
     updateColumnTotals();
+    updateSubTable();
     updateCplTable();
     updateDirtyHint();
 });
@@ -591,8 +786,8 @@ document.addEventListener('DOMContentLoaded', function () {
         <p class="text-xs text-gray-500 leading-relaxed">Anda cukup mengisi distribusi metode penilaian (Tugas, Kuis, Kasus/Proyek, UTS, UAS) <strong>satu kali untuk tiap CPMK</strong>. Tidak perlu lagi mengisi per Sub-CPMK.</p>
     </div>
     <div>
-        <h3 class="font-semibold text-gray-800 mb-1.5">Dibagi Rata Otomatis</h3>
-        <p class="text-xs text-gray-500 leading-relaxed">Nilai yang Anda isi otomatis dibagi rata ke seluruh Sub-CPMK CPMK tersebut, sehingga perhitungan pengukuran &amp; akreditasi tetap berjalan seperti biasa.</p>
+        <h3 class="font-semibold text-gray-800 mb-1.5">Distribusi Otomatis</h3>
+        <p class="text-xs text-gray-500 leading-relaxed">Matriks Sub-CPMK membagi nilai menurut bobot hubungan di Tabel 11. Bila bobot hubungan belum diisi, sistem memakai pembagian rata. Kontribusi dari beberapa CPMK dijumlahkan pada Sub-CPMK yang sama.</p>
     </div>
     <div>
         <h3 class="font-semibold text-gray-800 mb-1.5">Indikator Selaras</h3>

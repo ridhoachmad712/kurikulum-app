@@ -8,6 +8,7 @@ use App\Models\Cpmk;
 use App\Models\CpmkAsesmen;
 use App\Models\MataKuliah;
 use App\Models\SubCpmkAsesmen;
+use App\Services\SubCpmkAsesmenService;
 use App\Support\Rounding;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -56,9 +57,9 @@ class AsesmenController extends Controller
     }
 
     /* ----------------------------------------------------------------
-     * SHOW — grid input bobot asesmen per Sub-CPMK untuk 1 MK
+     * SHOW — input asesmen per CPMK dan matriks turunan Sub-CPMK/CPL
      * ---------------------------------------------------------------- */
-    public function show(MataKuliah $mataKuliah)
+    public function show(MataKuliah $mataKuliah, SubCpmkAsesmenService $subService)
     {
         $this->authorizeDosenMk($mataKuliah);
 
@@ -106,6 +107,11 @@ class AsesmenController extends Controller
         }
         unset($m);
 
+        $subMatrix = $subService->calculate($cpmks, $cpmkAsesmen, $cpmkMeta, $fields);
+        $subRows = $subMatrix['rows'];
+        $subShares = $subMatrix['shares'];
+        $subTargets = collect($subRows)->mapWithKeys(fn ($row, $id) => [$id => $row['target']])->all();
+
         /* ----------------------------------------------------------------
          * Matriks CPL terhadap Instrumen Penilaian
          * Asesmen tiap CPMK diatribusikan ke CPL secara proporsional
@@ -115,6 +121,7 @@ class AsesmenController extends Controller
         $cplShares = [];   // [cpmk_id => [['cpl_id','share'], ...]] untuk live-update JS
 
         foreach ($cpmks as $cpmk) {
+            if ($cpmk->subCpmks->isEmpty()) continue;
             $links    = $cpmk->cpmkCpls->where('has_relation', true)->filter(fn ($l) => $l->bobot_persen > 0);
             $sumBobot = (float) $links->sum('bobot_persen');
             if ($sumBobot <= 0) continue;
@@ -163,7 +170,7 @@ class AsesmenController extends Controller
         unset($r);
 
         return view('kurikulum.asesmen.show',
-            compact('mataKuliah', 'cpmks', 'cpmkMeta', 'cpmkAsesmen', 'cplRows', 'cplShares'));
+            compact('mataKuliah', 'cpmks', 'cpmkMeta', 'cpmkAsesmen', 'cplRows', 'cplShares', 'subRows', 'subShares', 'subTargets'));
     }
 
     /* ----------------------------------------------------------------
