@@ -15,6 +15,7 @@ use App\Http\Controllers\Master\BahanKajianController;
 use App\Http\Controllers\Master\CloTaxonomiController;
 use App\Http\Controllers\Master\CplController;
 use App\Http\Controllers\Master\MataKuliahController;
+use App\Http\Controllers\Master\PloController;
 use App\Http\Controllers\Master\ProfilLulusanController;
 use App\Http\Controllers\Master\ProgramStudiController;
 use App\Http\Controllers\ProfileController;
@@ -25,6 +26,7 @@ use Illuminate\Support\Facades\Route;
 // ── PUBLIC (tanpa login) ─────────────────────────────────────────
 Route::get('/',                       [PublicController::class, 'home'])            ->name('public.home');
 Route::get('/profil',                 [PublicController::class, 'profil'])           ->name('public.profil');
+Route::get('/plo',                    [PublicController::class, 'plo'])              ->name('public.plo');
 Route::get('/kurikulum',              [PublicController::class, 'kurikulum'])        ->name('public.kurikulum');
 Route::get('/mata-kuliah',            [PublicController::class, 'mataKuliah'])      ->name('public.mata-kuliah');
 Route::get('/mata-kuliah/{mataKuliah}',[PublicController::class, 'mataKuliahShow'])->name('public.mata-kuliah.show');
@@ -44,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('master')->name('master.')->group(function () {
         Route::resource('program-studi', ProgramStudiController::class)->except(['show'])->middleware('role:admin|kaprodi');
         Route::resource('profil-lulusan', ProfilLulusanController::class)->except(['show'])->middleware('role:admin|kaprodi');
+        Route::resource('plo', PloController::class)->except(['show'])->middleware('role:admin|kaprodi');
         Route::resource('cpl', CplController::class)->except(['show']);
         Route::get('bahan-kajian-matriks', [BahanKajianController::class, 'matriks'])->name('bahan-kajian.matriks')->middleware('role:admin|kaprodi');
         Route::post('bahan-kajian-matriks', [BahanKajianController::class, 'simpanMatriks'])->name('bahan-kajian.simpan-matriks')->middleware('role:admin|kaprodi');

@@ -39,16 +39,17 @@
             $navLinks = [
                 ['route' => 'public.home',         'pattern' => 'public.home',          'label' => 'Beranda'],
                 ['route' => 'public.profil',       'pattern' => 'public.profil',        'label' => 'Profil Prodi'],
+                ['route' => 'public.plo',          'pattern' => 'public.plo',           'label' => 'PLO'],
                 ['route' => 'public.cpl',          'pattern' => 'public.cpl',           'label' => 'CPL'],
                 ['route' => 'public.bahan-kajian', 'pattern' => 'public.bahan-kajian',  'label' => 'Bahan Kajian'],
                 ['route' => 'public.mata-kuliah',  'pattern' => 'public.mata-kuliah*',  'label' => 'Mata Kuliah'],
                 ['route' => 'public.kurikulum',    'pattern' => 'public.kurikulum',     'label' => 'Kurikulum'],
             ];
             @endphp
-            <nav class="hidden md:flex items-center gap-1">
+            <nav class="hidden xl:flex items-center gap-1">
                 @foreach($navLinks as $link)
                 <a href="{{ route($link['route']) }}"
-                   class="px-4 py-2 text-sm font-medium rounded-lg transition-colors
+                   class="px-3 py-2 text-sm font-medium rounded-lg transition-colors
                           {{ request()->routeIs($link['pattern'])
                              ? 'bg-blue-50 text-blue-800 font-semibold'
                              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100' }}">
@@ -78,7 +79,7 @@
 
                 {{-- Mobile hamburger --}}
                 <button @click="open = !open"
-                        class="md:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition">
+                        class="xl:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition">
                     <svg x-show="!open" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
                     </svg>
@@ -92,7 +93,7 @@
 
     {{-- Mobile menu --}}
     <div x-show="open" x-cloak
-         class="md:hidden border-t border-gray-100 bg-white px-4 py-3 space-y-1 shadow-lg">
+         class="xl:hidden border-t border-gray-100 bg-white px-4 py-3 space-y-1 shadow-lg">
         @foreach($navLinks as $link)
         <a href="{{ route($link['route']) }}"
            class="block px-4 py-2.5 text-sm font-medium rounded-xl
@@ -137,6 +138,7 @@
                 <ul class="space-y-2 text-sm">
                     <li><a href="{{ route('public.home') }}"       class="text-blue-300 hover:text-white transition">Beranda</a></li>
                     <li><a href="{{ route('public.profil') }}"     class="text-blue-300 hover:text-white transition">Profil Prodi</a></li>
+                    <li><a href="{{ route('public.plo') }}"        class="text-blue-300 hover:text-white transition">PLO</a></li>
                     <li><a href="{{ route('public.cpl') }}"          class="text-blue-300 hover:text-white transition">CPL Program Studi</a></li>
                     <li><a href="{{ route('public.bahan-kajian') }}" class="text-blue-300 hover:text-white transition">Bahan Kajian</a></li>
                     <li><a href="{{ route('public.mata-kuliah') }}"  class="text-blue-300 hover:text-white transition">Mata Kuliah</a></li>

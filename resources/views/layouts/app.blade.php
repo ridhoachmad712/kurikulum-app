@@ -282,6 +282,14 @@
                 </x-slot>
                 <span x-show="!collapsed" x-cloak>Profil Lulusan</span>
             </x-nav-link>
+            <x-nav-link href="{{ route('master.plo.index') }}" :active="request()->routeIs('master.plo.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3 3 8l9 5 9-5-9-5Zm-6 8v5c0 2 3 4 6 4s6-2 6-4v-5"/>
+                    </svg>
+                </x-slot>
+                <span x-show="!collapsed" x-cloak>PLO</span>
+            </x-nav-link>
             <x-nav-link href="{{ route('master.cpl.index') }}" :active="request()->routeIs('master.cpl.*')">
                 <x-slot name="icon">
                     <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BahanKajian;
 use App\Models\Cpl;
 use App\Models\MataKuliah;
+use App\Models\Plo;
 use App\Models\ProfilLulusan;
 use App\Models\ProgramStudi;
 use App\Models\User;
@@ -85,6 +86,15 @@ class PublicController extends Controller
         $prodi = $this->getProdi();
         $profilLulusans = ProfilLulusan::where('program_studi_id', $prodi->id)->orderBy('urutan')->get();
         return view('public.profil', compact('prodi', 'profilLulusans'));
+    }
+
+    /** Program Learning Outcomes */
+    public function plo()
+    {
+        $prodi = $this->getProdi();
+        $plos = Plo::where('program_studi_id', $prodi->id)->orderBy('urutan')->orderBy('id')->get();
+
+        return view('public.plo', compact('prodi', 'plos'));
     }
 
     /** Daftar semua mata kuliah */

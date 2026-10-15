@@ -32,4 +32,9 @@ class ProgramStudi extends Model
     {
         return $this->hasMany(ProfilLulusan::class)->orderBy('urutan');
     }
+
+    public function plos(): HasMany
+    {
+        return $this->hasMany(Plo::class)->orderBy('urutan');
+    }
 }
