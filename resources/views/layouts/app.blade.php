@@ -333,6 +333,17 @@
                 <span x-show="!collapsed" x-cloak>Deskripsi MK</span>
             </x-nav-link>
 
+            @hasrole('admin')
+            <x-nav-link href="{{ route('kurikulum.rps-documents.index') }}" :active="request()->routeIs('kurikulum.rps-documents.*')">
+                <x-slot name="icon">
+                    <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0-4 4m4-4 4 4M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"/>
+                    </svg>
+                </x-slot>
+                <span x-show="!collapsed" x-cloak>Unggah RPS</span>
+            </x-nav-link>
+            @endhasrole
+
             <p class="nav-section-label" x-show="!collapsed" x-cloak>Informasi & Laporan</p>
             @php
             $tabelViewActive = request()->routeIs('kurikulum.matriks.tabel*')

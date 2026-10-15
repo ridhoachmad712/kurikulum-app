@@ -14,15 +14,22 @@ class RpsDocumentController extends Controller
 {
     public function index()
     {
-        $mataKuliahs = auth()->user()->mataKuliahs()
-            ->where('mata_kuliahs.program_studi_id', auth()->user()->program_studi_id)
+        $user = auth()->user();
+        $query = $user->hasRole('admin')
+            ? MataKuliah::query()
+            : $user->mataKuliahs();
+
+        $mataKuliahs = $query
+            ->where('mata_kuliahs.program_studi_id', $user->program_studi_id)
             ->where('mata_kuliahs.aktif', true)
             ->with(['rpsDocument.uploader:id,name'])
             ->orderBy('mata_kuliahs.semester')
             ->orderBy('mata_kuliahs.urutan')
             ->get();
 
-        return view('kurikulum.rps-documents.index', compact('mataKuliahs'));
+        $isAdmin = $user->hasRole('admin');
+
+        return view('kurikulum.rps-documents.index', compact('mataKuliahs', 'isAdmin'));
     }
 
     public function store(Request $request, MataKuliah $mataKuliah)
@@ -31,7 +38,7 @@ class RpsDocumentController extends Controller
         abort_unless(
             $mataKuliah->aktif
             && $mataKuliah->program_studi_id === $user->program_studi_id
-            && $user->mataKuliahs()->where('mata_kuliahs.id', $mataKuliah->id)->exists(),
+            && ($user->hasRole('admin') || $user->mataKuliahs()->where('mata_kuliahs.id', $mataKuliah->id)->exists()),
             403
         );
 

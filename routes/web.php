@@ -117,8 +117,8 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('deskripsi/{mataKuliah}',   [DeskripsiMkController::class, 'update'])->name('deskripsi.update');
 
         // RPS
-        Route::get('rps-documents', [RpsDocumentController::class, 'index'])->name('rps-documents.index')->middleware('role:dosen');
-        Route::post('rps-documents/{mataKuliah}', [RpsDocumentController::class, 'store'])->name('rps-documents.store')->middleware('role:dosen');
+        Route::get('rps-documents', [RpsDocumentController::class, 'index'])->name('rps-documents.index')->middleware('role:dosen|admin');
+        Route::post('rps-documents/{mataKuliah}', [RpsDocumentController::class, 'store'])->name('rps-documents.store')->middleware('role:dosen|admin');
         Route::resource('rps', RpsController::class);
         Route::post('rps/{rps}/submit',  [RpsController::class, 'submit']) ->name('rps.submit');
         Route::post('rps/{rps}/approve', [RpsController::class, 'approve'])->name('rps.approve');

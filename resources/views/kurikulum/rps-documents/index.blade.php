@@ -2,7 +2,7 @@
 @section('title', 'Unggah RPS')
 @section('content')
 
-<x-page-header title="Unggah RPS" subtitle="Unggah PDF Rencana Pembelajaran Semester untuk mata kuliah yang Anda ampu." />
+<x-page-header title="Unggah RPS" :subtitle="$isAdmin ? 'Kelola PDF RPS untuk seluruh mata kuliah aktif di program studi Anda.' : 'Unggah PDF Rencana Pembelajaran Semester untuk mata kuliah yang Anda ampu.'" />
 
 <div class="bg-blue-50 border border-blue-100 rounded-xl px-5 py-4 mb-5 text-sm text-blue-800">
     Pilih berkas PDF maksimal 10 MB. Satu mata kuliah memiliki satu RPS aktif; unggahan baru akan menggantikan berkas sebelumnya dan langsung tersedia di halaman publik.
@@ -16,7 +16,7 @@
 
 @if($mataKuliahs->isEmpty())
 <div class="bg-white rounded-xl border border-gray-100 p-10 text-center text-sm text-gray-500">
-    Belum ada mata kuliah aktif yang ditugaskan kepada Anda.
+    {{ $isAdmin ? 'Belum ada mata kuliah aktif di program studi Anda.' : 'Belum ada mata kuliah aktif yang ditugaskan kepada Anda.' }}
 </div>
 @else
 <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">

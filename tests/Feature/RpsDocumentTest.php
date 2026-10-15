@@ -75,4 +75,39 @@ class RpsDocumentTest extends TestCase
         $this->assertDatabaseCount('rps_documents', 0);
         $this->get(route('public.mata-kuliah.rps', $course))->assertNotFound();
     }
+
+    public function test_admin_can_upload_any_active_course_in_own_program_only(): void
+    {
+        Storage::fake('local');
+        [$prodi, $course, $lecturer] = $this->setupCourse();
+        Role::findOrCreate('admin', 'web');
+        $admin = User::factory()->create(['program_studi_id' => $prodi->id]);
+        $admin->assignRole('admin');
+        $unassigned = MataKuliah::create([
+            'program_studi_id' => $prodi->id, 'kode_rps' => 'MK002', 'nama' => 'Mata Kuliah Tanpa Dosen',
+            'sks' => 2, 'semester' => 2, 'aktif' => true,
+        ]);
+        $otherProdi = ProgramStudi::create(['kode' => 'OTHER-S1', 'nama' => 'Prodi Lain', 'jenjang' => 'S1', 'aktif' => true]);
+        $foreign = MataKuliah::create([
+            'program_studi_id' => $otherProdi->id, 'kode_rps' => 'MK003', 'nama' => 'Mata Kuliah Prodi Lain',
+            'sks' => 2, 'semester' => 1, 'aktif' => true,
+        ]);
+
+        $this->actingAs($admin)->get(route('kurikulum.rps-documents.index'))
+            ->assertOk()->assertSee('Manajemen Uji')->assertSee('Mata Kuliah Tanpa Dosen')
+            ->assertDontSee('Mata Kuliah Prodi Lain');
+        $this->actingAs($admin)->post(route('kurikulum.rps-documents.store', $unassigned), [
+            'file' => $this->pdf(),
+        ])->assertRedirect(route('kurikulum.rps-documents.index'));
+        $this->assertSame($admin->id, $unassigned->rpsDocument->uploaded_by);
+        Storage::disk('local')->assertExists($unassigned->rpsDocument->file_path);
+
+        $this->actingAs($admin)->post(route('kurikulum.rps-documents.store', $foreign), [
+            'file' => $this->pdf(),
+        ])->assertForbidden();
+        $this->actingAs($lecturer)->post(route('kurikulum.rps-documents.store', $unassigned), [
+            'file' => $this->pdf(),
+        ])->assertForbidden();
+        $this->assertDatabaseCount('rps_documents', 1);
+    }
 }
