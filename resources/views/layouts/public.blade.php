@@ -29,8 +29,8 @@
                     <span class="text-white font-extrabold text-sm">M</span>
                 </div>
                 <div class="leading-tight">
-                    <p class="text-sm font-bold text-gray-900">Sistem Informasi Kurikulum</p>
-                    <p class="text-[11px] text-gray-400 hidden sm:block">S1 Manajemen · FEB UNM</p>
+                    <p class="text-sm font-bold text-gray-900">Kurikulum S1 Manajemen</p>
+                    <p class="text-[11px] text-gray-500 hidden sm:block">Fakultas Ekonomi dan Bisnis · UNM</p>
                 </div>
             </a>
 

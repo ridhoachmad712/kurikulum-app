@@ -8,7 +8,6 @@ use App\Models\MataKuliah;
 use App\Models\Peo;
 use App\Models\ProfilLulusan;
 use App\Models\ProgramStudi;
-use App\Models\User;
 use App\Services\MatriksService;
 use Illuminate\Support\Facades\Storage;
 
@@ -33,13 +32,15 @@ class PublicController extends Controller
 
         $mataKuliahs = MataKuliah::where('program_studi_id', $prodi->id)
             ->where('aktif', true)
-            ->withCount('cpmks')
             ->orderBy('semester')
             ->orderBy('urutan')
             ->get();
 
-        // Hitung jumlah jalur konsentrasi (3: Keuangan, Pemasaran, SDM)
-        $numKon = max(1, $mataKuliahs->pluck('konsentrasi')->filter()->unique()->count());
+        $peos = Peo::where('program_studi_id', $prodi->id)
+            ->orderBy('urutan')->orderBy('id')->get();
+        $concentrations = $mataKuliahs->pluck('konsentrasi')->filter()->unique()->values();
+
+        $numKon = max(1, $concentrations->count());
 
         // Distribusi per semester — dihitung per 1 mahasiswa per jalur konsentrasi
         $bySemester = $mataKuliahs->groupBy('semester')->map(function ($g) use ($numKon) {
@@ -71,14 +72,15 @@ class PublicController extends Controller
         });
 
         $stats = [
-            'total_mk'    => $bySemester->sum('effective_count'),
             'total_cpl'   => $cpls->count(),
             'total_sks'   => $bySemester->sum('effective_sks'),
-            'total_cpmk'  => $mataKuliahs->sum('cpmks_count'),
-            'total_dosen' => User::role('dosen')->where('program_studi_id', $prodi->id)->count(),
+            'available_mk' => $mataKuliahs->count(),
+            'available_sks' => $mataKuliahs->sum('sks'),
+            'total_semesters' => $bySemester->count(),
+            'total_concentrations' => $concentrations->count(),
         ];
 
-        return view('public.home', compact('prodi', 'cpls', 'stats', 'bySemester'));
+        return view('public.home', compact('prodi', 'peos', 'cpls', 'stats', 'bySemester', 'concentrations'));
     }
 
     /** Halaman Profil Program Studi */

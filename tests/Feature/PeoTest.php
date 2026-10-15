@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Peo;
+use App\Models\MataKuliah;
 use App\Models\ProgramStudi;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,6 +24,21 @@ class PeoTest extends TestCase
 
         $this->get('/peo')->assertOk()->assertSeeInOrder(['Pertama', 'Kedua']);
         $this->get('/plo')->assertRedirect(route('public.peo'));
+    }
+
+    public function test_homepage_shows_admin_peos_and_labels_available_courses(): void
+    {
+        $prodi = ProgramStudi::create(['kode' => 'TEST-S1', 'nama' => 'Prodi Uji', 'jenjang' => 'S1', 'aktif' => true]);
+        Peo::create(['program_studi_id' => $prodi->id, 'kode' => 'PEO1', 'nama' => 'Profesional Uji', 'deskripsi' => 'Tujuan dari admin', 'urutan' => 1]);
+        MataKuliah::create(['program_studi_id' => $prodi->id, 'kode_rps' => 'MK001', 'nama' => 'Mata Kuliah Aktif', 'sks' => 3, 'semester' => 1, 'aktif' => true]);
+        MataKuliah::create(['program_studi_id' => $prodi->id, 'kode_rps' => 'MK002', 'nama' => 'Mata Kuliah Nonaktif', 'sks' => 2, 'semester' => 1, 'aktif' => false]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Profesional Uji')
+            ->assertSee('Tujuan dari admin')
+            ->assertSee('1 mata kuliah aktif')
+            ->assertSee('total 3 SKS');
     }
 
     public function test_existing_plo_is_renamed_without_losing_admin_edits(): void
