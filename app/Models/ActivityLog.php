@@ -26,7 +26,7 @@ class ActivityLog extends Model
         'BahanKajian'   => 'Bahan Kajian',
         'ProgramStudi'  => 'Program Studi',
         'ProfilLulusan' => 'Profil Lulusan',
-        'Plo'           => 'PLO',
+        'Peo'           => 'PEO',
         'CloTaxonomi'   => 'CLO Taxonomy',
         'Akun'          => 'Akun',
         'Autentikasi'   => 'Autentikasi',

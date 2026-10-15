@@ -39,7 +39,7 @@
             $navLinks = [
                 ['route' => 'public.home',         'pattern' => 'public.home',          'label' => 'Beranda'],
                 ['route' => 'public.profil',       'pattern' => 'public.profil',        'label' => 'Profil Prodi'],
-                ['route' => 'public.plo',          'pattern' => 'public.plo',           'label' => 'PLO'],
+                ['route' => 'public.peo',          'pattern' => 'public.peo',           'label' => 'PEO'],
                 ['route' => 'public.cpl',          'pattern' => 'public.cpl',           'label' => 'CPL'],
                 ['route' => 'public.bahan-kajian', 'pattern' => 'public.bahan-kajian',  'label' => 'Bahan Kajian'],
                 ['route' => 'public.mata-kuliah',  'pattern' => 'public.mata-kuliah*',  'label' => 'Mata Kuliah'],
@@ -138,7 +138,7 @@
                 <ul class="space-y-2 text-sm">
                     <li><a href="{{ route('public.home') }}"       class="text-blue-300 hover:text-white transition">Beranda</a></li>
                     <li><a href="{{ route('public.profil') }}"     class="text-blue-300 hover:text-white transition">Profil Prodi</a></li>
-                    <li><a href="{{ route('public.plo') }}"        class="text-blue-300 hover:text-white transition">PLO</a></li>
+                    <li><a href="{{ route('public.peo') }}"        class="text-blue-300 hover:text-white transition">PEO</a></li>
                     <li><a href="{{ route('public.cpl') }}"          class="text-blue-300 hover:text-white transition">CPL Program Studi</a></li>
                     <li><a href="{{ route('public.bahan-kajian') }}" class="text-blue-300 hover:text-white transition">Bahan Kajian</a></li>
                     <li><a href="{{ route('public.mata-kuliah') }}"  class="text-blue-300 hover:text-white transition">Mata Kuliah</a></li>

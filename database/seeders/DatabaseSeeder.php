@@ -10,7 +10,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CloTaxonomiSeeder::class,
             ProgramStudiSeeder::class,
-            PloSeeder::class,
+            PeoSeeder::class,
             ProfilLulusanSeeder::class,
             RolePermissionSeeder::class,
             MkCplSeeder::class,
