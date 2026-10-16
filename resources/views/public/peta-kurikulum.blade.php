@@ -80,24 +80,24 @@
         Tidak ada mata kuliah yang cocok dengan filter. <button type="button" @click="reset()" class="font-bold text-blue-700 underline">Tampilkan semua</button>
     </div>
 
-    <section x-ref="diagram" aria-label="Peta hubungan mata kuliah dan CPL" class="relative mt-6 overflow-hidden rounded-2xl border border-slate-300 bg-slate-50 p-4 sm:p-5">
+    <section x-ref="diagram" aria-label="Peta hubungan mata kuliah dan CPL" class="relative mt-6 overflow-visible rounded-2xl border border-slate-300 bg-slate-50 p-4 sm:p-5">
         <svg aria-hidden="true" :width="svgSize.width" :height="svgSize.height" class="pointer-events-none absolute left-0 top-0 z-20 hidden md:block">
             <template x-for="path in linePaths" :key="path.key">
                 <path :d="path.d" :stroke="path.color" stroke-width="2.5" fill="none" stroke-linecap="round" class="map-link"></path>
             </template>
         </svg>
 
-        <div class="relative z-30 rounded-xl border border-slate-200 bg-white/95 p-4 shadow-sm">
+        <div class="sticky top-20 z-40 rounded-xl border border-slate-200 bg-white/95 p-4 shadow-sm backdrop-blur">
             <div class="flex flex-wrap items-center justify-between gap-2">
                 <div>
                     <h2 class="text-sm font-extrabold text-slate-900">Capaian Pembelajaran Lulusan</h2>
-                    <p class="mt-1 text-xs text-slate-500">Arahkan kursor atau pilih CPL untuk menyorot mata kuliah yang terkait.</p>
+                    <p class="mt-1 hidden text-xs text-slate-500 sm:block">Arahkan kursor atau pilih CPL untuk menyorot mata kuliah yang terkait.</p>
                 </div>
                 <button x-show="activeCpl" x-cloak type="button" @click="activeCpl = null; hoveredCpl = null; schedulePaths()" class="text-xs font-bold text-blue-700 hover:underline">Hapus sorotan CPL</button>
             </div>
-            <div class="mt-3 flex flex-wrap gap-2">
+            <div class="mt-3 flex flex-nowrap gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible">
                 @foreach($cpls as $cplItem)
-                    <button type="button" data-map-cpl="{{ $cplItem->id }}" @mouseenter="hoverCpl({{ $cplItem->id }})" @mouseleave="leaveCpl()" @focus="hoverCpl({{ $cplItem->id }})" @blur="leaveCpl()" @click="toggleCpl({{ $cplItem->id }})" :class="focusedCourse ? (relatedToCpl(focusedCourse, {{ $cplItem->id }}) ? 'ring-2 ring-offset-2 opacity-100' : 'opacity-40') : (String(focusedCpl) === '{{ $cplItem->id }}' ? 'ring-2 ring-offset-2 opacity-100' : 'opacity-100')" :style="{ '--tw-ring-color': cplColor({{ $cplItem->id }}) }" :aria-pressed="(String(activeCpl) === '{{ $cplItem->id }}').toString()" title="{{ $cplItem->deskripsi }}" class="relative rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-800 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2">
+                    <button type="button" data-map-cpl="{{ $cplItem->id }}" @mouseenter="hoverCpl({{ $cplItem->id }})" @mouseleave="leaveCpl()" @focus="hoverCpl({{ $cplItem->id }})" @blur="leaveCpl()" @click="toggleCpl({{ $cplItem->id }})" :class="focusedCourse ? (relatedToCpl(focusedCourse, {{ $cplItem->id }}) ? 'ring-2 ring-offset-2 opacity-100' : 'opacity-40') : (String(focusedCpl) === '{{ $cplItem->id }}' ? 'ring-2 ring-offset-2 opacity-100' : 'opacity-100')" :style="{ '--tw-ring-color': cplColor({{ $cplItem->id }}) }" :aria-pressed="(String(activeCpl) === '{{ $cplItem->id }}').toString()" title="{{ $cplItem->deskripsi }}" class="relative shrink-0 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-800 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2">
                         <span class="mr-1.5 inline-block h-2.5 w-2.5 rounded-full" :style="{ backgroundColor: cplColor({{ $cplItem->id }}) }"></span>{{ $cplItem->kode }}
                     </button>
                 @endforeach
@@ -110,7 +110,7 @@
         </div>
 
         <div class="relative mt-4 space-y-3" @mouseleave="hidePreview()">
-            @foreach(collect($semesters)->sortDesc() as $semester)
+            @foreach($semesters as $semester)
                 <div class="grid gap-3 rounded-xl border border-slate-200 bg-white/95 p-3 shadow-sm md:grid-cols-[112px_minmax(0,1fr)]">
                     <div class="relative z-30 flex items-center justify-between gap-2 border-b border-slate-100 pb-2 md:block md:border-b-0 md:border-r md:pb-0 md:pr-3">
                         <h3 class="text-sm font-extrabold text-slate-900">{{ $semester ? 'Semester ' . $semester : 'Belum ditempatkan' }}</h3>

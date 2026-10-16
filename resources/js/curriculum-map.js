@@ -17,6 +17,7 @@ export default function curriculumMap(courses, concentrations = [], cpls = []) {
         linePaths: [],
         svgSize: { width: 0, height: 0 },
         resizeObserver: null,
+        scrollHandler: null,
         frame: null,
 
         init() {
@@ -28,12 +29,17 @@ export default function curriculumMap(courses, concentrations = [], cpls = []) {
                     this.resizeObserver = new ResizeObserver(() => this.schedulePaths());
                     this.resizeObserver.observe(this.$refs.diagram);
                 }
+                this.scrollHandler = () => {
+                    if (this.focusedCourse || this.focusedCpl) this.schedulePaths();
+                };
+                window.addEventListener('scroll', this.scrollHandler, { passive: true });
                 this.schedulePaths();
             });
         },
 
         destroy() {
             this.resizeObserver?.disconnect();
+            if (this.scrollHandler) window.removeEventListener('scroll', this.scrollHandler);
             if (this.frame) cancelAnimationFrame(this.frame);
         },
 
