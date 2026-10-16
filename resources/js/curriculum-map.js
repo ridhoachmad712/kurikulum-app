@@ -7,6 +7,7 @@ export default function curriculumMap(courses) {
         cpl: '',
         selected: null,
         expandedSemester: 1,
+        returnFocus: null,
 
         matches(course) {
             const query = this.search.trim().toLocaleLowerCase('id');
@@ -44,12 +45,21 @@ export default function curriculumMap(courses) {
         },
 
         select(course) {
+            this.returnFocus = document.activeElement;
             this.selected = course;
             this.$nextTick(() => this.$refs.detailClose?.focus());
         },
 
         close() {
             this.selected = null;
+            this.$nextTick(() => this.returnFocus?.focus());
+        },
+
+        scrollMap(direction) {
+            const map = this.$refs.desktopMap;
+            if (!map) return;
+            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            map.scrollBy({ left: direction * 224 * 2, behavior: reducedMotion ? 'auto' : 'smooth' });
         },
 
         reset() {

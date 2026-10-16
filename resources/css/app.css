@@ -145,3 +145,66 @@
         @apply alert bg-blue-50 border border-blue-200 text-blue-800;
     }
 }
+
+/* Peta kurikulum: kartu ringkas dengan umpan balik gerak yang ringan. */
+@keyframes map-card-appear {
+    from { opacity: 0; transform: translateY(7px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.curriculum-map .map-card {
+    position: relative;
+    overflow: hidden;
+    animation: map-card-appear 260ms ease-out both;
+    animation-delay: calc(min(var(--card-index, 0), 9) * 24ms);
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, opacity 180ms ease;
+}
+
+.curriculum-map .map-card:hover,
+.curriculum-map .map-card:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: 0 9px 20px -12px rgba(15, 23, 42, .42);
+}
+
+.curriculum-map .map-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(115deg, transparent 34%, rgba(255, 255, 255, .45) 50%, transparent 66%);
+    transform: translateX(-130%);
+    transition: transform 420ms ease;
+}
+
+.curriculum-map .map-card:hover::after,
+.curriculum-map .map-card:focus-visible::after {
+    transform: translateX(130%);
+}
+
+.curriculum-map .map-card-arrow {
+    transition: transform 180ms ease;
+}
+
+.curriculum-map .map-card:hover .map-card-arrow,
+.curriculum-map .map-card:focus-visible .map-card-arrow {
+    transform: translateX(3px);
+}
+
+.curriculum-map .map-card-title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    min-height: 2.5em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .curriculum-map *,
+    .curriculum-map *::before,
+    .curriculum-map *::after {
+        animation-duration: .01ms !important;
+        animation-delay: 0ms !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
