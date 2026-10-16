@@ -1,6 +1,7 @@
-export default function curriculumMap(courses) {
+export default function curriculumMap(courses, concentrations = []) {
     return {
         courses,
+        concentrations,
         search: '',
         concentration: '',
         type: '',
@@ -59,7 +60,7 @@ export default function curriculumMap(courses) {
             const map = this.$refs.desktopMap;
             if (!map) return;
             const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            map.scrollBy({ left: direction * 224 * 2, behavior: reducedMotion ? 'auto' : 'smooth' });
+            map.scrollBy({ left: direction * 200 * 2, behavior: reducedMotion ? 'auto' : 'smooth' });
         },
 
         reset() {
@@ -70,9 +71,19 @@ export default function curriculumMap(courses) {
         },
 
         courseClass(course) {
-            if (course.elective) return 'border-amber-200 bg-amber-50 hover:border-amber-400';
-            if (course.concentration) return 'border-violet-200 bg-violet-50 hover:border-violet-400';
-            return 'border-blue-200 bg-white hover:border-blue-400';
+            const concentrationColors = [
+                'border-sky-400 bg-sky-100 hover:bg-sky-200',
+                'border-amber-400 bg-amber-100 hover:bg-amber-200',
+                'border-lime-500 bg-lime-100 hover:bg-lime-200',
+                'border-violet-400 bg-violet-100 hover:bg-violet-200',
+                'border-teal-400 bg-teal-100 hover:bg-teal-200',
+            ];
+            const index = this.concentrations.indexOf(course.concentration);
+            const color = index < 0
+                ? 'border-rose-400 bg-rose-100 hover:bg-rose-200'
+                : concentrationColors[index % concentrationColors.length];
+
+            return color + (course.elective ? ' border-dashed' : '');
         },
 
         courseType(course) {

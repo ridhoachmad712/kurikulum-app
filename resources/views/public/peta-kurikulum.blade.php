@@ -10,8 +10,9 @@
         </nav>
         <div class="flex flex-wrap items-end justify-between gap-5">
             <div>
-                <p class="text-xs font-bold uppercase tracking-[0.16em] text-blue-700">Perjalanan studi</p>
-                <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Peta Kurikulum</h1>
+                <p class="text-xs font-bold uppercase tracking-[0.16em] text-blue-700">{{ $prodi->fakultas }} · {{ $prodi->universitas }}</p>
+                <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Peta Kurikulum Program Studi</h1>
+                <p class="mt-1 text-lg font-semibold text-slate-700">{{ $prodi->jenjang }} {{ $prodi->nama }}</p>
                 <p class="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600">
                     Jelajahi susunan mata kuliah {{ $prodi->jenjang }} {{ $prodi->nama }} menurut semester.
                     Pilih kartu untuk melihat CPL, dosen, dan RPS yang tersedia.
@@ -22,7 +23,7 @@
     </div>
 </div>
 
-<div class="curriculum-map mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8" x-data="curriculumMap(@js($courses))" @keydown.escape.window="close()">
+<div class="curriculum-map mx-auto max-w-[1760px] px-4 py-8 sm:px-6 lg:px-8" x-data="curriculumMap(@js($courses), @js($concentrations))" @keydown.escape.window="close()">
     <noscript><p class="mb-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">Peta interaktif memerlukan JavaScript. Anda tetap dapat melihat seluruh mata kuliah melalui <a href="{{ route('public.mata-kuliah') }}" class="font-bold underline">daftar mata kuliah</a>.</p></noscript>
     <div class="rounded-2xl border border-blue-100 bg-blue-50 px-5 py-4 text-sm leading-relaxed text-blue-900">
         <strong>Petunjuk:</strong> urutan kolom menunjukkan semester penempatan mata kuliah. Tidak ada garis prasyarat karena relasi prasyarat belum dicatat dalam aplikasi.
@@ -74,9 +75,11 @@
     </section>
 
     <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-600" aria-label="Legenda jenis mata kuliah">
-        <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded bg-blue-100 ring-1 ring-blue-300"></span> Umum</span>
-        <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded bg-violet-100 ring-1 ring-violet-300"></span> Konsentrasi</span>
-        <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded bg-amber-100 ring-1 ring-amber-300"></span> Pilihan</span>
+        <span class="inline-flex items-center gap-2"><span class="h-3 w-5 rounded-sm bg-rose-100 ring-1 ring-rose-400"></span> Umum</span>
+        @foreach($concentrations as $concentration)
+            <span class="inline-flex items-center gap-2"><span class="h-3 w-5 rounded-sm {{ ['bg-sky-100 ring-sky-400', 'bg-amber-100 ring-amber-400', 'bg-lime-100 ring-lime-500', 'bg-violet-100 ring-violet-400', 'bg-teal-100 ring-teal-400'][$loop->index % 5] }} ring-1"></span> {{ $concentration }}</span>
+        @endforeach
+        <span class="inline-flex items-center gap-2"><span class="h-3 w-5 rounded-sm border border-dashed border-slate-600 bg-white"></span> Pilihan (garis putus)</span>
         <span class="text-slate-400">Angka SKS mencakup semua mata kuliah yang terlihat, bukan beban studi satu mahasiswa.</span>
     </div>
 
@@ -93,20 +96,22 @@
     </div>
 
     {{-- Desktop: seluruh semester terlihat sebagai jalur horizontal. --}}
-    <section x-ref="desktopMap" aria-label="Peta mata kuliah per semester" class="mt-3 hidden overflow-x-auto rounded-2xl border border-slate-200 bg-slate-100 p-2 sm:p-3 md:block">
-        <div class="flex min-w-max gap-2 pb-1">
+    <section x-ref="desktopMap" aria-label="Peta mata kuliah per semester" class="mt-3 hidden overflow-x-auto rounded-xl border border-slate-300 bg-slate-200 p-3 md:block">
+        <div class="w-max min-w-full">
+        <div class="border-b border-slate-400 pb-1 text-center text-xs font-extrabold uppercase tracking-[0.22em] text-slate-700">Semester</div>
+        <div class="flex gap-1 pt-1 pb-2">
             @foreach($semesters as $semester)
-                <div class="w-52 shrink-0 rounded-xl border border-slate-200 bg-slate-50 p-2">
-                    <div class="mb-2 rounded-lg bg-slate-900 px-3 py-2.5 text-white">
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-blue-200">{{ $semester ? 'Semester ' . $semester : 'Belum ditempatkan' }}</p>
-                        <p class="mt-0.5 text-[11px] text-slate-300"><span x-text="inSemester({{ $semester }}).length"></span> mata kuliah · <span x-text="inSemester({{ $semester }}).reduce((sum, course) => sum + Number(course.sks), 0)"></span> SKS</p>
+                <div class="w-48 shrink-0 border-r border-slate-300 px-1.5 last:border-r-0">
+                    <div class="mb-2 border-b border-slate-400 px-1 py-1.5 text-center text-slate-900">
+                        <p class="text-base font-extrabold leading-none">{{ $semester ? (['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'][$semester - 1] ?? $semester) : '—' }}</p>
+                        <p class="mt-1 text-[10px] font-medium text-slate-600"><span x-text="inSemester({{ $semester }}).length"></span> MK · <span x-text="inSemester({{ $semester }}).reduce((sum, course) => sum + Number(course.sks), 0)"></span> SKS</p>
                     </div>
-                    <div class="space-y-1.5">
+                    <div class="space-y-1">
                         <template x-for="(course, index) in inSemester({{ $semester }})" :key="course.id">
-                            <button type="button" @click="select(course)" :title="course.name" :style="{ '--card-index': index }" :class="[courseClass(course), cpl && !highlights(course) ? 'opacity-40' : '', cpl && highlights(course) ? 'ring-2 ring-emerald-500' : '']" class="map-card group block w-full rounded-lg border border-l-[3px] px-2.5 py-2 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600">
-                                <span class="flex items-center justify-between gap-1 text-[10px] font-semibold text-slate-500"><span class="truncate" x-text="course.code"></span><span class="shrink-0 text-blue-700" x-text="course.sks + ' SKS'"></span></span>
-                                <span class="map-card-title mt-1 block text-[13px] font-bold leading-snug text-slate-900" x-text="course.name"></span>
-                                <span class="mt-1 flex items-center justify-between text-[10px] font-semibold text-slate-500"><span x-text="courseType(course)"></span><span class="map-card-arrow text-blue-600" aria-hidden="true">→</span></span>
+                            <button type="button" @click="select(course)" :title="course.name + ' · ' + course.code" :aria-label="course.name + ', ' + course.sks + ' SKS, ' + courseType(course)" :style="{ '--card-index': index }" :class="[courseClass(course), cpl && !highlights(course) ? 'opacity-40' : '', cpl && highlights(course) ? 'ring-2 ring-emerald-600' : '']" class="map-card map-strip group flex min-h-8 w-full items-center justify-between gap-1 rounded-[5px] border px-1.5 py-1 text-left focus:outline-none focus:ring-2 focus:ring-blue-700">
+                                <span class="map-strip-title text-[11px] font-semibold leading-tight text-slate-900" x-text="course.name"></span>
+                                <span class="shrink-0 text-[10px] font-bold text-slate-700" x-text="course.sks + ' SKS'"></span>
+                                <span x-show="course.elective" class="sr-only">Pilihan</span>
                             </button>
                         </template>
                         <p x-show="inSemester({{ $semester }}).length === 0" class="px-2 py-4 text-center text-xs text-slate-400">Tidak ada mata kuliah</p>
@@ -114,22 +119,23 @@
                 </div>
             @endforeach
         </div>
+        </div>
     </section>
 
     {{-- Ponsel: satu semester terbuka pada satu waktu. --}}
-    <section aria-label="Peta mata kuliah per semester" class="mt-7 space-y-3 md:hidden">
+    <section aria-label="Peta mata kuliah per semester" class="mt-7 space-y-2 md:hidden">
         @foreach($semesters as $semester)
             <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
                 <button type="button" @click="expandedSemester = expandedSemester === {{ $semester }} ? null : {{ $semester }}" :aria-expanded="(expandedSemester === {{ $semester }}).toString()" class="flex w-full items-center justify-between gap-3 px-4 py-4 text-left">
                     <span><span class="block text-sm font-bold text-slate-900">{{ $semester ? 'Semester ' . $semester : 'Belum ditempatkan' }}</span><span class="text-xs text-slate-500"><span x-text="inSemester({{ $semester }}).length"></span> mata kuliah · <span x-text="inSemester({{ $semester }}).reduce((sum, course) => sum + Number(course.sks), 0)"></span> SKS</span></span>
                     <span aria-hidden="true" class="text-lg text-blue-700" x-text="expandedSemester === {{ $semester }} ? '−' : '+'"></span>
                 </button>
-                <div x-show="expandedSemester === {{ $semester }}" x-transition.opacity.duration.200ms x-cloak class="space-y-1.5 border-t border-slate-100 bg-slate-50 p-2.5">
+                <div x-show="expandedSemester === {{ $semester }}" x-transition.opacity.duration.200ms x-cloak class="space-y-1 border-t border-slate-200 bg-slate-200 p-2.5">
                     <template x-for="(course, index) in inSemester({{ $semester }})" :key="course.id">
-                        <button type="button" @click="select(course)" :title="course.name" :style="{ '--card-index': index }" :class="[courseClass(course), cpl && !highlights(course) ? 'opacity-40' : '', cpl && highlights(course) ? 'ring-2 ring-emerald-500' : '']" class="map-card block w-full rounded-lg border border-l-[3px] px-3 py-2 text-left">
-                            <span class="flex items-center justify-between gap-2 text-[10px] font-semibold text-slate-500"><span x-text="course.code"></span><span x-text="course.sks + ' SKS'"></span></span>
-                            <span class="mt-1 block text-[13px] font-bold leading-snug text-slate-900" x-text="course.name"></span>
-                            <span class="mt-1 block text-[10px] font-semibold text-slate-500" x-text="courseType(course)"></span>
+                        <button type="button" @click="select(course)" :title="course.name + ' · ' + course.code" :aria-label="course.name + ', ' + course.sks + ' SKS, ' + courseType(course)" :style="{ '--card-index': index }" :class="[courseClass(course), cpl && !highlights(course) ? 'opacity-40' : '', cpl && highlights(course) ? 'ring-2 ring-emerald-600' : '']" class="map-card map-strip flex min-h-9 w-full items-center justify-between gap-2 rounded-[5px] border px-2 py-1.5 text-left">
+                            <span class="map-strip-title text-xs font-semibold leading-tight text-slate-900" x-text="course.name"></span>
+                            <span class="shrink-0 text-[10px] font-bold text-slate-700" x-text="course.sks + ' SKS'"></span>
+                            <span x-show="course.elective" class="sr-only">Pilihan</span>
                         </button>
                     </template>
                     <p x-show="inSemester({{ $semester }}).length === 0" class="py-4 text-center text-xs text-slate-400">Tidak ada mata kuliah</p>

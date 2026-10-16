@@ -166,6 +166,12 @@
     box-shadow: 0 9px 20px -12px rgba(15, 23, 42, .42);
 }
 
+.curriculum-map .map-strip:hover,
+.curriculum-map .map-strip:focus-visible {
+    transform: translateX(3px);
+    box-shadow: 0 5px 12px -7px rgba(15, 23, 42, .45);
+}
+
 .curriculum-map .map-card::after {
     content: '';
     position: absolute;
@@ -181,21 +187,11 @@
     transform: translateX(130%);
 }
 
-.curriculum-map .map-card-arrow {
-    transition: transform 180ms ease;
-}
-
-.curriculum-map .map-card:hover .map-card-arrow,
-.curriculum-map .map-card:focus-visible .map-card-arrow {
-    transform: translateX(3px);
-}
-
-.curriculum-map .map-card-title {
+.curriculum-map .map-strip-title {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     overflow: hidden;
-    min-height: 2.5em;
 }
 
 @media (prefers-reduced-motion: reduce) {
