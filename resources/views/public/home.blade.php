@@ -90,7 +90,7 @@
                 ['route' => 'public.mata-kuliah', 'number' => '01', 'title' => 'Mata Kuliah & RPS', 'description' => 'Cari mata kuliah per semester, baca detail, dan buka RPS yang sudah diunggah.'],
                 ['route' => 'public.cpl', 'number' => '02', 'title' => 'Capaian Lulusan', 'description' => 'Lihat CPL dan kaitannya dengan mata kuliah.'],
                 ['route' => 'public.bahan-kajian', 'number' => '03', 'title' => 'Bahan Kajian', 'description' => 'Telusuri bidang pengetahuan yang mendasari kurikulum.'],
-                ['route' => 'public.kurikulum', 'number' => '04', 'title' => 'Matriks Kurikulum', 'description' => 'Jelajahi pemetaan lengkap pada 12 tabel kurikulum.'],
+                ['route' => 'public.peta-kurikulum', 'number' => '04', 'title' => 'Peta Kurikulum', 'description' => 'Lihat perjalanan studi per semester secara visual dan interaktif.'],
             ] as $link)
                 <a href="{{ route($link['route']) }}" class="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-blue-300 hover:shadow-md">
                     <span class="text-xs font-extrabold text-blue-600">{{ $link['number'] }}</span>

@@ -30,6 +30,7 @@ Route::get('/profil',                 [PublicController::class, 'profil'])      
 Route::get('/peo',                    [PublicController::class, 'peo'])              ->name('public.peo');
 Route::get('/plo',                    fn () => redirect()->route('public.peo', [], 301));
 Route::get('/kurikulum',              [PublicController::class, 'kurikulum'])        ->name('public.kurikulum');
+Route::get('/peta-kurikulum',         [PublicController::class, 'petaKurikulum'])    ->name('public.peta-kurikulum');
 Route::get('/mata-kuliah',            [PublicController::class, 'mataKuliah'])      ->name('public.mata-kuliah');
 Route::get('/mata-kuliah/{mataKuliah}/rps', [PublicController::class, 'mataKuliahRps'])->name('public.mata-kuliah.rps');
 Route::get('/mata-kuliah/{mataKuliah}',[PublicController::class, 'mataKuliahShow'])->name('public.mata-kuliah.show');

@@ -120,6 +120,49 @@ class PublicController extends Controller
         return view('public.mata-kuliah', compact('prodi', 'cpls', 'mataKuliahs'));
     }
 
+    /** Peta semester interaktif dari mata kuliah aktif. */
+    public function petaKurikulum()
+    {
+        $prodi = $this->getProdi();
+        $mataKuliahs = MataKuliah::where('program_studi_id', $prodi->id)
+            ->where('aktif', true)
+            ->with(['mkCpls.cpl', 'dosens:id,name', 'rpsDocument'])
+            ->orderBy('semester')
+            ->orderBy('urutan')
+            ->orderBy('id')
+            ->get();
+
+        $cpls = Cpl::where('program_studi_id', $prodi->id)->orderBy('urutan')->get(['id', 'kode', 'deskripsi']);
+        $concentrations = $mataKuliahs->pluck('konsentrasi')->filter()->unique()->sort()->values();
+        $semesters = range(1, max(8, (int) $mataKuliahs->max('semester')));
+        if ($mataKuliahs->contains(fn ($mk) => $mk->semester === null)) {
+            $semesters[] = 0;
+        }
+
+        $courses = $mataKuliahs->map(fn ($mk) => [
+            'id' => $mk->id,
+            'code' => $mk->kode_rps,
+            'name' => $mk->nama,
+            'sks' => $mk->sks,
+            'semester' => $mk->semester ?? 0,
+            'concentration' => $mk->konsentrasi,
+            'elective' => $mk->is_pilihan,
+            'description' => $mk->deskripsi,
+            'cpls' => $mk->mkCpls->filter(fn ($relation) => $relation->cpl && $relation->level !== null)
+                ->map(fn ($relation) => [
+                    'id' => $relation->cpl->id,
+                    'code' => $relation->cpl->kode,
+                    'level' => $relation->level,
+                ])->values()->all(),
+            'lecturers' => $mk->dosens->pluck('name')->all(),
+            'hasRps' => $mk->rpsDocument !== null,
+            'detailUrl' => route('public.mata-kuliah.show', $mk),
+            'rpsUrl' => $mk->rpsDocument ? route('public.mata-kuliah.rps', $mk) : null,
+        ])->values()->all();
+
+        return view('public.peta-kurikulum', compact('prodi', 'courses', 'cpls', 'concentrations', 'semesters'));
+    }
+
     /** Tampilkan PDF RPS yang diunggah dosen pengampu. */
     public function mataKuliahRps(MataKuliah $mataKuliah)
     {

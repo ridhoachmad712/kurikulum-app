@@ -43,10 +43,11 @@
                 ['route' => 'public.cpl',          'pattern' => 'public.cpl',           'label' => 'CPL'],
                 ['route' => 'public.bahan-kajian', 'pattern' => 'public.bahan-kajian',  'label' => 'Bahan Kajian'],
                 ['route' => 'public.mata-kuliah',  'pattern' => 'public.mata-kuliah*',  'label' => 'Mata Kuliah'],
+                ['route' => 'public.peta-kurikulum', 'pattern' => 'public.peta-kurikulum', 'label' => 'Peta Kurikulum'],
                 ['route' => 'public.kurikulum',    'pattern' => 'public.kurikulum',     'label' => 'Kurikulum'],
             ];
             @endphp
-            <nav class="hidden xl:flex items-center gap-1">
+            <nav class="hidden 2xl:flex items-center gap-1">
                 @foreach($navLinks as $link)
                 <a href="{{ route($link['route']) }}"
                    class="px-3 py-2 text-sm font-medium rounded-lg transition-colors
@@ -78,8 +79,8 @@
                 @endauth
 
                 {{-- Mobile hamburger --}}
-                <button @click="open = !open"
-                        class="xl:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition">
+                <button @click="open = !open" aria-label="Buka menu navigasi" :aria-expanded="open.toString()"
+                        class="2xl:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition">
                     <svg x-show="!open" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
                     </svg>
@@ -93,7 +94,7 @@
 
     {{-- Mobile menu --}}
     <div x-show="open" x-cloak
-         class="xl:hidden border-t border-gray-100 bg-white px-4 py-3 space-y-1 shadow-lg">
+         class="2xl:hidden border-t border-gray-100 bg-white px-4 py-3 space-y-1 shadow-lg">
         @foreach($navLinks as $link)
         <a href="{{ route($link['route']) }}"
            class="block px-4 py-2.5 text-sm font-medium rounded-xl
@@ -142,6 +143,7 @@
                     <li><a href="{{ route('public.cpl') }}"          class="text-blue-300 hover:text-white transition">CPL Program Studi</a></li>
                     <li><a href="{{ route('public.bahan-kajian') }}" class="text-blue-300 hover:text-white transition">Bahan Kajian</a></li>
                     <li><a href="{{ route('public.mata-kuliah') }}"  class="text-blue-300 hover:text-white transition">Mata Kuliah</a></li>
+                    <li><a href="{{ route('public.peta-kurikulum') }}" class="text-blue-300 hover:text-white transition">Peta Kurikulum</a></li>
                     <li><a href="{{ route('public.kurikulum') }}"  class="text-blue-300 hover:text-white transition">Kurikulum</a></li>
                 </ul>
             </div>
