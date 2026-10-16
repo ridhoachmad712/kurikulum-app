@@ -1,26 +1,48 @@
-export default function curriculumMap(courses, concentrations = []) {
+export default function curriculumMap(courses, concentrations = [], cpls = []) {
     return {
         courses,
         concentrations,
+        cpls,
         search: '',
-        concentration: '',
+        concentration: concentrations[0] || '',
         type: '',
-        cpl: '',
+        activeCpl: null,
+        hoveredCpl: null,
         selected: null,
         hovered: null,
         previewX: 0,
         previewY: 0,
         expandedSemester: 1,
         returnFocus: null,
+        linePaths: [],
+        svgSize: { width: 0, height: 0 },
+        resizeObserver: null,
+        frame: null,
+
+        init() {
+            for (const key of ['concentration', 'search', 'type', 'activeCpl']) {
+                this.$watch(key, () => this.schedulePaths());
+            }
+            this.$nextTick(() => {
+                if (this.$refs.diagram && window.ResizeObserver) {
+                    this.resizeObserver = new ResizeObserver(() => this.schedulePaths());
+                    this.resizeObserver.observe(this.$refs.diagram);
+                }
+                this.schedulePaths();
+            });
+        },
+
+        destroy() {
+            this.resizeObserver?.disconnect();
+            if (this.frame) cancelAnimationFrame(this.frame);
+        },
 
         matches(course) {
             const query = this.search.trim().toLocaleLowerCase('id');
             const matchesText = !query || [course.name, course.code].some(value =>
-                value.toLocaleLowerCase('id').includes(query)
+                String(value || '').toLocaleLowerCase('id').includes(query)
             );
-            const matchesConcentration = !this.concentration ||
-                !course.concentration ||
-                course.concentration === this.concentration;
+            const matchesConcentration = !course.concentration || course.concentration === this.concentration;
             const matchesType = !this.type ||
                 (this.type === 'elective' && course.elective) ||
                 (this.type === 'concentration' && course.concentration && !course.elective) ||
@@ -28,47 +50,13 @@ export default function curriculumMap(courses, concentrations = []) {
             return matchesText && matchesConcentration && matchesType;
         },
 
-        highlights(course) {
-            return course.cpls.some(item => String(item.id) === this.cpl);
-        },
-
         inSemester(semester) {
-            return this.courses.filter(course => course.semester === semester && this.matches(course));
-        },
-
-        get overviewMode() {
-            return !this.concentration && !this.search.trim() && !this.cpl;
-        },
-
-        displayedCourses(semester) {
-            const courses = this.inSemester(semester);
-            return this.overviewMode ? courses.filter(course => !course.concentration) : courses;
-        },
-
-        groupsInSemester(semester) {
-            if (!this.overviewMode) return [];
-            const courses = this.inSemester(semester);
-            return this.concentrations.map(name => {
-                const groupCourses = courses.filter(course => course.concentration === name);
-                return {
-                    name,
-                    count: groupCourses.length,
-                    sks: groupCourses.reduce((sum, course) => sum + Number(course.sks), 0),
-                };
-            }).filter(group => group.count > 0);
+            return this.filteredCourses.filter(course => course.semester === semester);
         },
 
         semesterSummary(semester) {
             const courses = this.inSemester(semester);
-            const groups = this.groupsInSemester(semester);
-            if (groups.length) return `${courses.length} MK tersedia · ${groups.length} konsentrasi`;
-            const sks = courses.reduce((sum, course) => sum + Number(course.sks), 0);
-            return `${courses.length} MK · ${sks} SKS tersedia`;
-        },
-
-        selectConcentration(name) {
-            this.concentration = name;
-            this.hovered = null;
+            return `${courses.length} MK · ${courses.reduce((sum, course) => sum + Number(course.sks), 0)} SKS tersedia`;
         },
 
         get filteredCourses() {
@@ -79,26 +67,74 @@ export default function curriculumMap(courses, concentrations = []) {
             return this.filteredCourses.reduce((sum, course) => sum + Number(course.sks), 0);
         },
 
-        get highlightedCount() {
-            return this.filteredCourses.filter(course => this.highlights(course)).length;
+        get focusedCourse() {
+            return this.hovered || this.selected;
+        },
+
+        get focusedCpl() {
+            return this.hoveredCpl || this.activeCpl;
+        },
+
+        get relatedCount() {
+            return this.filteredCourses.filter(course => course.cpls.some(item => String(item.id) === String(this.focusedCpl))).length;
+        },
+
+        relatedToCpl(course, cplId = this.focusedCpl) {
+            return course.cpls.some(item => String(item.id) === String(cplId));
+        },
+
+        isDimmed(course) {
+            if (this.focusedCourse) return this.focusedCourse.id !== course.id;
+            return this.focusedCpl && !this.relatedToCpl(course);
+        },
+
+        selectConcentration(name) {
+            this.concentration = name;
+            this.search = '';
+            this.type = '';
+            this.hovered = null;
+            this.hoveredCpl = null;
+            this.activeCpl = null;
+            this.linePaths = [];
+            this.schedulePaths();
+        },
+
+        toggleCpl(id) {
+            this.activeCpl = String(this.activeCpl) === String(id) ? null : id;
+            this.hovered = null;
+            this.schedulePaths();
+        },
+
+        hoverCpl(id) {
+            this.hoveredCpl = id;
+            this.hovered = null;
+            this.schedulePaths();
+        },
+
+        leaveCpl() {
+            this.hoveredCpl = null;
+            this.schedulePaths();
         },
 
         select(course) {
             this.returnFocus = document.activeElement;
             this.hovered = null;
             this.selected = course;
+            this.schedulePaths();
             this.$nextTick(() => this.$refs.detailClose?.focus());
         },
 
         close() {
             this.selected = null;
+            this.schedulePaths();
             this.$nextTick(() => this.returnFocus?.focus());
         },
 
         showPreview(event, course) {
-            if (this.selected || window.matchMedia('(hover: none)').matches) return;
+            if (this.selected) return;
             this.hovered = course;
-            this.movePreview(event);
+            if (!window.matchMedia('(hover: none)').matches) this.movePreview(event);
+            this.schedulePaths();
         },
 
         movePreview(event) {
@@ -112,21 +148,66 @@ export default function curriculumMap(courses, concentrations = []) {
 
         hidePreview() {
             this.hovered = null;
-        },
-
-        scrollMap(direction) {
-            const map = this.$refs.desktopMap;
-            if (!map) return;
-            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            map.scrollBy({ left: direction * 200 * 2, behavior: reducedMotion ? 'auto' : 'smooth' });
+            this.schedulePaths();
         },
 
         reset() {
             this.search = '';
-            this.concentration = '';
             this.type = '';
-            this.cpl = '';
+            this.activeCpl = null;
+            this.hoveredCpl = null;
             this.hovered = null;
+            this.linePaths = [];
+        },
+
+        cplColor(id) {
+            const palette = ['#be123c', '#e11d48', '#ea580c', '#d97706', '#ca8a04', '#16a34a', '#0d9488', '#0284c7', '#7c3aed', '#a21caf'];
+            const index = this.cpls.findIndex(item => String(item.id) === String(id));
+            return palette[Math.max(index, 0) % palette.length];
+        },
+
+        schedulePaths() {
+            if (this.frame) cancelAnimationFrame(this.frame);
+            this.frame = requestAnimationFrame(() => this.$nextTick(() => this.updatePaths()));
+        },
+
+        updatePaths() {
+            this.frame = null;
+            const diagram = this.$refs.diagram;
+            if (!diagram || window.innerWidth < 768 || (!this.focusedCourse && !this.focusedCpl)) {
+                this.linePaths = [];
+                return;
+            }
+
+            const box = diagram.getBoundingClientRect();
+            this.svgSize = { width: diagram.scrollWidth, height: diagram.scrollHeight };
+            const courses = this.focusedCourse
+                ? [this.focusedCourse].filter(course => this.matches(course))
+                : this.filteredCourses.filter(course => this.relatedToCpl(course));
+            const paths = [];
+
+            for (const course of courses) {
+                const courseNode = diagram.querySelector(`[data-map-course="${course.id}"]`);
+                if (!courseNode) continue;
+                const end = courseNode.getBoundingClientRect();
+                for (const relation of course.cpls) {
+                    if (!this.focusedCourse && String(relation.id) !== String(this.focusedCpl)) continue;
+                    const cplNode = diagram.querySelector(`[data-map-cpl="${relation.id}"]`);
+                    if (!cplNode) continue;
+                    const start = cplNode.getBoundingClientRect();
+                    const x1 = start.left + start.width / 2 - box.left;
+                    const y1 = start.bottom - box.top;
+                    const x2 = end.left + end.width / 2 - box.left;
+                    const y2 = end.top - box.top;
+                    const mid = y1 + Math.max(30, (y2 - y1) * .45);
+                    paths.push({
+                        key: `${course.id}-${relation.id}`,
+                        color: this.cplColor(relation.id),
+                        d: `M ${x1} ${y1} C ${x1} ${mid}, ${x2} ${mid}, ${x2} ${y2}`,
+                    });
+                }
+            }
+            this.linePaths = paths;
         },
 
         concentrationClass(name) {
@@ -145,7 +226,6 @@ export default function curriculumMap(courses, concentrations = []) {
             const color = course.concentration
                 ? this.concentrationClass(course.concentration)
                 : 'border-rose-400 bg-rose-100 hover:bg-rose-200';
-
             return color + (course.elective ? ' border-dashed' : '');
         },
 

@@ -194,6 +194,16 @@
     overflow: hidden;
 }
 
+@keyframes map-link-appear {
+    from { opacity: 0; stroke-dashoffset: 24; }
+    to { opacity: .88; stroke-dashoffset: 0; }
+}
+
+.curriculum-map .map-link {
+    stroke-dasharray: 8 5;
+    animation: map-link-appear 300ms ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .curriculum-map *,
     .curriculum-map *::before,
