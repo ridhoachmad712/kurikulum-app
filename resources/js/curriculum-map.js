@@ -3,16 +3,13 @@ export default function curriculumMap(courses, concentrations = [], cpls = []) {
         courses,
         concentrations,
         cpls,
-        search: '',
         concentration: concentrations[0] || '',
-        type: '',
         activeCpl: null,
         hoveredCpl: null,
         selected: null,
         hovered: null,
         previewX: 0,
         previewY: 0,
-        expandedSemester: 1,
         returnFocus: null,
         linePaths: [],
         svgSize: { width: 0, height: 0 },
@@ -21,7 +18,7 @@ export default function curriculumMap(courses, concentrations = [], cpls = []) {
         frame: null,
 
         init() {
-            for (const key of ['concentration', 'search', 'type', 'activeCpl']) {
+            for (const key of ['concentration', 'activeCpl']) {
                 this.$watch(key, () => this.schedulePaths());
             }
             this.$nextTick(() => {
@@ -44,16 +41,7 @@ export default function curriculumMap(courses, concentrations = [], cpls = []) {
         },
 
         matches(course) {
-            const query = this.search.trim().toLocaleLowerCase('id');
-            const matchesText = !query || [course.name, course.code].some(value =>
-                String(value || '').toLocaleLowerCase('id').includes(query)
-            );
-            const matchesConcentration = !course.concentration || course.concentration === this.concentration;
-            const matchesType = !this.type ||
-                (this.type === 'elective' && course.elective) ||
-                (this.type === 'concentration' && course.concentration && !course.elective) ||
-                (this.type === 'common' && !course.concentration && !course.elective);
-            return matchesText && matchesConcentration && matchesType;
+            return !course.concentration || course.concentration === this.concentration;
         },
 
         inSemester(semester) {
@@ -96,8 +84,6 @@ export default function curriculumMap(courses, concentrations = [], cpls = []) {
 
         selectConcentration(name) {
             this.concentration = name;
-            this.search = '';
-            this.type = '';
             this.hovered = null;
             this.hoveredCpl = null;
             this.activeCpl = null;
@@ -157,15 +143,6 @@ export default function curriculumMap(courses, concentrations = [], cpls = []) {
             this.schedulePaths();
         },
 
-        reset() {
-            this.search = '';
-            this.type = '';
-            this.activeCpl = null;
-            this.hoveredCpl = null;
-            this.hovered = null;
-            this.linePaths = [];
-        },
-
         cplColor(id) {
             const palette = ['#be123c', '#e11d48', '#ea580c', '#d97706', '#ca8a04', '#16a34a', '#0d9488', '#0284c7', '#7c3aed', '#a21caf'];
             const index = this.cpls.findIndex(item => String(item.id) === String(id));
@@ -201,15 +178,16 @@ export default function curriculumMap(courses, concentrations = [], cpls = []) {
                     const cplNode = diagram.querySelector(`[data-map-cpl="${relation.id}"]`);
                     if (!cplNode) continue;
                     const start = cplNode.getBoundingClientRect();
+                    const courseAbove = (end.top + end.bottom) / 2 < (start.top + start.bottom) / 2;
                     const x1 = start.left + start.width / 2 - box.left;
-                    const y1 = start.bottom - box.top;
+                    const y1 = (courseAbove ? start.top : start.bottom) - box.top;
                     const x2 = end.left + end.width / 2 - box.left;
-                    const y2 = end.top - box.top;
-                    const mid = y1 + Math.max(30, (y2 - y1) * .45);
+                    const y2 = (courseAbove ? end.bottom : end.top) - box.top;
+                    const bend = (y2 - y1) * .45;
                     paths.push({
                         key: `${course.id}-${relation.id}`,
                         color: this.cplColor(relation.id),
-                        d: `M ${x1} ${y1} C ${x1} ${mid}, ${x2} ${mid}, ${x2} ${y2}`,
+                        d: `M ${x1} ${y1} C ${x1} ${y1 + bend}, ${x2} ${y2 - bend}, ${x2} ${y2}`,
                     });
                 }
             }

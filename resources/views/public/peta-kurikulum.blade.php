@@ -23,7 +23,7 @@
     </div>
 </div>
 
-<div class="curriculum-map mx-auto max-w-[1760px] px-4 py-8 sm:px-6 lg:px-8" x-data="curriculumMap(@js($courses), @js($concentrations), @js($cpls))" @keydown.escape.window="close()">
+<div class="curriculum-map mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8" x-data="curriculumMap(@js($courses), @js($concentrations), @js($cpls))" @keydown.escape.window="close()">
     <noscript><p class="mb-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">Peta interaktif memerlukan JavaScript. Anda tetap dapat melihat seluruh mata kuliah melalui <a href="{{ route('public.mata-kuliah') }}" class="font-bold underline">daftar mata kuliah</a>.</p></noscript>
     <div class="rounded-2xl border border-blue-100 bg-blue-50 px-5 py-4 text-sm leading-relaxed text-blue-900">
         <strong>Petunjuk:</strong> setiap peta menampilkan mata kuliah umum dan satu konsentrasi. Garis berwarna menunjukkan hubungan mata kuliah–CPL yang tercatat, bukan prasyarat. Garis muncul saat kartu atau CPL disorot.
@@ -42,30 +42,10 @@
         </div>
     </section>
 
-    <section aria-label="Filter peta kurikulum" class="mt-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <div class="grid gap-4 sm:grid-cols-2">
-            <label class="block">
-                <span class="mb-1.5 block text-xs font-bold text-slate-700">Cari mata kuliah</span>
-                <input type="search" x-model.debounce.200ms="search" placeholder="Nama atau kode..." class="w-full rounded-xl border-slate-300 text-sm focus:border-blue-500 focus:ring-blue-500">
-            </label>
-            <label class="block">
-                <span class="mb-1.5 block text-xs font-bold text-slate-700">Jenis mata kuliah</span>
-                <select x-model="type" class="w-full rounded-xl border-slate-300 text-sm focus:border-blue-500 focus:ring-blue-500">
-                    <option value="">Semua jenis</option>
-                    <option value="common">Umum</option>
-                    <option value="concentration">Konsentrasi</option>
-                    <option value="elective">Pilihan</option>
-                </select>
-            </label>
-        </div>
-        <div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
-            <p class="text-sm text-slate-600" aria-live="polite">
-                <strong class="text-slate-900" x-text="filteredCourses.length"></strong> mata kuliah tersedia pada jalur ini ·
-                <strong class="text-slate-900" x-text="filteredSks"></strong> SKS seluruh mata kuliah yang tampil
-            </p>
-            <button type="button" @click="reset()" class="text-sm font-bold text-blue-700 hover:text-blue-900">Atur ulang filter</button>
-        </div>
-    </section>
+    <p class="mt-5 text-sm text-slate-600" aria-live="polite">
+        <strong class="text-slate-900" x-text="filteredCourses.length"></strong> mata kuliah tersedia pada jalur ini ·
+        <strong class="text-slate-900" x-text="filteredSks"></strong> SKS seluruh mata kuliah yang tampil
+    </p>
 
     <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-600" aria-label="Legenda jenis mata kuliah">
         <span class="inline-flex items-center gap-2"><span class="h-3 w-5 rounded-sm bg-rose-100 ring-1 ring-rose-400"></span> Umum</span>
@@ -77,7 +57,7 @@
     </div>
 
     <div x-show="filteredCourses.length === 0" x-cloak class="mt-8 rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center text-sm text-slate-500">
-        Tidak ada mata kuliah yang cocok dengan filter. <button type="button" @click="reset()" class="font-bold text-blue-700 underline">Tampilkan semua</button>
+        Belum ada mata kuliah aktif pada jalur ini.
     </div>
 
     <section x-ref="diagram" aria-label="Peta hubungan mata kuliah dan CPL" class="relative mt-6 overflow-visible rounded-2xl border border-slate-300 bg-slate-50 p-4 sm:p-5">
@@ -87,7 +67,27 @@
             </template>
         </svg>
 
-        <div class="sticky top-20 z-40 rounded-xl border border-slate-200 bg-white/95 p-4 shadow-sm backdrop-blur">
+        <div class="relative mt-4 space-y-3" @mouseleave="hidePreview()">
+            @foreach($semesters as $semester)
+                <div class="grid gap-3 rounded-xl border border-slate-200 bg-white/95 p-3 shadow-sm md:grid-cols-[112px_minmax(0,1fr)]">
+                    <div class="relative z-30 flex items-center justify-between gap-2 border-b border-slate-100 pb-2 md:block md:border-b-0 md:border-r md:pb-0 md:pr-3">
+                        <h3 class="text-sm font-extrabold text-slate-900">{{ $semester ? 'Semester ' . $semester : 'Belum ditempatkan' }}</h3>
+                        <p class="text-[11px] text-slate-500" x-text="semesterSummary({{ $semester }})"></p>
+                    </div>
+                    <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+                        <template x-for="(course, index) in inSemester({{ $semester }})" :key="course.id">
+                            <button type="button" :data-map-course="course.id" @click="select(course)" @mouseenter="showPreview($event, course)" @mousemove="movePreview($event)" @mouseleave="hidePreview()" @focus="showPreview($event, course)" @blur="hidePreview()" :aria-label="course.name + ', ' + course.sks + ' SKS, ' + courseType(course)" :style="{ '--card-index': index }" :class="[courseClass(course), isDimmed(course) ? 'opacity-35' : 'opacity-100', focusedCourse?.id === course.id || (focusedCpl && relatedToCpl(course)) ? 'ring-2 ring-blue-700' : '']" class="map-card relative z-30 min-h-16 rounded-lg border px-3 py-2.5 text-left focus:outline-none focus:ring-2 focus:ring-blue-700">
+                                <span class="block text-[10px] font-bold uppercase tracking-wide text-slate-600" x-text="course.code"></span>
+                                <span class="mt-1 block text-xs font-bold leading-snug text-slate-900" x-text="course.name"></span>
+                                <span class="mt-2 block text-[11px] text-slate-700" x-text="course.sks + ' SKS · ' + courseType(course)"></span>
+                            </button>
+                        </template>
+                        <p x-show="inSemester({{ $semester }}).length === 0" class="col-span-full py-4 text-center text-xs text-slate-400">Belum ada mata kuliah.</p>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+        <div class="sticky bottom-4 z-40 mx-auto mt-4 w-full max-w-5xl rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-2xl ring-1 ring-blue-100 backdrop-blur sm:p-4">
             <div class="flex flex-wrap items-center justify-between gap-2">
                 <div>
                     <h2 class="text-sm font-extrabold text-slate-900">Capaian Pembelajaran Lulusan</h2>
@@ -109,26 +109,6 @@
             </p>
         </div>
 
-        <div class="relative mt-4 space-y-3" @mouseleave="hidePreview()">
-            @foreach($semesters as $semester)
-                <div class="grid gap-3 rounded-xl border border-slate-200 bg-white/95 p-3 shadow-sm md:grid-cols-[112px_minmax(0,1fr)]">
-                    <div class="relative z-30 flex items-center justify-between gap-2 border-b border-slate-100 pb-2 md:block md:border-b-0 md:border-r md:pb-0 md:pr-3">
-                        <h3 class="text-sm font-extrabold text-slate-900">{{ $semester ? 'Semester ' . $semester : 'Belum ditempatkan' }}</h3>
-                        <p class="text-[11px] text-slate-500" x-text="semesterSummary({{ $semester }})"></p>
-                    </div>
-                    <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
-                        <template x-for="(course, index) in inSemester({{ $semester }})" :key="course.id">
-                            <button type="button" :data-map-course="course.id" @click="select(course)" @mouseenter="showPreview($event, course)" @mousemove="movePreview($event)" @mouseleave="hidePreview()" @focus="showPreview($event, course)" @blur="hidePreview()" :aria-label="course.name + ', ' + course.sks + ' SKS, ' + courseType(course)" :style="{ '--card-index': index }" :class="[courseClass(course), isDimmed(course) ? 'opacity-35' : 'opacity-100', focusedCourse?.id === course.id || (focusedCpl && relatedToCpl(course)) ? 'ring-2 ring-blue-700' : '']" class="map-card relative z-30 min-h-16 rounded-lg border px-3 py-2.5 text-left focus:outline-none focus:ring-2 focus:ring-blue-700">
-                                <span class="block text-[10px] font-bold uppercase tracking-wide text-slate-600" x-text="course.code"></span>
-                                <span class="mt-1 block text-xs font-bold leading-snug text-slate-900" x-text="course.name"></span>
-                                <span class="mt-2 block text-[11px] text-slate-700" x-text="course.sks + ' SKS · ' + courseType(course)"></span>
-                            </button>
-                        </template>
-                        <p x-show="inSemester({{ $semester }}).length === 0" class="col-span-full py-4 text-center text-xs text-slate-400">Tidak ada mata kuliah yang cocok.</p>
-                    </div>
-                </div>
-            @endforeach
-        </div>
     </section>
 
     <div x-show="hovered && !selected" x-transition.opacity.scale.95.duration.150ms x-cloak :style="{ left: previewX + 'px', top: previewY + 'px' }" class="pointer-events-none fixed z-[55] hidden w-72 rounded-xl border border-slate-200 bg-white p-4 shadow-2xl md:block" role="status">
